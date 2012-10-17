@@ -10,8 +10,8 @@
 #define __FluidMotion__ChannelBlender__
 
 #include <iostream>
-#include "ofMain.h"
 #include "ofxFXObject.h"
+#include "ofMain.h"
 
 class ChannelBlender : public ofxFXObject{
 public:
