@@ -286,7 +286,7 @@ void ofxFluid::allocate(int _width, int _height, float _scale){
     externalVelocityBuffer.allocate(gridWidth,gridHeight,GL_RGB32F,0.9f);
     temperatureBuffer.allocate(gridWidth,gridHeight,GL_RGB32F,0.99f);
     pressureBuffer.allocate(gridWidth,gridHeight,GL_RGB32F,0.9f);
-    
+        
     initFbo(obstaclesFbo, gridWidth, gridHeight, GL_RGB);
     initFbo(divergenceFbo, gridWidth, gridHeight, GL_RGB16F);
     
@@ -346,9 +346,9 @@ void ofxFluid::update(){
     
     if ( temporalForces.size() != 0){
         for(int i = 0; i < temporalForces.size(); i++){
-            applyImpulse(temperatureBuffer, temporalForces[i].pos, ofVec3f(temporalForces[i].temp,temporalForces[i].temp,temporalForces[i].temp), temporalForces[i].rad);
-            if (temporalForces[i].color.length() != 0)
-                applyImpulse(pingPong, temporalForces[i].pos, temporalForces[i].color * temporalForces[i].den, temporalForces[i].rad);
+//            applyImpulse(temperatureBuffer, temporalForces[i].pos, ofVec3f(temporalForces[i].temp,temporalForces[i].temp,temporalForces[i].temp), temporalForces[i].rad);
+//            if (temporalForces[i].color.length() != 0)
+//                applyImpulse(pingPong, temporalForces[i].pos, temporalForces[i].color * temporalForces[i].den, temporalForces[i].rad);
             if (temporalForces[i].vel.length() != 0)
                 applyImpulse(velocityBuffer , temporalForces[i].pos, temporalForces[i].vel, temporalForces[i].rad);
         }
@@ -495,7 +495,7 @@ void ofxFluid::applyImpulse(ofxSwapBuffer& _buffer, ofPoint _force, ofPoint _val
     glEnable(GL_BLEND);
     _buffer.src->begin();
     applyImpulseShader.begin();
-    
+        
     applyImpulseShader.setUniform2f("Point", (float)_force.x, (float)_force.y);
     applyImpulseShader.setUniform1f("Radius", (float) _radio );
     applyImpulseShader.setUniform3f("Value", (float)_value.x, (float)_value.y, (float)_value.z);
@@ -508,7 +508,7 @@ void ofxFluid::applyImpulse(ofxSwapBuffer& _buffer, ofPoint _force, ofPoint _val
 }
 
 void ofxFluid::applyExternalVelocity(ofxSwapBuffer& _buffer, ofTexture velocityTex){
-    glEnable(GL_BLEND);
+    //glEnable(GL_BLEND);
     _buffer.dst->begin();
     applyExternalVelocityShader.begin();
     applyExternalVelocityShader.setUniformTexture("buffer", _buffer.src->getTextureReference(), 0);
@@ -518,7 +518,7 @@ void ofxFluid::applyExternalVelocity(ofxSwapBuffer& _buffer, ofTexture velocityT
     renderFrame(gridWidth,gridHeight);
     applyExternalVelocityShader.end();
     _buffer.dst->end();
-    glDisable(GL_BLEND);
+    //glDisable(GL_BLEND);
 
 }
 

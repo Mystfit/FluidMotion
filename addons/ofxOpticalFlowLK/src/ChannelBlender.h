@@ -18,10 +18,13 @@ public:
     
     ChannelBlender();
     void allocate(int w, int h);
+    void update(ofTexture & velocityTex, ofTexture & depthTex, ofTexture & mask);
     void update(ofTexture & redChan, ofTexture & greenChan, ofTexture & blueChan, ofTexture & mask);
     void draw(int x, int y);
     
     ofShader blendShader;
+    ofShader velocityBlendShader;
+
     ofFbo blendBuffer;
 };
 

@@ -61,6 +61,8 @@ public:
     void keyPressed(int key);
     
     ofxOpticalFlowLK opFlow;
+    ofFbo velFbo;
+
     
     ofTexture & getVelocityTexture(int w, int h);
     

@@ -64,6 +64,7 @@ void ofxOpticalFlowLK::setup(int width, int height) {
         
     velX.allocate(sizeSml.width, sizeSml.height);
     velY.allocate(sizeSml.width, sizeSml.height);
+    
     velTex.allocate(sizeSml.width, sizeSml.height, OF_IMAGE_GRAYSCALE);
     
     xPix.allocate(sizeSml.width, sizeSml.height, 1);
@@ -242,6 +243,9 @@ void ofxOpticalFlowLK::update(IplImage * previousImage, IplImage * currentImage,
     
     velX = opFlowVelX;
     velY = opFlowVelY;
+            
+    //ofLog(OF_LOG_NOTICE, ofToString(velX.getCvImage()->imageData[128*128]) );
+        
     
     //xPix.setFromPixels(velX.getPixels(), sizeSml.width, sizeSml.height, 1);
     //yPix.setFromPixels(velY.getPixels(), sizeSml.width, sizeSml.height, 1);

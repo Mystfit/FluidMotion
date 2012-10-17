@@ -27,8 +27,12 @@ ofxCvImage::~ofxCvImage() {
 
 //--------------------------------------------------------------------------------
 void ofxCvImage::allocate( int w, int h ) {
-	if (bAllocated == true){
-		ofLog(OF_LOG_VERBOSE, "in allocate, reallocating a ofxCvImage");
+	allocate(w, h, glchannels);
+}
+
+void ofxCvImage::allocate( int w, int h, int glInternalType ){
+    if (bAllocated == true){
+		ofLog(OF_LOG_VERBOSE, "in allocate, reallocating a ofxCvImage.");
 		clear();
 	}
 	
@@ -36,19 +40,26 @@ void ofxCvImage::allocate( int w, int h ) {
 		ofLog(OF_LOG_ERROR, "in allocate, width or height cannot be 0");
 		return;
 	}
+    
 
+    
 	cvImage = cvCreateImage( cvSize(w,h), ipldepth, iplchannels );
 	cvImageTemp	= cvCreateImage( cvSize(w,h), ipldepth, iplchannels );
-
+    
 	width = w;
 	height = h;
 	bAllocated = true;
-
+    
     if( bUseTexture ) {
-        tex.allocate( width, height, glchannels );
+        glchannels = glInternalType;
+        tex.allocate( width, height, glInternalType );
         bTextureDirty = true;
     }
+    
+    ofLog(OF_LOG_VERBOSE, "in allocate, reallocating a ofxCvImage. Width is " + ofToString(w) + " Height is " + ofToString(h) + " Type is " + ofToString(glInternalType));
+
 }
+
 
 //--------------------------------------------------------------------------------
 void ofxCvImage::clear() {
