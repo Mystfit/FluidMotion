@@ -58,12 +58,10 @@ public :
 	IplImage * opFlowVelX;          // optical flow in the x direction.
 	IplImage * opFlowVelY;          // optical flow in the y direction.
     
-    ofxCvFloatImage velX;
-    ofxCvFloatImage velY;
-    
-        
-    ofImage velTex;
-    //ofImage velTexY;
+    ofxCvFloatImage velX, velY;
+    ofFloatImage velTexX, velTexY;
+    ofFloatPixels floatPixX, floatPixY;
+
     ofPixels xPix, yPix, zPix, tempPixels;
 	
 	bool bMirrorH;

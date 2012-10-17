@@ -871,7 +871,7 @@ void ofImage_<PixelType>::update(){
 	if (pixels.isAllocated() && bUseTexture){
 		GLint type = GL_RGB;
 		if(pixels.getNumChannels() == 1) {
-			type = GL_LUMINANCE;
+			type = GL_LUMINANCE32F_ARB;
 		} else if(pixels.getNumChannels() == 3) {
 			type = GL_RGB;
 		} else if(pixels.getNumChannels() == 4) {

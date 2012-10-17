@@ -35,6 +35,8 @@ class ofxCvImage : public ofBaseImage {
     ofxCvImage();
     virtual  ~ofxCvImage();
     virtual void  allocate( int w, int h );
+    virtual void  allocate( int w, int h, int glInternalType );
+
     virtual void  clear();
 	virtual float getWidth();        // get width of this image or its ROI width
 	virtual float getHeight();       // get height of this image or its ROI height

@@ -5,8 +5,8 @@ void FluidMotionApp::setup(){
     
     //ofEnableAlphaBlending();
 	ofSetWindowShape(512, 512);
-    
-    ofSetLogLevel(OF_LOG_ERROR);
+    ofSetLogLevel(OF_LOG_NOTICE);
+    ofEnableArbTex();
     
     // Initial Allocation
     //
@@ -24,14 +24,14 @@ void FluidMotionApp::setup(){
     
     // Seting the gravity set up & injecting the background image
     //fluid.setGravity(ofVec2f(0.0,-0.098));
-    fluid.setDissipation(0.99);
-    fluid.setVelocityDissipation(0.85);
+    fluid.setDissipation(0.96);
+    fluid.setVelocityDissipation(0.93);
     
     bDrawKinect = true;
     bDrawFluid = false;
     bDrawBlobs = false;
     
-    fluid.addConstantForce(ofPoint(256*0.5,256*0.85), ofPoint(0,-25.0f), ofFloatColor(1.0f,1.0f,1.0f), 40.f);
+    fluid.addConstantForce(ofPoint(256*0.5f,256*0.5f), ofPoint(0,0), ofFloatColor(1.0f,1.0f,1.0f), 20.0f);
 }
 
 //--------------------------------------------------------------
@@ -54,7 +54,7 @@ void FluidMotionApp::update(){
     //--------
     
     fluidKinect.update();
-    texBlender.update( fluidKinect.opFlow.velX.getTextureReference(), fluidKinect.opFlow.velY.getTextureReference(), fluidKinect.getDepthTexture(), fluidKinect.getMaskTexture());
+    texBlender.update( fluidKinect.opFlow.velTexX.getTextureReference(), fluidKinect.opFlow.velTexY.getTextureReference(), fluidKinect.getDepthTexture(), fluidKinect.getMaskTexture());
     
     fluid.setExternalVelocity(  texBlender.blendBuffer.getTextureReference() );
     fluid.update();
@@ -84,14 +84,18 @@ void FluidMotionApp::draw(){
     //glEnable(GL_BLEND);
 	//glBlendFunc(GL_SRC_ALPHA, GL_ZERO);
     
-    fluidKinect.opFlow.velX.draw(0.0f, 0.0f);
-    fluidKinect.opFlow.velY.draw(0.0f, 0.0f);
+    //fluidKinect.opFlow.velX.draw(0.0f, 0.0f);
+    //fluidKinect.opFlow.velY.draw(0.0f, 240.0f);
+    
+    fluidKinect.opFlow.velTexX.draw(0,0,320,240);
+    fluidKinect.opFlow.velTexY.draw(0,240,320,240);
+
     
     texBlender.draw(320,0);
 
     //if(bDrawKinect) fluidKinect.draw();
     if(bDrawFluid) fluid.draw(0,0,512,512);
-    //if(bDrawBlobs) blobFinder.draw(0,0,512,512);
+    if(bDrawBlobs) blobFinder.draw(0,0,512,512);
     
 
     

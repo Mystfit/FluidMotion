@@ -27,6 +27,11 @@ ofxCvImage::~ofxCvImage() {
 
 //--------------------------------------------------------------------------------
 void ofxCvImage::allocate( int w, int h ) {
+    allocate(w,h,glchannels);
+}
+
+    
+void ofxCvImage::allocate( int w, int h, int glInternalType ) {
 	if (bAllocated == true){
 		ofLog(OF_LOG_VERBOSE, "in allocate, reallocating a ofxCvImage");
 		clear();
@@ -45,6 +50,7 @@ void ofxCvImage::allocate( int w, int h ) {
 	bAllocated = true;
 
     if( bUseTexture ) {
+        glchannels = glInternalType;
         tex.allocate( width, height, glchannels );
         bTextureDirty = true;
     }

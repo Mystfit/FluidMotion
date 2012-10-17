@@ -59,13 +59,18 @@ void ofxOpticalFlowLK::setup(int width, int height) {
 	opFlowVelX = cvCreateImage(cvSize(sizeSml.width, sizeSml.height), IPL_DEPTH_32F, 1);
 	opFlowVelY = cvCreateImage(cvSize(sizeSml.width, sizeSml.height), IPL_DEPTH_32F, 1);
     
-    
     depthImageSml.allocate(sizeSml.width, sizeSml.height);
         
-    velX.allocate(sizeSml.width, sizeSml.height);
-    velY.allocate(sizeSml.width, sizeSml.height);
-    velTex.allocate(sizeSml.width, sizeSml.height, OF_IMAGE_GRAYSCALE);
+    velX.allocate(sizeSml.width, sizeSml.height, GL_LUMINANCE32F_ARB);
+    velY.allocate(sizeSml.width, sizeSml.height, GL_LUMINANCE32F_ARB);
+    velTexX.allocate(sizeSml.width, sizeSml.height, OF_IMAGE_GRAYSCALE);
+    velTexY.allocate(sizeSml.width, sizeSml.height, OF_IMAGE_GRAYSCALE);
     
+    floatPixX.allocate(sizeSml.width, sizeSml.height, OF_PIXELS_MONO);
+    floatPixY.allocate(sizeSml.width, sizeSml.height, OF_PIXELS_MONO);
+
+    
+           
     xPix.allocate(sizeSml.width, sizeSml.height, 1);
     yPix.allocate(sizeSml.width, sizeSml.height, 1);
     zPix.allocate(sizeSml.width, sizeSml.height, 1);
@@ -239,37 +244,42 @@ void ofxOpticalFlowLK::update(IplImage * previousImage, IplImage * currentImage,
 	
 	cvSmooth(opFlowVelX, opFlowVelX, CV_BLUR, opFlowBlur);
 	cvSmooth(opFlowVelY, opFlowVelY, CV_BLUR, opFlowBlur);
-    
+        
     velX = opFlowVelX;
     velY = opFlowVelY;
     
-    //xPix.setFromPixels(velX.getPixels(), sizeSml.width, sizeSml.height, 1);
-    //yPix.setFromPixels(velY.getPixels(), sizeSml.width, sizeSml.height, 1);
-    //zPix.setFromPixels(depthImageSml.getPixels(), sizeSml.width, sizeSml.height, 1);
-    //tempPixels.setChannel(0, xPix);
-    //tempPixels.setChannel(1, yPix);
-    //tempPixels.setChannel(2, zPix);
+//    velX.convertToRange(-1.0f, 1.0f);
+//    velY.convertToRange(-1.0f, 1.0f);
+    
+    velX.flagImageChanged();
+    velY.flagImageChanged();
+    
+    floatPixX = velX.getFloatPixelsRef();
+    floatPixY = velY.getFloatPixelsRef();
+    
+    velTexX.setFromPixels(floatPixX);
+    velTexY.setFromPixels(floatPixY);
+    
+  
 
-    //velTex.setFromPixels(tempPixels);
     
-    //velTexY.setFromPixels((unsigned char *)opFlowVelY->imageData, 320, 240, OF_IMAGE_GRAYSCALE);
+    ofLog(OF_LOG_NOTICE, ofToString(velX.getFloatPixelsRef().getImageType()));
     
-//    ofFloatPixels tempPixels;
-//    for(int i=0; i < 100; i++){
-//        for(int j=0; j < 100; j++){
-//            ofPoint vel = getVelAtPixel(i, j);
-//            ofFloatColor velColor(vel.x, vel.y, 0.0f);
-//            tempPixels.setColor(i, j, velColor);
+//    for(int i = 0; i < velTexX.getWidth(); i++){
+//        for(int j = 0; j < velTexY.getHeight(); j++){
+//            ofLog(OF_LOG_NOTICE, ofToString(velTexX.getColor(i, j)));
 //        }
 //    }
 //    
-//    velTex.setFromPixels(tempPixels);
-    
-    //velTexX.setFromPixels(velX.getPixels(), 512, 512, OF_IMAGE_COLOR);
-    //velTexY.setFromPixels(velY.getPixels(), 512, 512, OF_IMAGE_COLOR);
 
-    //velTexX.loadData( velX.getPixels(), 320, 240, GL_RGB32F );
-    //velTexY.loadData( velY.getPixels(), 320, 240, GL_RGB32F );
+    
+//    velX.updateTexture();
+//    velY.updateTexture();
+//
+
+  
+    
+    
 }
 
 ///////////////////////////////////////////
@@ -328,8 +338,6 @@ void ofxOpticalFlowLK::draw(int width, int height,  float lineScale, int res) {
             }
         }
     //}
-    velTex.draw(0.0f, 0.0f,320,240);
-
 }
 
 ///////////////////////////////////////////

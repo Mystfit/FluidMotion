@@ -62,7 +62,6 @@ public:
     
     ofxOpticalFlowLK opFlow;
     
-    ofTexture & getVelocityTexture(int w, int h);
     
     ofTexture & getDepthTexture(){ return recordDepth.depth_texture; };
     ofTexture & getMaskTexture(){ return maskTexture; };

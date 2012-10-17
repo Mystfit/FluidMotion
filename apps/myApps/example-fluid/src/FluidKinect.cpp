@@ -62,8 +62,9 @@ void FluidKinect::init()
     maskTexture.allocate(640, 480 , GL_LUMINANCE);
     
     //Setup optical flow
-    opFlow.setup(ofRectangle(ofRectangle(0,0, recordDepth.getWidth(), recordDepth.getHeight() )));
+    opFlow.setup(ofRectangle(0,0, 320, 240 ));
     opFlow.setOpticalFlowBlur(15);
+    opFlow.setOpticalFlowSize(5);
     
 }
 
@@ -118,17 +119,9 @@ void FluidKinect::update()
             //blurImage.threshold(30);
             //opFlow.update(blurImage, cameraDepthImageGrey);
             opFlow.update(blurImage);
-
-            //allUserMasks.setFromPixels(blurImage.getPixels(), recordUser.getWidth(), recordUser.getHeight(), OF_IMAGE_GRAYSCALE);
             
-        }
+                   }
     }
-}
-
-ofTexture & FluidKinect::getVelocityTexture(int w, int h){
-    ofImage & outTex = opFlow.velTex;
-    outTex.resize(w, h);
-    return outTex.getTextureReference();
 }
 
 

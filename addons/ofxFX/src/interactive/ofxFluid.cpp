@@ -267,8 +267,8 @@ ofxFluid::ofxFluid(){
     smokeBuoyancy       = 1.0f;
     smokeWeight         = 0.05f;
     
-    bDrawVelocity = true;
-    bDrawPressure = false;
+    bDrawVelocity = false;
+    bDrawPressure = true;
     
     //gForce.set(0,-0.98);
 }
@@ -344,6 +344,20 @@ void ofxFluid::update(){
     applyBuoyancy();
     velocityBuffer.swap();
     
+    
+    //Apply external velocity from kinect
+    //-----------------------------------
+    //    applyExternalVelocity(temperatureBuffer, externalVelocityBuffer.src->getTextureReference());
+    //    temperatureBuffer.swap();
+    //
+    //    applyExternalVelocity(pingPong, externalVelocityBuffer.src->getTextureReference());
+    //    pingPong.swap();
+    //
+    applyExternalVelocity(velocityBuffer, externalVelocityBuffer.src->getTextureReference());
+    velocityBuffer.swap();
+    //-----------------------------------
+    
+    
     if ( temporalForces.size() != 0){
         for(int i = 0; i < temporalForces.size(); i++){
             applyImpulse(temperatureBuffer, temporalForces[i].pos, ofVec3f(temporalForces[i].temp,temporalForces[i].temp,temporalForces[i].temp), temporalForces[i].rad);
@@ -365,17 +379,7 @@ void ofxFluid::update(){
         }
     
     
-    //Apply external velocity from kinect
-    //-----------------------------------
-//    applyExternalVelocity(temperatureBuffer, externalVelocityBuffer.src->getTextureReference());
-//    temperatureBuffer.swap();
-//    
-//    applyExternalVelocity(pingPong, externalVelocityBuffer.src->getTextureReference());
-//    pingPong.swap();
-//    
-      applyExternalVelocity(velocityBuffer, externalVelocityBuffer.src->getTextureReference());
-      velocityBuffer.swap();
-    //-----------------------------------
+
     
     
     computeDivergence();
@@ -513,7 +517,7 @@ void ofxFluid::applyExternalVelocity(ofxSwapBuffer& _buffer, ofTexture velocityT
     applyExternalVelocityShader.begin();
     applyExternalVelocityShader.setUniformTexture("buffer", _buffer.src->getTextureReference(), 0);
     applyExternalVelocityShader.setUniformTexture("ExternalVelocity", externalVelocityBuffer.src->getTextureReference(), 0);
-    applyExternalVelocityShader.setUniform1f("Strength", 0.005f );
+    applyExternalVelocityShader.setUniform1f("Strength", 5.0f );
 
     renderFrame(gridWidth,gridHeight);
     applyExternalVelocityShader.end();
