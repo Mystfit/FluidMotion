@@ -36,34 +36,9 @@ ChannelBlender::ChannelBlender()
          
     );
     
-    string fragVelocityBlendShader = STRINGIFY
-    (
-     uniform sampler2DRect    velocity;
-     uniform sampler2DRect    depth;
-     uniform sampler2DRect    mask;
-     
-     float blueChan;
-     
-     void main(){
-         
-         vec2 st = gl_TexCoord[0].st;
-         
-         //            blueChan = texture2DRect(blendB,st).b;
-         //            if(blueChan == 0.0){
-         //                blueChan = 1.0;
-         //            };
-         //gl_FragColor = vec4(1.0,0.0,0.0,1.0);
-         
-         vec4 colour = vec4(texture2DRect(velocity,st).rg, 1.0 - texture2DRect(depth,st).r, 1.0);
-         gl_FragColor = colour * texture2DRect(mask,st);
-     }
-     
-     );
-
-    
-    velocityBlendShader.unload();
-    velocityBlendShader.setupShaderFromSource(GL_FRAGMENT_SHADER, fragVelocityBlendShader);
-    bFine = velocityBlendShader.linkProgram();
+    blendShader.unload();
+    blendShader.setupShaderFromSource(GL_FRAGMENT_SHADER, fragBlendShader);
+    bFine = blendShader.linkProgram();
     
     
 }
@@ -72,23 +47,9 @@ void ChannelBlender::allocate(int w, int h)
 {
     width = w;
     height = h;
-    blendBuffer.allocate(width, height, GL_RGB32F_ARB);
+    blendBuffer.allocate(width, height, GL_RGBA32F_ARB);
     
 }
-
-void ChannelBlender::update(ofTexture & velocityTex, ofTexture & depthTex, ofTexture & mask){
-    blendBuffer.begin();
-    blendShader.begin();
-    blendShader.setUniformTexture("velocity", velocityTex, 0);
-    blendShader.setUniformTexture("depth", depthTex, 1);
-    blendShader.setUniformTexture("mask", mask, 2);
-    
-    renderFrame(width,height);
-    
-    blendShader.end();
-    blendBuffer.end();
-}
-
 
 void ChannelBlender::update(ofTexture & redChan, ofTexture & greenChan, ofTexture & blueChan, ofTexture & mask)
 {

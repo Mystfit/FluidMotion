@@ -96,7 +96,7 @@ void FluidPlayer::update()
 {
     int i;
     
-    ofLog(OF_LOG_VERBOSE, "NUM NOTES:"+ ofToString(m_activeInstrument.activeNotes.size()));
+    ofLog(OF_LOG_NOTICE, "NUM NOTES:"+ ofToString(m_activeInstrument.activeNotes.size()));
     
     for( i = 0; i < m_activeInstrument.activeNotes.size(); i++)
     {
@@ -106,7 +106,7 @@ void FluidPlayer::update()
             if(currNote.getNoteType() == NOTE){
                                
             } else if(currNote.getNoteType() == CC){
-                ofLog(OF_LOG_VERBOSE, "NOTE ON");
+                ofLog(OF_LOG_NOTICE, "NOTE ON");
                 //DEBUG -- Hardcoded outputs to kaossilators!
                 midiOut.sendControlChange(synthChan, currNote.getCCName(), currNote.getCCValue() );
                 midiOut.sendControlChange(effectsChan, currNote.getCCName(), currNote.getCCValue() );
@@ -118,7 +118,7 @@ void FluidPlayer::update()
         }
         
         if(currNote.getStatus() == HOLD){
-            // ofLog(OF_LOG_VERBOSE, "NOTE VAL");
+            // ofLog(OF_LOG_NOTICE, "NOTE VAL");
 
             //DEBUG -- Hardcoded outputs to kaossilators!
             midiOut.sendControlChange(synthChan, 12, int(currNote.getParams().fluidPosition.x/256 * 127) );
@@ -133,7 +133,7 @@ void FluidPlayer::update()
             if(currNote.getNoteType() == NOTE){
                 //Send midi noteOff
             } else if(currNote.getNoteType() == CC){
-                ofLog(OF_LOG_VERBOSE, "NOTE OFF");
+                ofLog(OF_LOG_NOTICE, "NOTE OFF");
                 //DEBUG -- Hardcoded outputs to kaossilators!
                 midiOut.sendControlChange(synthChan, 92, 0);
                 midiOut.sendControlChange(effectsChan, 92, 0);

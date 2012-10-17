@@ -6,7 +6,7 @@ void FluidMotionApp::setup(){
     //ofEnableAlphaBlending();
 	ofSetWindowShape(512, 512);
     
-    ofSetLogLevel(OF_LOG_NOTICE);
+    ofSetLogLevel(OF_LOG_ERROR);
     
     // Initial Allocation
     //
@@ -15,8 +15,7 @@ void FluidMotionApp::setup(){
     inputImageGrey.allocate(256, 256);
     tempPixels.allocate(256,256,3);
     texBlender.allocate(320, 240);
-    
-    
+        
     threshold = 50;
     dyeColour.set(1.0f,1.0f,1.0f);
     dyeRadius = 10.f;
@@ -25,14 +24,14 @@ void FluidMotionApp::setup(){
     
     // Seting the gravity set up & injecting the background image
     //fluid.setGravity(ofVec2f(0.0,-0.098));
-    fluid.setDissipation(0.95);
-    fluid.setVelocityDissipation(0.95);
+    fluid.setDissipation(0.99);
+    fluid.setVelocityDissipation(0.85);
     
     bDrawKinect = true;
     bDrawFluid = false;
     bDrawBlobs = false;
     
-    //fluid.addConstantForce(ofPoint(256*0.5,256*0.85), ofPoint(0,-25.0f), ofFloatColor(1.0f,1.0f,1.0f), 40.f);
+    fluid.addConstantForce(ofPoint(256*0.5,256*0.85), ofPoint(0,-25.0f), ofFloatColor(1.0f,1.0f,1.0f), 40.f);
 }
 
 //--------------------------------------------------------------
@@ -55,7 +54,7 @@ void FluidMotionApp::update(){
     //--------
     
     fluidKinect.update();
-    texBlender.update( fluidKinect.velFbo.getTextureReference(), fluidKinect.getDepthTexture(), fluidKinect.getMaskTexture());
+    texBlender.update( fluidKinect.opFlow.velX.getTextureReference(), fluidKinect.opFlow.velY.getTextureReference(), fluidKinect.getDepthTexture(), fluidKinect.getMaskTexture());
     
     fluid.setExternalVelocity(  texBlender.blendBuffer.getTextureReference() );
     fluid.update();
@@ -84,7 +83,10 @@ void FluidMotionApp::draw(){
     
     //glEnable(GL_BLEND);
 	//glBlendFunc(GL_SRC_ALPHA, GL_ZERO);
-
+    
+    fluidKinect.opFlow.velX.draw(0.0f, 0.0f);
+    fluidKinect.opFlow.velY.draw(0.0f, 0.0f);
+    
     texBlender.draw(320,0);
 
     //if(bDrawKinect) fluidKinect.draw();

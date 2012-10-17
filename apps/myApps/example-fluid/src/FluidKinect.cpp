@@ -60,8 +60,6 @@ void FluidKinect::init()
     
     depthPixels.allocate(320, 240, OF_PIXELS_RGB);
     maskTexture.allocate(640, 480 , GL_LUMINANCE);
-    velFbo.allocate(320, 240, GL_RGBA32F);
-
     
     //Setup optical flow
     opFlow.setup(ofRectangle(ofRectangle(0,0, recordDepth.getWidth(), recordDepth.getHeight() )));
@@ -87,26 +85,41 @@ void FluidKinect::update()
         
         // demo getting pixels from user gen
 		if (isTracking && isMasking) {
+            //recordDepth.depth_texture.readToPixels(depthPixels);
             cameraImage.setFromPixels(recordImage.getPixels(), recordUser.getWidth(), recordUser.getHeight());
+            //cameraDepthImage.setFromPixels(depthPixels);
             maskImage.setFromPixels( recordUser.getUserPixels(), recordUser.getWidth(), recordUser.getHeight());
             maskTexture.loadData(recordUser.getUserPixels(),recordUser.getWidth(), recordUser.getHeight(), GL_LUMINANCE);
+                        
+            //cameraDepthImageGrey = cameraDepthImage;
+            //cameraDepthImageGrey.flagImageChanged();
             
             cameraImage.flagImageChanged();
+            //cameraDepthImage.flagImageChanged();
             maskImage.flagImageChanged();
             
             cameraImage.resize(320, 240);
+            //cameraDepthImageGrey.resize(320, 240);
             maskImage.resize(320, 240);
             
+            //cameraDepthImage.invert();
+            
+            //maskImage.blur(15);
+            //maskImage.threshold(20);
+            
             blurImage = cameraImage;
+            
             blurImage *= maskImage;
+            //blurImageGrey = maskColourImage;
             
+            //blurImage.resize(320, 240);
+            //blurImage.blurHeavily();
+            //blurImage.blur(5);
+            //blurImage.threshold(30);
+            //opFlow.update(blurImage, cameraDepthImageGrey);
             opFlow.update(blurImage);
-            
-            //Draw velocity to FBO texture
-            velFbo.begin();
-            opFlow.velX.draw(0.0f, 0.0f,320.0f,240.0f);
-            opFlow.velY.draw(0.0f, 0.0f,320.0f,240.0f);
-            velFbo.end();
+
+            //allUserMasks.setFromPixels(blurImage.getPixels(), recordUser.getWidth(), recordUser.getHeight(), OF_IMAGE_GRAYSCALE);
             
         }
     }
