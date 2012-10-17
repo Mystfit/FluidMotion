@@ -728,7 +728,6 @@
 		E4B27C1610CBEB8E00536013 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				COMBINE_HIDPI_IMAGES = YES;
 				CONFIGURATION_BUILD_DIR = "$(SRCROOT)/../../lib/osx/";
 				COPY_PHASE_STRIP = NO;
 				EXECUTABLE_PREFIX = "";
@@ -760,6 +759,7 @@
 					"$(LIB_GLUT)",
 					"$(LIB_FMODEX)",
 				);
+				PREBINDING = NO;
 				PRODUCT_NAME = openFrameworksDebug;
 				SDKROOT = macosx10.6;
 			};
@@ -768,7 +768,6 @@
 		E4B27C1710CBEB8E00536013 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				COMBINE_HIDPI_IMAGES = YES;
 				CONFIGURATION_BUILD_DIR = "$(SRCROOT)/../../lib/osx/";
 				COPY_PHASE_STRIP = YES;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
@@ -802,6 +801,7 @@
 					"$(LIB_GLUT)",
 					"$(LIB_FMODEX)",
 				);
+				PREBINDING = NO;
 				PRODUCT_NAME = openFrameworks;
 				SDKROOT = macosx10.6;
 			};

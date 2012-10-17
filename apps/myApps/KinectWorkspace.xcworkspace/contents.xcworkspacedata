@@ -4,4 +4,10 @@
    <FileRef
       location = "group:example-fluid/FluidMotion.xcodeproj">
    </FileRef>
+   <FileRef
+      location = "group:KinectMapping/KinectMapping.xcodeproj">
+   </FileRef>
+   <FileRef
+      location = "group:openNI-demoAllFeatures/openNiSample007.xcodeproj">
+   </FileRef>
 </Workspace>

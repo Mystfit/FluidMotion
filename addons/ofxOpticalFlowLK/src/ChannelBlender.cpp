@@ -39,6 +39,8 @@ ChannelBlender::ChannelBlender()
     blendShader.unload();
     blendShader.setupShaderFromSource(GL_FRAGMENT_SHADER, fragBlendShader);
     bFine = blendShader.linkProgram();
+    
+    
 }
 
 void ChannelBlender::allocate(int w, int h)
