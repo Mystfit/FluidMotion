@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Workspace
+   version = "1.0">
+   <FileRef
+      location = "group:example-fluid/FluidMotion.xcodeproj">
+   </FileRef>
+   <FileRef
+      location = "group:KinectMapping/KinectMapping.xcodeproj">
+   </FileRef>
+   <FileRef
+      location = "group:openNI-demoAllFeatures/openNiSample007.xcodeproj">
+   </FileRef>
+</Workspace>
