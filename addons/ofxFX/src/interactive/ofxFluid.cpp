@@ -226,6 +226,20 @@ ofxFluid::ofxFluid(){
     applyExternalVelocityShader.unload();
     applyExternalVelocityShader.setupShaderFromSource(GL_FRAGMENT_SHADER, fragmentApplyExtVelocity);
     applyExternalVelocityShader.linkProgram();
+    
+    // APPLY EXT. DYE
+    string fragmentApplyExtDye = STRINGIFY(
+                                                uniform sampler2DRect    buffer;
+                                                uniform sampler2DRect    ExternalVelocity;
+                                                
+                                                void main(){
+                                                    //Maybe blur the dye input?
+                                                    gl_FragColor = vec4(texture2DRect(ExternalVelocity, gl_TexCoord[0].st).b,texture2DRect(ExternalVelocity, gl_TexCoord[0].st).b,texture2DRect(ExternalVelocity, gl_TexCoord[0].st).b, texture2DRect(ExternalVelocity, gl_TexCoord[0].st).b );
+                                                }
+                                            );
+    applyExternalDyeShader.unload();
+    applyExternalDyeShader.setupShaderFromSource(GL_FRAGMENT_SHADER, fragmentApplyExtDye);
+    applyExternalDyeShader.linkProgram();
 
     
     //APPLY BUOYANCY
@@ -267,8 +281,8 @@ ofxFluid::ofxFluid(){
     smokeBuoyancy       = 1.0f;
     smokeWeight         = 0.05f;
     
-    bDrawVelocity = false;
-    bDrawPressure = true;
+    bDrawVelocity = true;
+    bDrawPressure = false;
     
     //gForce.set(0,-0.98);
 }
@@ -347,14 +361,14 @@ void ofxFluid::update(){
     
     //Apply external velocity from kinect
     //-----------------------------------
-    //    applyExternalVelocity(temperatureBuffer, externalVelocityBuffer.src->getTextureReference());
-    //    temperatureBuffer.swap();
-    //
-    //    applyExternalVelocity(pingPong, externalVelocityBuffer.src->getTextureReference());
-    //    pingPong.swap();
-    //
+    //applyExternalDye(temperatureBuffer, externalVelocityBuffer.src->getTextureReference());
+    //temperatureBuffer.swap();
+
+    //applyExternalDye(pingPong, externalVelocityBuffer.src->getTextureReference());
+    //pingPong.swap();
+
     applyExternalVelocity(velocityBuffer, externalVelocityBuffer.src->getTextureReference());
-    velocityBuffer.swap();
+    //velocityBuffer.swap();
     //-----------------------------------
     
     
@@ -513,17 +527,28 @@ void ofxFluid::applyImpulse(ofxSwapBuffer& _buffer, ofPoint _force, ofPoint _val
 
 void ofxFluid::applyExternalVelocity(ofxSwapBuffer& _buffer, ofTexture velocityTex){
     glEnable(GL_BLEND);
-    _buffer.dst->begin();
+    _buffer.src->begin();
     applyExternalVelocityShader.begin();
     applyExternalVelocityShader.setUniformTexture("buffer", _buffer.src->getTextureReference(), 0);
-    applyExternalVelocityShader.setUniformTexture("ExternalVelocity", externalVelocityBuffer.src->getTextureReference(), 0);
-    applyExternalVelocityShader.setUniform1f("Strength", 5.0f );
+    applyExternalVelocityShader.setUniformTexture("ExternalVelocity", externalVelocityBuffer.src->getTextureReference(), 1);
+    applyExternalVelocityShader.setUniform1f("Strength", 1.0f );
 
     renderFrame(gridWidth,gridHeight);
     applyExternalVelocityShader.end();
-    _buffer.dst->end();
+    _buffer.src->end();
     glDisable(GL_BLEND);
+}
 
+void ofxFluid::applyExternalDye(ofxSwapBuffer& _buffer, ofTexture velocityTex){
+    glEnable(GL_BLEND);
+    _buffer.src->begin();
+    applyExternalDyeShader.begin();
+    applyExternalDyeShader.setUniformTexture("buffer", _buffer.src->getTextureReference(), 0);
+    applyExternalDyeShader.setUniformTexture("ExternalVelocity", externalVelocityBuffer.src->getTextureReference(), 1);
+    renderFrame(gridWidth,gridHeight);
+    applyExternalVelocityShader.end();
+    _buffer.src->end();
+    glDisable(GL_BLEND);
 }
 
 void ofxFluid::applyBuoyancy(){

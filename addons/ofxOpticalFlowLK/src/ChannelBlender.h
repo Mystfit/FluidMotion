@@ -18,11 +18,14 @@ public:
     
     ChannelBlender();
     void allocate(int w, int h);
-    void update(ofTexture & redChan, ofTexture & greenChan, ofTexture & blueChan, ofTexture & mask);
-    void draw(int x, int y);
+    ofFbo * updateBlender(ofTexture & redChan, ofTexture & greenChan, ofTexture & blueChan, ofTexture & mask, float maxDist, float minDist, int w, int h);
+    ofFbo * updateKinectMasker(ofTexture & colourCamera, ofTexture & mask, int w, int h);
     
     ofShader blendShader;
-    ofFbo blendBuffer;
+    ofShader kinectMaskShader;
+
+    ofxSwapBuffer blendBuffer;
+    ofxSwapBuffer kinectBuffer;
 };
 
 #endif /* defined(__FluidMotion__ChannelBlender__) */

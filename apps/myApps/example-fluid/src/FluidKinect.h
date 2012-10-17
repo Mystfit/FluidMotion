@@ -47,10 +47,10 @@ private:
     ofxCvColorImage cameraDepthImage;
     ofxCvGrayscaleImage cameraDepthImageGrey;
 
-    ofxCvGrayscaleImage blurImage;
     ofxCvGrayscaleImage maskImage;
     ofPixels depthPixels;
     ofTexture maskTexture;
+    ofPixels maskPixels;
     int opticalBlur;
     
 public:
@@ -61,8 +61,12 @@ public:
     void keyPressed(int key);
     
     ofxOpticalFlowLK opFlow;
+    void updateOpticalFlow(ofTexture & maskedKinect);
     
     
+    ofxCvColorImage blurImage;
+    
+    ofTexture & getCameraTexture(){ return recordImage.getTexture(); };
     ofTexture & getDepthTexture(){ return recordDepth.depth_texture; };
     ofTexture & getMaskTexture(){ return maskTexture; };
 

@@ -17,20 +17,16 @@ ChannelBlender::ChannelBlender()
         uniform sampler2DRect    blendG;
         uniform sampler2DRect    blendB;
         uniform sampler2DRect    mask;
+        uniform float            maxDist;
+        uniform float            minDist;
      
-        float blueChan;
-        
+        float clampedDepth;
+             
         void main(){
            
             vec2 st = gl_TexCoord[0].st;
-            
-//            blueChan = texture2DRect(blendB,st).b;
-//            if(blueChan == 0.0){
-//                blueChan = 1.0;
-//            };
-            //gl_FragColor = vec4(1.0,0.0,0.0,1.0);
-
-            vec4 colour = vec4(texture2DRect(blendR,st).r, texture2DRect(blendG,st).r, 1.0 - texture2DRect(blendB,st).r, 1.0);
+            clampedDepth = smoothstep(minDist, maxDist, texture2DRect(blendB, st).r);
+            vec4 colour = vec4(texture2DRect(blendR,st).r, texture2DRect(blendG,st).r, clampedDepth, 1.0);
             gl_FragColor = colour * texture2DRect(mask,st);
         }
          
@@ -40,6 +36,24 @@ ChannelBlender::ChannelBlender()
     blendShader.setupShaderFromSource(GL_FRAGMENT_SHADER, fragBlendShader);
     bFine = blendShader.linkProgram();
     
+    string fragMaskShader = STRINGIFY
+    (
+     uniform sampler2DRect    camera;
+     uniform sampler2DRect    mask;
+        
+     void main(){
+         
+         vec2 st = gl_TexCoord[0].st;
+         float gray = dot(texture2DRect(camera,st).rgb, vec3(0.299, 0.587, 0.114));
+         gl_FragColor = vec4(gray * texture2DRect(mask,st).r, gray * texture2DRect(mask,st).r, gray * texture2DRect(mask,st).r, 1.0);
+     }
+     
+     );
+    
+    kinectMaskShader.unload();
+    kinectMaskShader.setupShaderFromSource(GL_FRAGMENT_SHADER, fragMaskShader);
+    bFine = kinectMaskShader.linkProgram();
+    
     
 }
 
@@ -47,25 +61,38 @@ void ChannelBlender::allocate(int w, int h)
 {
     width = w;
     height = h;
-    blendBuffer.allocate(width, height, GL_RGBA32F_ARB);
-    
+    blendBuffer.allocate(256, 256, GL_RGBA32F_ARB);
+    kinectBuffer.allocate(320, 240, GL_RGB);
 }
 
-void ChannelBlender::update(ofTexture & redChan, ofTexture & greenChan, ofTexture & blueChan, ofTexture & mask)
+ofFbo * ChannelBlender::updateBlender(ofTexture & redChan, ofTexture & greenChan, ofTexture & blueChan, ofTexture & mask, float maxDist, float minDist, int w, int h)
 {
-    blendBuffer.begin();
+    blendBuffer.dst->begin();
     blendShader.begin();
     blendShader.setUniformTexture("blendR", redChan, 0);
     blendShader.setUniformTexture("blendG", greenChan, 1);
     blendShader.setUniformTexture("blendB", blueChan, 2);
     blendShader.setUniformTexture("mask", mask, 3);
+    blendShader.setUniform1f("maxDist", maxDist);
+    blendShader.setUniform1f("minDist", minDist);
 
-    renderFrame(width,height);
+    renderFrame(w,h);
 
     blendShader.end();
-    blendBuffer.end();
+    blendBuffer.dst->end();
+    
+    return blendBuffer.dst;
 }
 
-void ChannelBlender::draw(int x, int y){
-    blendBuffer.draw(x, y,640,480);
+ofFbo * ChannelBlender::updateKinectMasker(ofTexture & colourCamera, ofTexture & mask, int w, int h){
+    
+    kinectBuffer.dst->begin();
+    kinectMaskShader.begin();
+    kinectMaskShader.setUniformTexture("camera", colourCamera, 0);
+    kinectMaskShader.setUniformTexture("mask", mask, 2);
+    
+    renderFrame(w,h);
+    
+    kinectMaskShader.end();
+    kinectBuffer.dst->end();
 }

@@ -55,11 +55,12 @@ void FluidKinect::init()
     cameraImage.allocate(640, 480);
     cameraDepthImage.allocate(640, 480);
 
-    blurImage.allocate(320, 240);
+    blurImage.allocate(640, 480, GL_RGBA);
     maskImage.allocate(320, 240);
     
     depthPixels.allocate(320, 240, OF_PIXELS_RGB);
     maskTexture.allocate(640, 480 , GL_LUMINANCE);
+    maskPixels.allocate(640,480, OF_PIXELS_RGBA);
     
     //Setup optical flow
     opFlow.setup(ofRectangle(0,0, 320, 240 ));
@@ -84,44 +85,33 @@ void FluidKinect::update()
             hardware.setLedOption(LED_GREEN);
         }
         
-        // demo getting pixels from user gen
 		if (isTracking && isMasking) {
-            //recordDepth.depth_texture.readToPixels(depthPixels);
-            cameraImage.setFromPixels(recordImage.getPixels(), recordUser.getWidth(), recordUser.getHeight());
-            //cameraDepthImage.setFromPixels(depthPixels);
-            maskImage.setFromPixels( recordUser.getUserPixels(), recordUser.getWidth(), recordUser.getHeight());
-            maskTexture.loadData(recordUser.getUserPixels(),recordUser.getWidth(), recordUser.getHeight(), GL_LUMINANCE);
-                        
-            //cameraDepthImageGrey = cameraDepthImage;
-            //cameraDepthImageGrey.flagImageChanged();
+//            cameraImage.setFromPixels(recordImage.getPixels(), recordUser.getWidth(), recordUser.getHeight());
+//            maskImage.setFromPixels( recordUser.getUserPixels(), recordUser.getWidth(), recordUser.getHeight());
+              maskTexture.loadData(recordUser.getUserPixels(),recordUser.getWidth(), recordUser.getHeight(), GL_LUMINANCE);
+//                        
+//            cameraImage.flagImageChanged();
+//            maskImage.flagImageChanged();
+//            
+//            cameraImage.resize(320, 240);
+//            maskImage.resize(320, 240);
             
-            cameraImage.flagImageChanged();
-            //cameraDepthImage.flagImageChanged();
-            maskImage.flagImageChanged();
+            //Get blur image from shader instead!
+
+//            blurImage = cameraImage;
+//            blurImage *= maskImage;
+//            opFlow.update(blurImage);
             
-            cameraImage.resize(320, 240);
-            //cameraDepthImageGrey.resize(320, 240);
-            maskImage.resize(320, 240);
-            
-            //cameraDepthImage.invert();
-            
-            //maskImage.blur(15);
-            //maskImage.threshold(20);
-            
-            blurImage = cameraImage;
-            
-            blurImage *= maskImage;
-            //blurImageGrey = maskColourImage;
-            
-            //blurImage.resize(320, 240);
-            //blurImage.blurHeavily();
-            //blurImage.blur(5);
-            //blurImage.threshold(30);
-            //opFlow.update(blurImage, cameraDepthImageGrey);
-            opFlow.update(blurImage);
-            
-                   }
+        }
     }
+}
+
+void FluidKinect::updateOpticalFlow(ofTexture & maskedKinect)
+{
+    maskedKinect.readToPixels(maskPixels);    
+    blurImage.setFromPixels(maskPixels);
+    blurImage.flagImageChanged();
+    opFlow.update(blurImage);
 }
 
 
