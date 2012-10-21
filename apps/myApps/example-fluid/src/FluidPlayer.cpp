@@ -15,6 +15,11 @@ FluidPlayer::FluidPlayer(){
     //MIDI params
     midiOut.listPorts(); // via instance
     midiOut.openPort("passthrough_in");	// by name
+
+    midiIn.openPort("passthrough_out");	// by name
+    midiIn.ignoreTypes(false, false, false);
+    midiIn.addListener(this);
+
     
     channel = 1;
     synthChan = 2;
@@ -26,6 +31,8 @@ FluidPlayer::FluidPlayer(){
 	bend = 0;
 	touch = 0;
 	polytouch = 0;
+    
+    clockPeriod = 4;
     
     m_activeInstrument.createCC(92, 127, ofPoint(64,64), 25);
 }
@@ -96,7 +103,7 @@ void FluidPlayer::update()
 {
     int i;
     
-    ofLog(OF_LOG_NOTICE, "NUM NOTES:"+ ofToString(m_activeInstrument.activeNotes.size()));
+    ofLog(OF_LOG_VERBOSE, "NUM NOTES:"+ ofToString(m_activeInstrument.activeNotes.size()));
     
     for( i = 0; i < m_activeInstrument.activeNotes.size(); i++)
     {
@@ -106,7 +113,7 @@ void FluidPlayer::update()
             if(currNote.getNoteType() == NOTE){
                                
             } else if(currNote.getNoteType() == CC){
-                ofLog(OF_LOG_NOTICE, "NOTE ON");
+                ofLog(OF_LOG_VERBOSE, "NOTE ON");
                 //DEBUG -- Hardcoded outputs to kaossilators!
                 midiOut.sendControlChange(synthChan, currNote.getCCName(), currNote.getCCValue() );
                 midiOut.sendControlChange(effectsChan, currNote.getCCName(), currNote.getCCValue() );
@@ -133,7 +140,7 @@ void FluidPlayer::update()
             if(currNote.getNoteType() == NOTE){
                 //Send midi noteOff
             } else if(currNote.getNoteType() == CC){
-                ofLog(OF_LOG_NOTICE, "NOTE OFF");
+                ofLog(OF_LOG_VERBOSE, "NOTE OFF");
                 //DEBUG -- Hardcoded outputs to kaossilators!
                 midiOut.sendControlChange(synthChan, 92, 0);
                 midiOut.sendControlChange(effectsChan, 92, 0);
@@ -144,3 +151,74 @@ void FluidPlayer::update()
         }
     }
 }
+
+
+
+/**
+ *
+ * External midi message control
+ *
+ */
+void FluidPlayer::newMidiMessage(ofxMidiMessage & eventArgs) {
+    
+    lastMessage = eventArgs;
+    
+    if (eventArgs.status == MIDI_TIME_CLOCK)
+    {
+        if(eventArgs.channel == 0)
+        {
+            //If we use an external device to set the bpm, then we get around
+            //Openframeworks updating at a low fps screwing with the clock
+            
+            //Compute the BPM from the interval between 2 midiclock tick (24 ticks/quarter)
+            BITPERMIN = 60000.0/(ofGetElapsedTimeMillis()-clockPastTime)/24;
+            
+            clockPastTime = ofGetElapsedTimeMillis(); //int
+            clockTick++; //int
+            
+            //One crotchet per 24 ticks
+            if(clockTick % 24 == 0){
+                isBEAT = true;
+                ofLog(OF_LOG_NOTICE, "BEAT");
+                
+                //Get the bpm from the last 4 notes
+                if( beatCount >= 4)
+                    beatCount = 0;
+                
+                if(beatCount == 0)
+                    firstBeatMs = ofGetElapsedTimeMillis();
+                else
+                    bpm = 60000 * beatCount / (ofGetElapsedTimeMillis() - firstBeatMs);
+                
+                if(clockPeriodValue >= clockPeriod-1) //clockPeriod = 4, at least by default.
+                {
+                    clockPeriodValue = 0;
+                    clockTick = 0;
+                    ofLog(OF_LOG_NOTICE, "BAR");
+                }else
+                {
+                    clockPeriodValue++;
+                }
+                
+                beatCount++;
+
+            }else isBEAT = false;
+            
+        }
+        
+        if((eventArgs.channel == 3)||(eventArgs.channel == 12)){
+            clockPeriodValue = 0;
+            clockTick = 0;
+        }
+    }else
+    {
+        // store some data from midi message in variables
+//        stat = eventArgs.status;
+//        port = eventArgs.port;
+//        id = eventArgs.channel;
+//        value = eventArgs.byteOne;
+//        value2 = eventArgs.byteTwo;
+//        timestamp = eventArgs.timestamp;
+    }
+}
+

@@ -218,9 +218,45 @@ ofxFluid::ofxFluid(){
                                                 uniform sampler2DRect    buffer;
                                                 uniform sampler2DRect    ExternalVelocity;
                                                 uniform float            Strength;
+                                                
+                                                float kernel[9];
+                                                vec2 offset[9];
+                                                float fade = 0.0003;
                                                   
                                                   void main(){
-                                                      gl_FragColor = (texture2DRect(ExternalVelocity, gl_TexCoord[0].st) * Strength) + texture2DRect(buffer, gl_TexCoord[0].st);
+                                                      
+                                                      vec2  st = gl_TexCoord[0].st;
+                                                      vec4 sum = vec4(0.0);
+                                                      
+                                                      offset[0] = vec2(-1.0, -1.0);
+                                                      offset[1] = vec2(0.0, -1.0);
+                                                      offset[2] = vec2(1.0, -1.0);
+                                                      
+                                                      offset[3] = vec2(-1.0, 0.0);
+                                                      offset[4] = vec2(0.0, 0.0);
+                                                      offset[5] = vec2(1.0, 0.0);
+                                                      
+                                                      offset[6] = vec2(-1.0, 1.0);
+                                                      offset[7] = vec2(0.0, 1.0);
+                                                      offset[8] = vec2(1.0, 1.0);
+                                                      
+                                                      kernel[0] = 1.0/16.0;   kernel[1] = 2.0/16.0;   kernel[2] = 1.0/16.0;
+                                                      kernel[3] = 2.0/16.0;   kernel[4] = 4.0/16.0;   kernel[5] = 2.0/16.0;
+                                                      kernel[6] = 1.0/16.0;   kernel[7] = 2.0/16.0;   kernel[8] = 1.0/16.0;
+                                                      
+                                                      int i = 0;
+                                                      for (i = 0; i < 9; i++){
+                                                          vec4 tmp = texture2DRect(ExternalVelocity, st + offset[i]) * Strength;
+                                                          sum += tmp * kernel[i];
+                                                      }
+                                                      
+                                                      vec4 previousValue = texture2DRect(ExternalVelocity, st);
+                                                      vec4 blurColour = (1.0 - fade) * previousValue +  fade * vec4(sum.rgb, previousValue.a);
+                                                      
+                                                      
+                                                      
+                                                      
+                                                      gl_FragColor = blurColour + texture2DRect(buffer, gl_TexCoord[0].st);
                                                   }
                                                   );
     applyExternalVelocityShader.unload();
@@ -261,7 +297,7 @@ ofxFluid::ofxFluid(){
     
     cellSize            = 1.25f;
     gradientScale       = 1.00f / cellSize;
-    ambientTemperature  = 0.0f;
+    ambientTemperature  = 1.0f;
     numJacobiIterations = 40;
     timeStep            = 0.125f;
     smokeBuoyancy       = 1.0f;
@@ -269,6 +305,7 @@ ofxFluid::ofxFluid(){
     
     bDrawVelocity = false;
     bDrawPressure = true;
+    bDrawTemperature = false;
     
     //gForce.set(0,-0.98);
 }
@@ -347,8 +384,8 @@ void ofxFluid::update(){
     
     //Apply external velocity from kinect
     //-----------------------------------
-    //    applyExternalVelocity(temperatureBuffer, externalVelocityBuffer.src->getTextureReference());
-    //    temperatureBuffer.swap();
+    applyExternalVelocity(temperatureBuffer, externalVelocityBuffer.src->getTextureReference());
+    //  temperatureBuffer.swap();
     //
     //    applyExternalVelocity(pingPong, externalVelocityBuffer.src->getTextureReference());
     //    pingPong.swap();
@@ -411,6 +448,10 @@ void ofxFluid::draw(int x, int y, float _width, float _height){
         velocityBuffer.src->draw(x,y,_width,_height);
     if(bDrawPressure)
         pingPong.src->draw(x,y,_width,_height);
+    if(bDrawTemperature)
+        temperatureBuffer.src->draw(x,y,_width,_height);
+
+
     
     //textures[0].draw(x,y,_width,_height);
     glDisable(GL_BLEND);

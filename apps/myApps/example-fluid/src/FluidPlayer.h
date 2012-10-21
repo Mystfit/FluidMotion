@@ -14,20 +14,25 @@
 #include "FluidInstrument.h"
 #include "ofxCvComplexBlob.h"
 
-class FluidPlayer {
+class FluidPlayer : public ofxMidiListener {
 public:
     FluidPlayer();
     
+    void musicTick();
     void update();
     void updateNotes(vector<ofxCvComplexBlob> blobs);
     int getNoteIndexFromBlob(ofxCvComplexBlob blob);
-
+    
+    void newMidiMessage(ofxMidiMessage& eventArgs);
+    
+    float getBpm(){ return bpm; };
     
     
 private:
     FluidInstrument m_activeInstrument;
     
     //MIDI
+    ofxMidiIn midiIn;
     ofxMidiOut midiOut;
     unsigned int currentPgm;
     int synthChan, effectsChan, channel;
@@ -35,6 +40,12 @@ private:
 	int pan, bend, touch, polytouch;
     int xPadSynth, yPadSynth, xPadEffects, yPadEffects;
     bool bIsPlaying;
+    
+    //Clock parameters
+    int clockPastTime, clockTick, clockPeriod, beatCount, firstBeatMs, clockPeriodValue, BITPERMIN;
+    float bpm;
+    bool isBEAT;
+    ofxMidiMessage lastMessage;
 
 };
 

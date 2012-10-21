@@ -99,22 +99,23 @@ void FluidMotionApp::draw(){
     //fluidKinect.opFlow.velTexX.draw(320,0,320,240);
     //fluidKinect.opFlow.velTexY.draw(320,240,320,240);
     
-    //fluidKinect.blurImage.draw(0, 0, 320, 240);
 
     //texBlender.kinectBuffer.dst->draw(0, 0);
     
     glEnable(GL_BLEND);
 	glBlendFunc(GL_ONE, GL_ONE);
     texBlender.blendBuffer.dst->draw(0, 0, 512,512);
-
+    //fluidKinect.blurImage.draw(0, 0, 512, 512);
 
     //if(bDrawKinect) fluidKinect.draw();
     if(bDrawFluid) fluid.draw(0,0,512,512);
     if(bDrawBlobs) blobFinder.draw(0,0,512,512);
     
+    ofSetHexColor(0xFFFFFF);
+    ofDrawBitmapString(ofToString(fluidPlayer.getBpm()) + "bpm", 10.0f,10.0f);
+    
     
     glDisable(GL_BLEND);
-
     
     //fluidKinect.opFlow.velTexture.draw(0,0, 320, 240);
     //inputImage.draw(0,0,512,512);

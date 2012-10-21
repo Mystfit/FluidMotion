@@ -248,9 +248,6 @@ void ofxOpticalFlowLK::update(IplImage * previousImage, IplImage * currentImage,
     velX = opFlowVelX;
     velY = opFlowVelY;
     
-//    velX.convertToRange(-1.0f, 1.0f);
-//    velY.convertToRange(-1.0f, 1.0f);
-    
     velX.flagImageChanged();
     velY.flagImageChanged();
     
@@ -259,27 +256,6 @@ void ofxOpticalFlowLK::update(IplImage * previousImage, IplImage * currentImage,
     
     velTexX.setFromPixels(floatPixX);
     velTexY.setFromPixels(floatPixY);
-    
-  
-
-    
-    ofLog(OF_LOG_NOTICE, ofToString(velX.getFloatPixelsRef().getImageType()));
-    
-//    for(int i = 0; i < velTexX.getWidth(); i++){
-//        for(int j = 0; j < velTexY.getHeight(); j++){
-//            ofLog(OF_LOG_NOTICE, ofToString(velTexX.getColor(i, j)));
-//        }
-//    }
-//    
-
-    
-//    velX.updateTexture();
-//    velY.updateTexture();
-//
-
-  
-    
-    
 }
 
 ///////////////////////////////////////////

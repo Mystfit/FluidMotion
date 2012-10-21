@@ -82,11 +82,10 @@ public:
     void    update();
     void    draw(int x = 0, int y = 0, float _width = -1, float _height = -1);
     
-    
     bool bIsAddingDye;
     bool bDrawVelocity;
     bool bDrawPressure;
-    
+    bool bDrawTemperature;
     
     
 private:

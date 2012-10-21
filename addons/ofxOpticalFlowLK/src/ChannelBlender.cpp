@@ -26,7 +26,7 @@ ChannelBlender::ChannelBlender()
            
             vec2 st = gl_TexCoord[0].st;
             clampedDepth = smoothstep(minDist, maxDist, texture2DRect(blendB, st).r);
-            vec4 colour = vec4(texture2DRect(blendR,st).r, texture2DRect(blendG,st).r, 1.0 - clampedDepth, 1.0);
+            vec4 colour = vec4(texture2DRect(blendR,st).r, texture2DRect(blendG,st).r, clampedDepth, 1.0);
             gl_FragColor = colour * texture2DRect(mask,st);
         }
          
