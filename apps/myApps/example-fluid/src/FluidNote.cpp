@@ -8,7 +8,11 @@
 
 #include "FluidNote.h"
 
-FluidNote::FluidNote(int noteId, int instrumentId,  int type = NOTE){
+FluidNote::FluidNote()
+{
+}
+
+FluidNote::FluidNote(int noteId, int instrumentId, int type){
     m_type = type;
     m_noteId = noteId;
     m_noteStatus = ON;
@@ -19,6 +23,7 @@ void FluidNote::setNote(string note){
     m_note = note;
     bNoteChanged = true;
 }
+
 
 void FluidNote::setCCValue(int ccVal){
     m_ccValue = ccVal;

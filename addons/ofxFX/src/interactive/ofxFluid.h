@@ -98,7 +98,7 @@ private:
     
     void    applyImpulse(ofxSwapBuffer& _buffer, ofPoint _force, ofPoint _value, float _radio = 3.f);
     void    applyExternalVelocity(ofxSwapBuffer& _buffer, ofTexture velocityTex);
-    void    applyExternalDye(ofxSwapBuffer& _buffer, ofTexture velocityTex);
+    void    applyExternalDye(ofxSwapBuffer& _buffer, ofTexture depthTex, float multiplier);
 
     void    applyBuoyancy();
     

@@ -225,6 +225,7 @@ ofxFluid::ofxFluid(){
                                                   
                                                   void main(){
                                                       
+                                                      //Blur input channels
                                                       vec2  st = gl_TexCoord[0].st;
                                                       vec4 sum = vec4(0.0);
                                                       
@@ -252,16 +253,38 @@ ofxFluid::ofxFluid(){
                                                       
                                                       vec4 previousValue = texture2DRect(ExternalVelocity, st);
                                                       vec4 blurColour = (1.0 - fade) * previousValue +  fade * vec4(sum.rgb, previousValue.a);
-                                                      
-                                                      
-                                                      
-                                                      
+                
                                                       gl_FragColor = blurColour + texture2DRect(buffer, gl_TexCoord[0].st);
                                                   }
                                                   );
     applyExternalVelocityShader.unload();
     applyExternalVelocityShader.setupShaderFromSource(GL_FRAGMENT_SHADER, fragmentApplyExtVelocity);
     applyExternalVelocityShader.linkProgram();
+    
+    
+    // APPLY EXT. VELOCITY
+    string fragmentApplyDepth = STRINGIFY(
+                                                uniform sampler2DRect    buffer;
+                                                uniform sampler2DRect    ExternalDepth;
+                                                uniform float            multiplier;
+                                                
+                                                void main(){
+                                                    vec2 st = gl_TexCoord[0].st;
+                                                    
+                                                    vec4 depthColour = vec4(texture2DRect(ExternalDepth, st).b * multiplier, texture2DRect(ExternalDepth, st).b * multiplier, texture2DRect(ExternalDepth, st).b * multiplier, 1.0);
+                                                    
+                                                    gl_FragColor = depthColour + texture2DRect(buffer, gl_TexCoord[0].st);
+                                                }
+                                                );
+    applyExternalDyeShader.unload();
+    applyExternalDyeShader.setupShaderFromSource(GL_FRAGMENT_SHADER, fragmentApplyDepth);
+    applyExternalDyeShader.linkProgram();
+
+    
+    
+    
+    
+    
 
     
     //APPLY BUOYANCY
@@ -297,7 +320,7 @@ ofxFluid::ofxFluid(){
     
     cellSize            = 1.25f;
     gradientScale       = 1.00f / cellSize;
-    ambientTemperature  = 1.0f;
+    ambientTemperature  = 0.0f;
     numJacobiIterations = 40;
     timeStep            = 0.125f;
     smokeBuoyancy       = 1.0f;
@@ -384,7 +407,7 @@ void ofxFluid::update(){
     
     //Apply external velocity from kinect
     //-----------------------------------
-    applyExternalVelocity(temperatureBuffer, externalVelocityBuffer.src->getTextureReference());
+    //  applyExternalVelocity(temperatureBuffer, externalVelocityBuffer.src->getTextureReference());
     //  temperatureBuffer.swap();
     //
     //    applyExternalVelocity(pingPong, externalVelocityBuffer.src->getTextureReference());
@@ -392,6 +415,9 @@ void ofxFluid::update(){
     //
     applyExternalVelocity(velocityBuffer, externalVelocityBuffer.src->getTextureReference());
     velocityBuffer.swap();
+    
+    applyExternalDye(temperatureBuffer, externalVelocityBuffer.src->getTextureReference(), 50.0f);
+    applyExternalDye(pingPong, externalVelocityBuffer.src->getTextureReference(), 1.0f);
     //-----------------------------------
     
     
@@ -565,6 +591,22 @@ void ofxFluid::applyExternalVelocity(ofxSwapBuffer& _buffer, ofTexture velocityT
     _buffer.dst->end();
     glDisable(GL_BLEND);
 
+}
+
+
+void ofxFluid::applyExternalDye(ofxSwapBuffer& _buffer, ofTexture depthTex, float multiplier){
+    glEnable(GL_BLEND);
+    _buffer.dst->begin();
+    applyExternalDyeShader.begin();
+    applyExternalDyeShader.setUniformTexture("buffer", _buffer.src->getTextureReference(), 0);
+    applyExternalDyeShader.setUniformTexture("ExternalDepth", depthTex, 0);
+    applyExternalDyeShader.setUniform1f("multiplier", multiplier);
+    
+    renderFrame(gridWidth,gridHeight);
+    applyExternalDyeShader.end();
+    _buffer.dst->end();
+    glDisable(GL_BLEND);
+    
 }
 
 void ofxFluid::applyBuoyancy(){

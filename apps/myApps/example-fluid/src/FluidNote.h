@@ -13,7 +13,6 @@
 #include <string>
 #include "ofMain.h"
 
-enum midiType{NOTE = 0, CC, VOL, PAN};
 enum status{ON =0, HOLD, OFF};
 
 #define CC_MAX_VALUE 127
@@ -30,7 +29,11 @@ using namespace std;
 
 class FluidNote {
 public:
+    FluidNote();
     FluidNote(int noteId, int instrumentId, int type);
+    
+    void setType(int noteType){m_type = noteType;};
+    int getType(){ return m_type; };
     
     int getStatus(){ return m_noteStatus; };
     void setStatus(int noteStatus) { m_noteStatus = noteStatus; };

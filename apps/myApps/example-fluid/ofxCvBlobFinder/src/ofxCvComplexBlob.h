@@ -18,7 +18,7 @@ typedef  struct ofxCvConvexityDefects_s {
    float length;
 } ofxCvConvexityDefect;
 
-class ofxCvComplexBlob
+class ofxCvComplexBlob : public ofxCvBlob
 {
   
   private:

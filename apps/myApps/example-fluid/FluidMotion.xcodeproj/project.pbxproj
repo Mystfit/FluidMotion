@@ -26,6 +26,10 @@
 		4A3DD21116294C40007FB960 /* libXnVHandGenerator_1_5_2.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 4A3DD20316294C40007FB960 /* libXnVHandGenerator_1_5_2.dylib */; };
 		4A3DD21216294C40007FB960 /* libXnVNite_1_5_2.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 4A3DD20416294C40007FB960 /* libXnVNite_1_5_2.dylib */; };
 		4A3DD219162966E3007FB960 /* ofxOpticalFlowLK.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4A3DD217162966E3007FB960 /* ofxOpticalFlowLK.cpp */; };
+		4A4D54291634EB05001B0B72 /* tinyxml.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4A4D54221634EB05001B0B72 /* tinyxml.cpp */; };
+		4A4D542A1634EB05001B0B72 /* tinyxmlerror.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4A4D54241634EB05001B0B72 /* tinyxmlerror.cpp */; };
+		4A4D542B1634EB05001B0B72 /* tinyxmlparser.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4A4D54251634EB05001B0B72 /* tinyxmlparser.cpp */; };
+		4A4D542C1634EB05001B0B72 /* ofxXmlSettings.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4A4D54271634EB05001B0B72 /* ofxXmlSettings.cpp */; };
 		4AB239711621B0E700DEC0BB /* FluidNote.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4AB2396F1621B0E700DEC0BB /* FluidNote.cpp */; };
 		4AB239741622925D00DEC0BB /* FluidInstrument.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4AB239721622925D00DEC0BB /* FluidInstrument.cpp */; };
 		4AB239781623BF7D00DEC0BB /* FluidPlayer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4AB239761623BF7D00DEC0BB /* FluidPlayer.cpp */; };
@@ -153,6 +157,12 @@
 		4A3DD20416294C40007FB960 /* libXnVNite_1_5_2.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; path = libXnVNite_1_5_2.dylib; sourceTree = "<group>"; };
 		4A3DD217162966E3007FB960 /* ofxOpticalFlowLK.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = ofxOpticalFlowLK.cpp; sourceTree = "<group>"; };
 		4A3DD218162966E3007FB960 /* ofxOpticalFlowLK.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ofxOpticalFlowLK.h; sourceTree = "<group>"; };
+		4A4D54221634EB05001B0B72 /* tinyxml.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = tinyxml.cpp; sourceTree = "<group>"; };
+		4A4D54231634EB05001B0B72 /* tinyxml.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = tinyxml.h; sourceTree = "<group>"; };
+		4A4D54241634EB05001B0B72 /* tinyxmlerror.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = tinyxmlerror.cpp; sourceTree = "<group>"; };
+		4A4D54251634EB05001B0B72 /* tinyxmlparser.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = tinyxmlparser.cpp; sourceTree = "<group>"; };
+		4A4D54271634EB05001B0B72 /* ofxXmlSettings.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = ofxXmlSettings.cpp; sourceTree = "<group>"; };
+		4A4D54281634EB05001B0B72 /* ofxXmlSettings.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ofxXmlSettings.h; sourceTree = "<group>"; };
 		4AB2396F1621B0E700DEC0BB /* FluidNote.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = FluidNote.cpp; sourceTree = "<group>"; };
 		4AB239701621B0E700DEC0BB /* FluidNote.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FluidNote.h; sourceTree = "<group>"; };
 		4AB239721622925D00DEC0BB /* FluidInstrument.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = FluidInstrument.cpp; sourceTree = "<group>"; };
@@ -673,15 +683,44 @@
 			path = src;
 			sourceTree = "<group>";
 		};
+		4A4D54201634EB05001B0B72 /* ofxXmlSettings */ = {
+			isa = PBXGroup;
+			children = (
+				4A4D54211634EB05001B0B72 /* libs */,
+				4A4D54261634EB05001B0B72 /* src */,
+			);
+			path = ofxXmlSettings;
+			sourceTree = "<group>";
+		};
+		4A4D54211634EB05001B0B72 /* libs */ = {
+			isa = PBXGroup;
+			children = (
+				4A4D54221634EB05001B0B72 /* tinyxml.cpp */,
+				4A4D54231634EB05001B0B72 /* tinyxml.h */,
+				4A4D54241634EB05001B0B72 /* tinyxmlerror.cpp */,
+				4A4D54251634EB05001B0B72 /* tinyxmlparser.cpp */,
+			);
+			path = libs;
+			sourceTree = "<group>";
+		};
+		4A4D54261634EB05001B0B72 /* src */ = {
+			isa = PBXGroup;
+			children = (
+				4A4D54271634EB05001B0B72 /* ofxXmlSettings.cpp */,
+				4A4D54281634EB05001B0B72 /* ofxXmlSettings.h */,
+			);
+			path = src;
+			sourceTree = "<group>";
+		};
 		4AB239751622926300DEC0BB /* music */ = {
 			isa = PBXGroup;
 			children = (
-				4AB239761623BF7D00DEC0BB /* FluidPlayer.cpp */,
 				4AB239771623BF7D00DEC0BB /* FluidPlayer.h */,
-				4AB2396F1621B0E700DEC0BB /* FluidNote.cpp */,
+				4AB239761623BF7D00DEC0BB /* FluidPlayer.cpp */,
 				4AB239701621B0E700DEC0BB /* FluidNote.h */,
-				4AB239721622925D00DEC0BB /* FluidInstrument.cpp */,
+				4AB2396F1621B0E700DEC0BB /* FluidNote.cpp */,
 				4AB239731622925D00DEC0BB /* FluidInstrument.h */,
+				4AB239721622925D00DEC0BB /* FluidInstrument.cpp */,
 			);
 			name = music;
 			sourceTree = "<group>";
@@ -1384,6 +1423,7 @@
 		BB4B014C10F69532006C3DED /* addons */ = {
 			isa = PBXGroup;
 			children = (
+				4A4D54201634EB05001B0B72 /* ofxXmlSettings */,
 				4A3DD215162966E3007FB960 /* ofxOpticalFlowLK */,
 				4AB23982162552EA00DEC0BB /* ofxOpenNI */,
 				4AFEEA1F16217B7F0035E176 /* ofxMidi */,
@@ -1600,6 +1640,10 @@
 				4AB23A92162552EB00DEC0BB /* ofxUserGenerator.cpp in Sources */,
 				4A3DD219162966E3007FB960 /* ofxOpticalFlowLK.cpp in Sources */,
 				4ACFD759162D183100028551 /* ChannelBlender.cpp in Sources */,
+				4A4D54291634EB05001B0B72 /* tinyxml.cpp in Sources */,
+				4A4D542A1634EB05001B0B72 /* tinyxmlerror.cpp in Sources */,
+				4A4D542B1634EB05001B0B72 /* tinyxmlparser.cpp in Sources */,
+				4A4D542C1634EB05001B0B72 /* ofxXmlSettings.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

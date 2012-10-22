@@ -10,6 +10,8 @@
 #include "FluidKinect.h"
 #include "ChannelBlender.h"
 
+using namespace std;
+
 class FluidMotionApp : public ofBaseApp{
 public:
     
@@ -48,6 +50,8 @@ public:
     
     //Music control
     FluidPlayer fluidPlayer;
+    
+    
     
     //Kinect control
     FluidKinect fluidKinect;

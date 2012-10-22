@@ -9,6 +9,11 @@
 #ifndef __FluidMotion__FluidPlayer__
 #define __FluidMotion__FluidPlayer__
 
+#define DEMISEMIQUAVER 3
+#define SEMIQUAVER 6
+#define QUAVER 12
+#define CROTCHET 24
+
 #include <iostream>
 #include "ofxMidi.h"
 #include "FluidInstrument.h"
@@ -25,28 +30,41 @@ public:
     
     void newMidiMessage(ofxMidiMessage& eventArgs);
     
-    float getBpm(){ return bpm; };
     
+    void setInstrument(FluidInstrument instrument){ m_activeInstrument = instrument; };
+    FluidInstrument getInstrumentByName(string name);
+    void loadInstruments();
+
+    void startPerformance();
+    void stopPerformance();
+    
+    float getBpm(){ return bpm; };
+    bool isBeat, isBar, isPlaying;
+    
+    bool isBeatDirty(){return beatDirty; };               //Check if beat is dirty
+    void setBeatClean(){beatDirty = false; };      //Mark beat as fresh (phat beats yo)
+
+
     
 private:
     FluidInstrument m_activeInstrument;
+    vector<FluidInstrument> instrumentList;
     
     //MIDI
     ofxMidiIn midiIn;
     ofxMidiOut midiOut;
-    unsigned int currentPgm;
-    int synthChan, effectsChan, channel;
-	int note, velocity;
-	int pan, bend, touch, polytouch;
-    int xPadSynth, yPadSynth, xPadEffects, yPadEffects;
     bool bIsPlaying;
     
     //Clock parameters
     int clockPastTime, clockTick, clockPeriod, beatCount, firstBeatMs, clockPeriodValue, BITPERMIN;
     float bpm;
-    bool isBEAT;
+   
     ofxMidiMessage lastMessage;
-
+    
+    //Beat parameters
+    int baseNoteMessageLength, lowerTimesig, upperTimesig;
+    bool beatDirty;
+    
 };
 
 #endif /* defined(__FluidMotion__FluidPlayer__) */

@@ -32,7 +32,9 @@ void FluidMotionApp::setup(){
     bDrawBlobs = false;
     
     fluid.addConstantForce(ofPoint(256*0.5f,256*0.5f), ofPoint(0,0), ofFloatColor(1.0f,1.0f,1.0f), 20.0f);
+    
 }
+
 
 //--------------------------------------------------------------
 void FluidMotionApp::update(){
@@ -81,7 +83,6 @@ void FluidMotionApp::update(){
     
     //Generate notes from fluid blob output
     fluidPlayer.updateNotes(blobFinder.blobz);
-    fluidPlayer.update();
 
     
     ofSetWindowTitle(ofToString(ofGetFrameRate()));
@@ -102,6 +103,13 @@ void FluidMotionApp::draw(){
 
     //texBlender.kinectBuffer.dst->draw(0, 0);
     
+    if(fluidPlayer.isBeatDirty()){
+        ofFloatColor(1.0f, 0.0f, 0.0f);
+        ofCircle(10.0f, 20.0f, 10.0f);
+        fluidPlayer.setBeatClean();
+    }
+    
+    
     glEnable(GL_BLEND);
 	glBlendFunc(GL_ONE, GL_ONE);
     texBlender.blendBuffer.dst->draw(0, 0, 512,512);
@@ -112,15 +120,16 @@ void FluidMotionApp::draw(){
     if(bDrawBlobs) blobFinder.draw(0,0,512,512);
     
     ofSetHexColor(0xFFFFFF);
-    ofDrawBitmapString(ofToString(fluidPlayer.getBpm()) + "bpm", 10.0f,10.0f);
-    
+    if(!fluidPlayer.isPlaying)
+        ofDrawBitmapString("Waiting for external play message...",10.0f,10.0f);
+    else
+        ofDrawBitmapString(ofToString(fluidPlayer.getBpm()) + "bpm", 10.0f,10.0f);
     
     glDisable(GL_BLEND);
     
     //fluidKinect.opFlow.velTexture.draw(0,0, 320, 240);
     //inputImage.draw(0,0,512,512);
     //inputImageGrey.draw(0,0,512,512);
-
 }
 
 //--------------------------------------------------------------
