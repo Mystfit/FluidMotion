@@ -28,8 +28,6 @@ FluidPlayer::FluidPlayer(){
 
 
 
-
-
 /*
  * Start and stop performance
  */
@@ -54,6 +52,7 @@ void FluidPlayer::startPerformance(){
 }
 
 
+
 /*
  * Get instruments by name rather than id
  */
@@ -62,6 +61,10 @@ FluidInstrument FluidPlayer::getInstrumentByName(string name){
         if (instrumentList[i].name == name) return instrumentList[i];
     }
 }
+
+
+
+
 
 
 /*
@@ -75,34 +78,63 @@ void FluidPlayer::loadInstruments()
     
     vector<ofFile> instrumentFiles = instrumentDir.getFiles();
     
-    for(int i=0; i < instrumentFiles.size(); i++){
+    for(int i=0; i < instrumentFiles.size(); i++)
+    {
         ofxXmlSettings xmlInstrument;
         xmlInstrument.loadFile( instrumentDir.getOriginalDirectory() + instrumentFiles[i].getFileName() );
+        xmlInstrument.pushTag("instrument");
+        xmlInstrument.pushTag("properties");
         
+        //Create a new instrument definition
         FluidInstrument instrument;
         instrument.setID(i);
-        instrument.name = xmlInstrument.getValue("instrument:properties:name", "");
-        instrument.device = xmlInstrument.getValue("instrument:properties:device", "");
-        instrument.channel = xmlInstrument.getValue("instrument:properties:channel", 0);
-        instrument.program = xmlInstrument.getValue("instrument:properties:program", 0);
+        instrument.name = xmlInstrument.getValue("name", "");
+        instrument.device = xmlInstrument.getValue("device", "");
+        instrument.channel = xmlInstrument.getValue("channel", 0);
+        instrument.program = xmlInstrument.getValue("program", 0);
+        instrument.usesCCNoteTriggers = ofToBool(xmlInstrument.getValue("usesCCNoteTriggers", ""));
+        
+
         
         int noteType, noteMapping;
         
-        if(xmlInstrument.getValue("instrument:properties:timbre", "") == "mono")
+        if(xmlInstrument.getValue("timbre", "") == "mono")
             instrument.noteType = INSTRUMENT_TYPE_MONOPHONIC;
-        else if(xmlInstrument.getValue("instrument:properties:timbre", "") == "poly")
+        else if(xmlInstrument.getValue("timbre", "") == "poly")
             instrument.noteType = INSTRUMENT_TYPE_POLYPHONIC;
         
-        if(xmlInstrument.getValue("instrument:properties:noteMappings", "") == "note")
+        if(xmlInstrument.getValue("noteMappings", "") == "note")
             instrument.noteMapping = INSTRUMENT_PLAYS_NOTES;
-        else if(xmlInstrument.getValue("instrument:properties:noteMappings", "") == "cc")
+        else if(xmlInstrument.getValue("noteMappings", "") == "cc")
             instrument.noteMapping = INSTRUMENT_PLAYS_CC;
+        
+        xmlInstrument.popTag();
+        xmlInstrument.pushTag("parameters");
+        
+        //Set instrument parameters and mappings
+
+        int numParams = xmlInstrument.getNumTags("cc");
+        ofLog(OF_LOG_NOTICE, ofToString(numParams));
+        
+        for(int j = 0; j < numParams; j++)
+        {
+            xmlInstrument.pushTag("cc", j);
+            InstrumentParameter param;
+            param.noteType = INSTRUMENT_PLAYS_CC;
+            param.channel = xmlInstrument.getValue("channel" , 0);
+            param.source = instrument.getParamSourceFromString( xmlInstrument.getValue("source", "") );
+            param.value = xmlInstrument.getValue("value" , 0);
+            instrument.addparam(param);
+            xmlInstrument.popTag();
+        }
         
         instrumentList.push_back(instrument);
     }
     
+    setInstrument( getInstrumentByName("Digital Bells") );
+    
     //Set instrument to default upon loading
-    if(instrumentList.size() > 0)  setInstrument(getInstrumentByName("Default Instrument"));
+    //if(instrumentList.size() > 0)  setInstrument(getInstrumentByName("Default Instrument"));
 }
 
 
@@ -243,6 +275,12 @@ void FluidPlayer::updateNotes(vector<ofxCvComplexBlob> blobs)
                 
             } else if(currNote.getNoteType() == INSTRUMENT_PLAYS_CC){
                 ofLog(OF_LOG_VERBOSE, "NOTE ON");
+                
+                //Examine instrument parameters for a noteOn parameter and send the value to the correct channel
+                if(m_activeInstrument.usesCCNoteTriggers)
+                    midiOut.sendControlChange(m_activeInstrument.channel, m_activeInstrument.getParamFromSource(INSTRUMENT_SOURCE_CCNOTEON).channel, m_activeInstrument.getParamFromSource(INSTRUMENT_SOURCE_CCNOTEON).value );
+
+                
                 midiOut.sendControlChange(m_activeInstrument.channel, currNote.getCCName(), currNote.getCCValue() );
             }
             
@@ -250,8 +288,11 @@ void FluidPlayer::updateNotes(vector<ofxCvComplexBlob> blobs)
         }
         
         if(currNote.getStatus() == HOLD){
-            midiOut.sendControlChange(m_activeInstrument.channel, 12, int(currNote.getParams().fluidPosition.x/256 * 127) );
-            midiOut.sendControlChange(m_activeInstrument.channel, 13, int(currNote.getParams().fluidPosition.y/256 * 127) );
+            midiOut.sendControlChange(m_activeInstrument.channel, m_activeInstrument.getParamFromSource(INSTRUMENT_SOURCE_BLOBX).channel, int(currNote.getParams().fluidPosition.x/256 * 127) );
+            midiOut.sendControlChange(m_activeInstrument.channel, m_activeInstrument.getParamFromSource(INSTRUMENT_SOURCE_BLOBY).channel, int(currNote.getParams().fluidPosition.x/256 * 127) );
+
+            //midiOut.sendControlChange(m_activeInstrument.channel, 12, int(currNote.getParams().fluidPosition.x/256 * 127) );
+            //midiOut.sendControlChange(m_activeInstrument.channel, 13, int(currNote.getParams().fluidPosition.y/256 * 127) );
         }
         
         if(currNote.getStatus() == OFF){
@@ -259,7 +300,10 @@ void FluidPlayer::updateNotes(vector<ofxCvComplexBlob> blobs)
                 //Send midi noteOff
             } else if(currNote.getNoteType() == INSTRUMENT_PLAYS_CC){
                 ofLog(OF_LOG_VERBOSE, "NOTE OFF");
-                midiOut.sendControlChange(m_activeInstrument.channel, 92, 0);
+                
+                //Examine instrument parameters for a noteOn parameter and send the value to the correct channel
+                if(m_activeInstrument.usesCCNoteTriggers)
+                    midiOut.sendControlChange(m_activeInstrument.channel, m_activeInstrument.getParamFromSource(INSTRUMENT_SOURCE_CCNOTEOFF).channel, m_activeInstrument.getParamFromSource(INSTRUMENT_SOURCE_CCNOTEOFF).value );
             }
             
             m_activeInstrument.removeNote(currNote);
@@ -269,10 +313,6 @@ void FluidPlayer::updateNotes(vector<ofxCvComplexBlob> blobs)
     
     
 }
-
-
-
-
 
 
 

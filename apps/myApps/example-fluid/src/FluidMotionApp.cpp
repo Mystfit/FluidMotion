@@ -31,7 +31,7 @@ void FluidMotionApp::setup(){
     bDrawFluid = true;
     bDrawBlobs = false;
     
-    fluid.addConstantForce(ofPoint(256*0.5f,256*0.5f), ofPoint(0,0), ofFloatColor(1.0f,1.0f,1.0f), 20.0f);
+    //fluid.addConstantForce(ofPoint(256*0.5f,256*0.5f), ofPoint(0,0), ofFloatColor(1.0f,1.0f,1.0f), 20.0f);
     
 }
 

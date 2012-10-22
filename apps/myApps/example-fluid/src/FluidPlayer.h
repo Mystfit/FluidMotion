@@ -16,6 +16,7 @@
 
 #include <iostream>
 #include "ofxMidi.h"
+#include "ofUtils.h"
 #include "FluidInstrument.h"
 #include "ofxCvComplexBlob.h"
 
@@ -30,10 +31,9 @@ public:
     
     void newMidiMessage(ofxMidiMessage& eventArgs);
     
-    
+    void loadInstruments();
     void setInstrument(FluidInstrument instrument){ m_activeInstrument = instrument; };
     FluidInstrument getInstrumentByName(string name);
-    void loadInstruments();
 
     void startPerformance();
     void stopPerformance();

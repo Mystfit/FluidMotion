@@ -3,18 +3,30 @@
 	<properties>
 		<name>Default Instrument</name>
 		<device>passthrough_in</device>
-		<channel>2</channel>
-		<program>127</program>
-		<noteType>mono</noteType>
-		<noteMappings>cc</noteMappings>
+		<channel>0</channel>
+		<program>1</program>
+		<timbre>poly</timbre>
+		<noteMappings>note</noteMappings>
 	</properties>
 
 	<parameters>
-		<note>blobPosition</note>
-		<cc chan="1">intensity</cc>
-		<cc chan="12">intensity</cc>
-		<cc chan="13">area</cc>
-		<cc chan="16">curvature</cc>
+		<note>blobX</note>
+		<cc>
+			<channel>1</channel>
+			<source>blobY</source>
+		</cc>
+		<cc>
+			<channel>16</channel>
+			<source>curvature</source>
+		</cc>
+		<cc>
+			<channel>17</channel>
+			<source>area</source>
+		</cc>
+		<cc>
+			<channel>18</channel>
+			<source>intensity</source>
+		</cc>
 	</parameters>
 
 </instrument>

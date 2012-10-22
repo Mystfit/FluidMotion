@@ -2,19 +2,33 @@
 <instrument>
 	<properties>
 		<name>Digital Bells</name>
-		<device>passthrough_in</device>
+		<device>KAOSSILATOR PRO SOUND</device>
 		<channel>2</channel>
 		<program>127</program>
 		<timbre>mono</timbre>
 		<noteMappings>cc</noteMappings>
+		<usesCCNoteTriggers>1</usesCCNoteTriggers>
 	</properties>
 
 	<parameters>
-		<note>blobPosition</note>
-		<cc chan="1">intensity</cc>
-		<cc chan="12">intensity</cc>
-		<cc chan="13">area</cc>
-		<cc chan="16">curvature</cc>
+		<cc>
+			<channel>92</channel>
+			<source>noteOn</source>
+			<value>127</value>
+		</cc>
+		<cc>
+			<channel>92</channel>
+			<source>noteOff</source>
+			<value>0</value>
+		</cc>
+		<cc>
+			<channel>12</channel>
+			<source>blobX</source>
+		</cc>
+		<cc>
+			<channel>13</channel>
+			<source>blobY</source>
+		</cc>
 	</parameters>
 
 </instrument>
