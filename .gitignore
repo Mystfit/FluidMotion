@@ -6,3 +6,7 @@ apps/myApps/FluidMotion/ofxMidi
 apps/myApps/FluidMotion/ofxOpenNI
 
 apps/myApps/KinectMapping
+
+addons/ofxMidi
+
+addons/ofxOpenNI
