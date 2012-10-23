@@ -19,6 +19,8 @@
 #include "ofxXmlSettings.h"
 #include "ofxCvComplexBlob.h"
 #include "FluidNote.h"
+#include "MusicMapper.h"
+
 
 using namespace std;
 
@@ -27,6 +29,9 @@ struct InstrumentParameter{
     int channel;
     int source;
     int value;      //optional -- Used for CC noteOns/noteOffs
+    int upperNoteRange;    //optional -- used for upper note for instrument note mappings
+    int lowerNoteRange;    //optional -- used for lower note for instrument note mappings
+
 };
 
 enum instrumentSourceTypes{

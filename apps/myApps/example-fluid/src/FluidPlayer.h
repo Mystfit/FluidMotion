@@ -32,8 +32,15 @@ public:
     void newMidiMessage(ofxMidiMessage& eventArgs);
     
     void loadInstruments();
-    void setInstrument(FluidInstrument instrument){ m_activeInstrument = instrument; };
+    void setInstrument(FluidInstrument instrument);
     FluidInstrument getInstrumentByName(string name);
+    
+    void loadScales();
+    ScaleDef getScaleByName(string name);
+    void setScale(ScaleDef scale){m_activeScale = scale;};
+    
+    void setRootNote(int note){ m_rootNote = note; };
+    int getRootNote(){return m_rootNote; };
 
     void startPerformance();
     void stopPerformance();
@@ -49,6 +56,10 @@ public:
 private:
     FluidInstrument m_activeInstrument;
     vector<FluidInstrument> instrumentList;
+    vector<ScaleDef> scaleList;
+    
+    int m_rootNote;
+    ScaleDef m_activeScale;
     
     //MIDI
     ofxMidiIn midiIn;

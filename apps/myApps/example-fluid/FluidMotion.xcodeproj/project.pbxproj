@@ -46,6 +46,7 @@
 		4AB23A91162552EB00DEC0BB /* ofxTrackedUser.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4AB23A6A162552EB00DEC0BB /* ofxTrackedUser.cpp */; };
 		4AB23A92162552EB00DEC0BB /* ofxUserGenerator.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4AB23A6C162552EB00DEC0BB /* ofxUserGenerator.cpp */; };
 		4ACFD759162D183100028551 /* ChannelBlender.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4ACFD757162D183100028551 /* ChannelBlender.cpp */; };
+		4AEEA1AD163633750054409E /* MusicMapper.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4AEEA1AB163633750054409E /* MusicMapper.cpp */; };
 		4AFEE7CC162016080035E176 /* opencv.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 4AFEE7B8162016080035E176 /* opencv.a */; };
 		4AFEE7CD162016080035E176 /* ofxCvColorImage.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4AFEE7BB162016080035E176 /* ofxCvColorImage.cpp */; };
 		4AFEE7CE162016080035E176 /* ofxCvContourFinder.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4AFEE7BE162016080035E176 /* ofxCvContourFinder.cpp */; };
@@ -326,6 +327,8 @@
 		4AB23A6D162552EB00DEC0BB /* ofxUserGenerator.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ofxUserGenerator.h; sourceTree = "<group>"; };
 		4ACFD757162D183100028551 /* ChannelBlender.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = ChannelBlender.cpp; path = ../../../../addons/ofxOpticalFlowLK/src/ChannelBlender.cpp; sourceTree = "<group>"; };
 		4ACFD758162D183100028551 /* ChannelBlender.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ChannelBlender.h; path = ../../../../addons/ofxOpticalFlowLK/src/ChannelBlender.h; sourceTree = "<group>"; };
+		4AEEA1AB163633750054409E /* MusicMapper.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = MusicMapper.cpp; sourceTree = "<group>"; };
+		4AEEA1AC163633750054409E /* MusicMapper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MusicMapper.h; sourceTree = "<group>"; };
 		4AFEE751162016080035E176 /* install.xml */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; path = install.xml; sourceTree = "<group>"; };
 		4AFEE756162016080035E176 /* cv.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = cv.h; sourceTree = "<group>"; };
 		4AFEE757162016080035E176 /* cv.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = cv.hpp; sourceTree = "<group>"; };
@@ -721,6 +724,8 @@
 				4AB2396F1621B0E700DEC0BB /* FluidNote.cpp */,
 				4AB239731622925D00DEC0BB /* FluidInstrument.h */,
 				4AB239721622925D00DEC0BB /* FluidInstrument.cpp */,
+				4AEEA1AB163633750054409E /* MusicMapper.cpp */,
+				4AEEA1AC163633750054409E /* MusicMapper.h */,
 			);
 			name = music;
 			sourceTree = "<group>";
@@ -1644,6 +1649,7 @@
 				4A4D542A1634EB05001B0B72 /* tinyxmlerror.cpp in Sources */,
 				4A4D542B1634EB05001B0B72 /* tinyxmlparser.cpp in Sources */,
 				4A4D542C1634EB05001B0B72 /* ofxXmlSettings.cpp in Sources */,
+				4AEEA1AD163633750054409E /* MusicMapper.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

@@ -47,12 +47,17 @@ void FluidInstrument::createNoteFromBlob(ofxCvComplexBlob blob)
 
     if(noteType == INSTRUMENT_PLAYS_CC){
         //Find the cc channel that is mapped to the blobX property
+        
     }
     else if(noteType == INSTRUMENT_PLAYS_NOTES)
     {
-        //Need to sort out mapping a note from a coordinate to a letter value in here 
+        //Need to sort out mapping a note from a coordinate to a letter value in here
+        
         //newNote.setNote( mappedNote )
     }
+    
+    
+
     
     activeNotes.push_back(newNote);
 }

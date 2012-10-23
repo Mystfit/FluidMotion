@@ -7,9 +7,8 @@
 		<program>127</program>
 		<timbre>mono</timbre>
 		<noteMappings>cc</noteMappings>
-		<usesCCNoteTriggers>1</usesCCNoteTriggers>
+		<usesCCNoteTriggers>true</usesCCNoteTriggers>
 	</properties>
-
 	<parameters>
 		<cc>
 			<channel>92</channel>
@@ -30,6 +29,4 @@
 			<source>blobY</source>
 		</cc>
 	</parameters>
-
 </instrument>
-

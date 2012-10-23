@@ -23,6 +23,11 @@ FluidPlayer::FluidPlayer(){
     lowerTimesig = 4;
     
     loadInstruments();
+    loadScales();
+    
+    setRootNote(NOTE_C);
+    setScale( getScaleByName("Minor"));
+    setInstrument( getInstrumentByName("TalkFilter") );
 }
 
 
@@ -52,6 +57,13 @@ void FluidPlayer::startPerformance(){
 }
 
 
+void FluidPlayer::setInstrument(FluidInstrument instrument)
+{
+    m_activeInstrument = instrument;
+    midiOut.sendProgramChange(m_activeInstrument.channel, m_activeInstrument.program);
+};
+
+
 
 /*
  * Get instruments by name rather than id
@@ -63,19 +75,13 @@ FluidInstrument FluidPlayer::getInstrumentByName(string name){
 }
 
 
-
-
-
-
 /*
  * Load external instrument definitions
  */
 void FluidPlayer::loadInstruments()
 {
-    //DEBUG - Test xml stuff
     ofDirectory instrumentDir("instruments");
     instrumentDir.listDir();
-    
     vector<ofFile> instrumentFiles = instrumentDir.getFiles();
     
     for(int i=0; i < instrumentFiles.size(); i++)
@@ -94,7 +100,6 @@ void FluidPlayer::loadInstruments()
         instrument.program = xmlInstrument.getValue("program", 0);
         instrument.usesCCNoteTriggers = ofToBool(xmlInstrument.getValue("usesCCNoteTriggers", ""));
         
-
         
         int noteType, noteMapping;
         
@@ -111,12 +116,12 @@ void FluidPlayer::loadInstruments()
         xmlInstrument.popTag();
         xmlInstrument.pushTag("parameters");
         
-        //Set instrument parameters and mappings
-
-        int numParams = xmlInstrument.getNumTags("cc");
-        ofLog(OF_LOG_NOTICE, ofToString(numParams));
+        //Set instrument parameters and mappings -- CC
+        int numCCParams = xmlInstrument.getNumTags("cc");
+        ofLog(OF_LOG_NOTICE, ofToString(numCCParams));
         
-        for(int j = 0; j < numParams; j++)
+        int j;
+        for(j = 0; j < numCCParams; j++)
         {
             xmlInstrument.pushTag("cc", j);
             InstrumentParameter param;
@@ -128,13 +133,67 @@ void FluidPlayer::loadInstruments()
             xmlInstrument.popTag();
         }
         
+        
+        //Set instrument parameters and mappings -- NOTE
+        int numNoteParams = xmlInstrument.getNumTags("note");
+        ofLog(OF_LOG_NOTICE, ofToString(numNoteParams));
+        
+        for(j = 0; j < numNoteParams; j++)
+        {
+            xmlInstrument.pushTag("note", j);
+            InstrumentParameter param;
+            param.noteType = INSTRUMENT_PLAYS_NOTES;
+            param.source = instrument.getParamSourceFromString( xmlInstrument.getValue("source", "") );
+            param.lowerNoteRange = xmlInstrument.getValue("min", 0);
+            param.upperNoteRange = xmlInstrument.getValue("max", 0);
+            instrument.addparam(param);
+            xmlInstrument.popTag();
+        }
+        
         instrumentList.push_back(instrument);
     }
+     
+}
+
+
+
+/*
+ * Get scales by descriptive name
+ */
+ScaleDef FluidPlayer::getScaleByName(string name)
+{
+    for (int i = 0; i < scaleList.size(); i++){
+        if (scaleList[i].name == name) return scaleList[i];
+    }
+}
+
+
+/*
+ * Load external scale definitions
+ */
+void FluidPlayer::loadScales()
+{
+    ofxXmlSettings scaleXml;
+    scaleXml.loadFile( "scales.xml" );
+    scaleXml.pushTag("scales");
     
-    setInstrument( getInstrumentByName("Digital Bells") );
-    
-    //Set instrument to default upon loading
-    //if(instrumentList.size() > 0)  setInstrument(getInstrumentByName("Default Instrument"));
+    int numScales = scaleXml.getNumTags("scale");
+    for(int i = 0; i < numScales; i++)
+    {
+        ScaleDef scale;
+        scaleXml.pushTag("scale", i);
+        scale.name = scaleXml.getValue("name", "");
+        
+        scaleXml.pushTag("semitones");
+        int numSemitones = scaleXml.getNumTags("semitone");
+        
+        for(int j = 0; j < numSemitones; j++)
+            scale.semitones.push_back(scaleXml.getValue("semitone", 0, j) );
+        
+        scaleList.push_back(scale);
+        scaleXml.popTag();
+        scaleXml.popTag();
+    }
 }
 
 
@@ -263,7 +322,7 @@ void FluidPlayer::updateNotes(vector<ofxCvComplexBlob> blobs)
             }
         }
     }
-    
+        
     
     //Send notes via midi
     for(int i = 0; i < m_activeInstrument.activeNotes.size(); i++)
@@ -279,9 +338,8 @@ void FluidPlayer::updateNotes(vector<ofxCvComplexBlob> blobs)
                 //Examine instrument parameters for a noteOn parameter and send the value to the correct channel
                 if(m_activeInstrument.usesCCNoteTriggers)
                     midiOut.sendControlChange(m_activeInstrument.channel, m_activeInstrument.getParamFromSource(INSTRUMENT_SOURCE_CCNOTEON).channel, m_activeInstrument.getParamFromSource(INSTRUMENT_SOURCE_CCNOTEON).value );
-
                 
-                midiOut.sendControlChange(m_activeInstrument.channel, currNote.getCCName(), currNote.getCCValue() );
+                //midiOut.sendControlChange(m_activeInstrument.channel, currNote.getCCName(), currNote.getCCValue() );
             }
             
             currNote.setStatus(HOLD);        //KAOSSILATOR override - Only play the first note.

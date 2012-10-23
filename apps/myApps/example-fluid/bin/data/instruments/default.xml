@@ -8,9 +8,12 @@
 		<timbre>poly</timbre>
 		<noteMappings>note</noteMappings>
 	</properties>
-
 	<parameters>
-		<note>blobX</note>
+		<note>
+			<min>C0</min>
+			<max>G10</max>
+			<source>blobX</source>
+		</note>
 		<cc>
 			<channel>1</channel>
 			<source>blobY</source>
