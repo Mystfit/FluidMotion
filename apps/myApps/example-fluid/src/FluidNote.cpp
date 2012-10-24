@@ -12,21 +12,14 @@ FluidNote::FluidNote()
 {
 }
 
-FluidNote::FluidNote(int noteId, int instrumentId, int type){
+FluidNote::FluidNote(int noteId, string instrumentName, int type){
     m_type = type;
     m_noteId = noteId;
     m_noteStatus = ON;
-    m_instrumentId = instrumentId;
+    m_instrument = instrumentName;
 };
 
-void FluidNote::setNote(string note){
-    m_note = note;
+void FluidNote::setValue(int value){
+    m_value = value;
     bNoteChanged = true;
 }
-
-
-void FluidNote::setCCValue(int ccVal){
-    m_ccValue = ccVal;
-    bNoteChanged = true;
-}
-

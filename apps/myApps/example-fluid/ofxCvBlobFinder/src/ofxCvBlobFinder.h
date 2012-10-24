@@ -5,10 +5,23 @@
   
 */
 
+#ifndef __ofxCvBlobFinder__
+#define __ofxCvBlobFinder__
+
 
 
 #include "ofxOpenCv.h"
 #include "ofxCvComplexBlob.h"
+
+struct BlobParam
+{
+    int id;
+    bool isDirty;
+    int curvature;
+    ofPoint position;
+    float intensity;
+    float area;
+};
 
 class ofxCvBlobFinder : private ofBaseDraws {
 
@@ -22,6 +35,10 @@ class ofxCvBlobFinder : private ofBaseDraws {
     void setApproxFactor(float factor){ approxFactor = factor; }; 
     float getApproxFactor(){ return approxFactor; }; 
     
+    void matchExistingBlobs();
+    int getParamIndexFromBlob(ofxCvComplexBlob blob);
+    int getParamIndexFromBlob(ofxCvComplexBlob blob, bool force);
+
 
     virtual void  draw() {
       draw(0, 0, _width, _height);
@@ -34,14 +51,21 @@ class ofxCvBlobFinder : private ofBaseDraws {
     virtual void  draw(float x, float y, float w, float h);   //{ ofxCvContourFinder::draw(x, y, w, h);  };
 
     void reset();
-        
-    vector <ofxCvComplexBlob> blobz;
-    
     int getNumBlobs(){ return blobz.size(); };
+    
+    int getNewId(){return idCount++; };
+    void setBlobClean(int blobParamIndex){ blobParams[blobParamIndex].isDirty = false; }
 
+    vector<BlobParam> & getBlobParams(){return blobParams;};
 
   private:
-    int _width, _height;
+    
+    vector <ofxCvComplexBlob> blobz;
+    vector <BlobParam> blobParams;
+    
+    int _width, _height, idCount;
     float approxFactor;
 };
+
+#endif
 

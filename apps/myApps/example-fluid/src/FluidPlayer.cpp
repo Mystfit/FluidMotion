@@ -42,8 +42,6 @@ void FluidPlayer::stopPerformance(){
     beatCount = 0;
     isBeat = 0;
     
-    //DEBUG - Manual noteOff for Kaossilator
-    m_activeInstrument.createCC(92, 0, ofPoint(64,64), 25);
 }
 
 void FluidPlayer::startPerformance(){
@@ -51,9 +49,6 @@ void FluidPlayer::startPerformance(){
     clockTick = 0;
     beatCount = 0;
     isBeat = 0;
-    
-    //DEBUG - Manual noteOn for Kaossilator
-    m_activeInstrument.createCC(92, 127, ofPoint(64,64), 25);
 }
 
 
@@ -117,10 +112,8 @@ void FluidPlayer::loadInstruments()
         xmlInstrument.pushTag("parameters");
         
         //Set instrument parameters and mappings -- CC
-        int numCCParams = xmlInstrument.getNumTags("cc");
-        ofLog(OF_LOG_NOTICE, ofToString(numCCParams));
-        
         int j;
+        int numCCParams = xmlInstrument.getNumTags("cc");
         for(j = 0; j < numCCParams; j++)
         {
             xmlInstrument.pushTag("cc", j);
@@ -135,9 +128,7 @@ void FluidPlayer::loadInstruments()
         
         
         //Set instrument parameters and mappings -- NOTE
-        int numNoteParams = xmlInstrument.getNumTags("note");
-        ofLog(OF_LOG_NOTICE, ofToString(numNoteParams));
-        
+        int numNoteParams = xmlInstrument.getNumTags("note");        
         for(j = 0; j < numNoteParams; j++)
         {
             xmlInstrument.pushTag("note", j);
@@ -274,6 +265,8 @@ void FluidPlayer::musicTick()
         ofLog(OF_LOG_VERBOSE, "Smallest note");
         isBeat = false;
         isBar = false;
+        
+        updateNotes();
     }
     
     clockPastTime = ofGetElapsedTimeMillis(); //int
@@ -281,48 +274,62 @@ void FluidPlayer::musicTick()
 }
 
 
+vector<FluidNote> FluidPlayer::blobsToNotes(vector<BlobParam> & blobParameters)
+{
+    vector<FluidNote> outputNotes;
+    int i,j;
+    
+    for(i = 0; i < blobParameters.size(); i++)
+    {
+        //Create note
+        if(blobParameters[i].isDirty)
+        {
+            outputNotes = m_activeInstrument.createNotesFromBlobParameters( blobParameters[i] );
+            blobParameters[i].isDirty = false;
+            
+        //Check if notes need to be resent
+        } else {
+            outputNotes = m_activeInstrument.createNotesFromBlobParameters( blobParameters[i] );
+        }
+        
+    }
+    
+    
+    //If notes exist already, update them
+    int activeNotesIndex;
+    bool noteExists;
+    for(i = 0; i < outputNotes.size(); i++)
+    {
+        activeNotesIndex = 0;
+        noteExists = false;
+        
+        while( activeNotesIndex < m_activeInstrument.activeNotes.size() )
+        {
+            if(m_activeInstrument.activeNotes[i].getNoteId() == outputNotes[j].getNoteId() && m_activeInstrument.activeNotes[i].getSource() == outputNotes[j].getSource() )
+            {
+                m_activeInstrument.activeNotes[i] = outputNotes[j];
+                noteExists = true;
+                break;
+            }
+            
+            activeNotesIndex++;
+        }
+        
+        if(!noteExists)
+            m_activeInstrument.activeNotes.push_back(outputNotes[i]);
+    }
+}
+
+
+
+
 
 /*
  * Get instruments by name rather than id
  */
-void FluidPlayer::updateNotes(vector<ofxCvComplexBlob> blobs)
+void FluidPlayer::updateNotes()
 {
-    int i;
-    int noteIndex;
-    
-    //Create and delete notes based on blob detection outcome
-
-    if(blobs.size() > m_activeInstrument.activeNotes.size() )  //Create new notes
-    {
-        for(i = 0; i < blobs.size(); i++)
-        {
-            noteIndex = getNoteIndexFromBlob(blobs[i]);
-            
-            if(noteIndex >= 0)
-                m_activeInstrument.activeNotes[noteIndex].setParams(blobs[i].getArea(), blobs[i].getBoundingBox().getCenter() );
-            else
-                m_activeInstrument.createCC(92, CC_MAX_VALUE, blobs[i].getBoundingBox().getCenter(), blobs[i].getArea() );
-            
-        }
-        
-    }
-    
-    else if( blobs.size() < m_activeInstrument.activeNotes.size() )     //Flag expired notes
-    {
-        for(i = 0; i < m_activeInstrument.activeNotes.size(); i++){
-            int blobIndex = 0;
-            while( blobIndex < blobs.size() )
-            {
-                noteIndex = getNoteIndexFromBlob(blobs[blobIndex]);
-                
-                if(noteIndex < 0)
-                    m_activeInstrument.activeNotes[i].setStatus(OFF);
-
-                blobIndex++;
-            }
-        }
-    }
-        
+    //All of the following can only occur AFTER we've parsed blobs to notes!
     
     //Send notes via midi
     for(int i = 0; i < m_activeInstrument.activeNotes.size(); i++)
@@ -330,40 +337,22 @@ void FluidPlayer::updateNotes(vector<ofxCvComplexBlob> blobs)
         FluidNote currNote = m_activeInstrument.activeNotes[i];
         
         if(currNote.getStatus() == ON){
-            if(currNote.getNoteType() == INSTRUMENT_PLAYS_NOTES){
-                
-            } else if(currNote.getNoteType() == INSTRUMENT_PLAYS_CC){
-                ofLog(OF_LOG_VERBOSE, "NOTE ON");
-                
-                //Examine instrument parameters for a noteOn parameter and send the value to the correct channel
-                if(m_activeInstrument.usesCCNoteTriggers)
-                    midiOut.sendControlChange(m_activeInstrument.channel, m_activeInstrument.getParamFromSource(INSTRUMENT_SOURCE_CCNOTEON).channel, m_activeInstrument.getParamFromSource(INSTRUMENT_SOURCE_CCNOTEON).value );
-                
-                //midiOut.sendControlChange(m_activeInstrument.channel, currNote.getCCName(), currNote.getCCValue() );
-            }
+            ofLog(OF_LOG_VERBOSE, "NOTE ON");
+                        
+            if(currNote.getType() == INSTRUMENT_PLAYS_NOTES)
+                midiOut.sendNoteOn(m_activeInstrument.channel, currNote.getValue());
+            else if(currNote.getType() == INSTRUMENT_PLAYS_CC)
+                midiOut.sendControlChange(m_activeInstrument.channel, currNote.getCCchan(), currNote.getValue());
             
             currNote.setStatus(HOLD);        //KAOSSILATOR override - Only play the first note.
         }
         
-        if(currNote.getStatus() == HOLD){
-            midiOut.sendControlChange(m_activeInstrument.channel, m_activeInstrument.getParamFromSource(INSTRUMENT_SOURCE_BLOBX).channel, int(currNote.getParams().fluidPosition.x/256 * 127) );
-            midiOut.sendControlChange(m_activeInstrument.channel, m_activeInstrument.getParamFromSource(INSTRUMENT_SOURCE_BLOBY).channel, int(currNote.getParams().fluidPosition.x/256 * 127) );
-
-            //midiOut.sendControlChange(m_activeInstrument.channel, 12, int(currNote.getParams().fluidPosition.x/256 * 127) );
-            //midiOut.sendControlChange(m_activeInstrument.channel, 13, int(currNote.getParams().fluidPosition.y/256 * 127) );
+        if(currNote.getStatus() == HOLD)
+        {
+            
         }
         
         if(currNote.getStatus() == OFF){
-            if(currNote.getNoteType() == INSTRUMENT_PLAYS_NOTES){
-                //Send midi noteOff
-            } else if(currNote.getNoteType() == INSTRUMENT_PLAYS_CC){
-                ofLog(OF_LOG_VERBOSE, "NOTE OFF");
-                
-                //Examine instrument parameters for a noteOn parameter and send the value to the correct channel
-                if(m_activeInstrument.usesCCNoteTriggers)
-                    midiOut.sendControlChange(m_activeInstrument.channel, m_activeInstrument.getParamFromSource(INSTRUMENT_SOURCE_CCNOTEOFF).channel, m_activeInstrument.getParamFromSource(INSTRUMENT_SOURCE_CCNOTEOFF).value );
-            }
-            
             m_activeInstrument.removeNote(currNote);
         }
     }
@@ -374,30 +363,6 @@ void FluidPlayer::updateNotes(vector<ofxCvComplexBlob> blobs)
 
 
 
-/*
- * Match active notes against current list of blobs
- */
-int FluidPlayer::getNoteIndexFromBlob(ofxCvComplexBlob blob)
-{
-    int i;
-    int noteIndex = -1;
-    float smallestDist = 0.0f;
-    float distThreshold = 5.0f;
-    
-    for(i = 0; i < m_activeInstrument.activeNotes.size(); i++)
-    {
-        float dist = blob.getBoundingBox().getCenter().distance( m_activeInstrument.activeNotes[i].getParams().fluidPosition );
-        
-        if(smallestDist == 0.0f) smallestDist = dist;
-        
-        if( dist < distThreshold && dist <= smallestDist){
-            noteIndex = i;
-            smallestDist = dist;
-        }
-    }
-    
-    return noteIndex;
-}
 
 
 

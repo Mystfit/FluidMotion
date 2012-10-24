@@ -30,7 +30,7 @@ using namespace std;
 class FluidNote {
 public:
     FluidNote();
-    FluidNote(int noteId, int instrumentId, int type);
+    FluidNote(int noteId, string instrumentName, int type);
     
     void setType(int noteType){m_type = noteType;};
     int getType(){ return m_type; };
@@ -38,24 +38,17 @@ public:
     int getStatus(){ return m_noteStatus; };
     void setStatus(int noteStatus) { m_noteStatus = noteStatus; };
     
-    string getNote(){ return m_note; };
-    void setNote(string note);
+    int getSource(return m_source);
+    void setSource(int source){m_source = source;};
+      
+    int getCCchan(){ return m_CCchan; };
+    void setCCchan(int ccChannel){ m_CCchan = ccChannel; };
     
-    int getCCName(){ return m_ccName; };
-    void setCCName(int ccName){ m_ccName = ccName; };
+    int getValue(){ return m_value; };
+    void setValue(int value);
     
-    int getCCValue(){ return m_ccValue; };
-    void setCCValue(int ccValue);
+    string getNoteInstrument(){ return m_instrument;};
     
-    NoteParameters getParams(){ return noteParams; };
-    void setParams(float area, ofPoint fluidPositon)
-    {
-        noteParams.area = area;
-        noteParams.fluidPosition = fluidPositon;
-    };
-    
-    int getNoteType(){ return m_type;};
-    int getNoteInstrument(){ return m_instrumentId;};
     int getNoteId(){ return m_noteId;};
     
     void cleanNote(){ bNoteChanged = false; };
@@ -63,10 +56,11 @@ public:
 protected:
     int m_type;
     string m_note;
-    int m_ccName;
-    int m_ccValue;
+    int m_source;
+    int m_CCchan;
+    int m_value;
     int m_noteId;
-    int m_instrumentId;
+    string m_instrument;
     int m_noteStatus;
     
     NoteParameters noteParams;

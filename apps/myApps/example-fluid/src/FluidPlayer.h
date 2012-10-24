@@ -17,6 +17,7 @@
 #include <iostream>
 #include "ofxMidi.h"
 #include "ofUtils.h"
+#include "ofxCvBlobFinder.h"
 #include "FluidInstrument.h"
 #include "ofxCvComplexBlob.h"
 
@@ -26,8 +27,7 @@ public:
     
     void musicTick();
     void update();
-    void updateNotes(vector<ofxCvComplexBlob> blobs);
-    int getNoteIndexFromBlob(ofxCvComplexBlob blob);
+    void updateNotes();
     
     void newMidiMessage(ofxMidiMessage& eventArgs);
     
@@ -50,8 +50,8 @@ public:
     
     bool isBeatDirty(){return beatDirty; };               //Check if beat is dirty
     void setBeatClean(){beatDirty = false; };      //Mark beat as fresh (phat beats yo)
-
-
+    
+    vector<FluidNote> blobsToNotes(vector<BlobParam> & blobParameters);
     
 private:
     FluidInstrument m_activeInstrument;

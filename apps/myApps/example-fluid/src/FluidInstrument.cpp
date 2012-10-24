@@ -23,47 +23,67 @@ FluidInstrument::FluidInstrument(string _name, string _device, int _channel, int
 }
 
 
-void FluidInstrument::createCC(int ccName, int ccValue, ofPoint coords, float area){
-    FluidNote newNote(m_noteIdCounter, m_instrumentId, INSTRUMENT_PLAYS_CC);
-    newNote.setParams(area, coords);
-    newNote.setCCName(ccName);
-    newNote.setCCValue(ccValue);
-    
-    activeNotes.push_back(newNote);
-}
-
-void FluidInstrument::createNote(string note, ofPoint coords, float area){
-    FluidNote newNote(m_noteIdCounter, m_instrumentId, INSTRUMENT_PLAYS_NOTES);
-    newNote.setParams(area, coords);
-    newNote.setNote(note);
-
-    activeNotes.push_back(newNote);
-}
-
-
-void FluidInstrument::createNoteFromBlob(ofxCvComplexBlob blob)
+vector<FluidNote> FluidInstrument::createNotesFromBlobParameters(BlobParam blobParameter)
 {
-    FluidNote newNote(m_noteIdCounter++, m_instrumentId, noteType);
-
-    if(noteType == INSTRUMENT_PLAYS_CC){
-        //Find the cc channel that is mapped to the blobX property
-        
-    }
-    else if(noteType == INSTRUMENT_PLAYS_NOTES)
+    int i;
+    
+    vector<FluidNote> noteList;
+    
+    //Create CC noteOn first to start instrument playing
+    if(usesCCNoteTriggers && blobParameter.isDirty)
     {
-        //Need to sort out mapping a note from a coordinate to a letter value in here
+        InstrumentParameter noteOnParam = getParamFromSource(INSTRUMENT_SOURCE_CCNOTEON);
         
-        //newNote.setNote( mappedNote )
+        FluidNote ccNoteOnMessage(blobParameter.id, name, INSTRUMENT_PLAYS_CC);
+        ccNoteOnMessage.setValue(noteOnParam.value);
+        ccNoteOnMessage.setCCchan(noteOnParam.channel);
+        noteList.push_back(ccNoteOnMessage);
     }
-    
-    
 
-    
-    activeNotes.push_back(newNote);
+    for(i = 0; i < params.size(); i++)
+    {
+        int noteValue;
+        float paramValue = blobParamValueFromSource(blobParameter, params[i].source );
+
+        if(params[i].noteType == INSTRUMENT_PLAYS_NOTES)
+        {
+            //Map the note from the source
+            noteValue = lerpNote(paramValue, params[i].lowerNoteRange, params[i].upperNoteRange);
+            
+            FluidNote noteOnMessage(blobParameter.id, name, INSTRUMENT_PLAYS_NOTES);
+            noteOnMessage.setValue(noteValue);
+            noteList.push_back(noteOnMessage);
+        
+        
+        } else if(params[i].noteType == INSTRUMENT_PLAYS_CC)
+        {
+            noteValue = mapCCVal(paramValue);
+            
+            FluidNote ccMessage(blobParameter.id, name, INSTRUMENT_PLAYS_CC);
+            ccMessage.setCCchan(params[i].channel);
+            ccMessage.setValue(noteValue);
+            noteList.push_back(ccMessage);
+        }
+            
+    }
+
+    return noteList;
+}
+
+float FluidInstrument::blobParamValueFromSource(BlobParam blobParam, int source)
+{
+    switch(source){
+        case INSTRUMENT_SOURCE_BLOBX: return blobParam.position.x; break;
+        case INSTRUMENT_SOURCE_BLOBY: return blobParam.position.y; break;
+        case INSTRUMENT_SOURCE_CURVATURE: return blobParam.curvature; break;
+        case INSTRUMENT_SOURCE_AREA: return blobParam.area; break;
+        case INSTRUMENT_SOURCE_INTENSITY: return blobParam.intensity; break;
+    }
+
 }
 
 
-void FluidInstrument::removeNote(FluidNote note){    
+void FluidInstrument::removeNote(FluidNote note){
     for(int i = 0; i < activeNotes.size(); i++)
     {
         if(activeNotes[i].getNoteId() == note.getNoteId()){
@@ -102,6 +122,7 @@ int FluidInstrument::getParamSourceFromString(string source)
         return INSTRUMENT_SOURCE_CCNOTEON;
     else if(source == "noteOff")
         return INSTRUMENT_SOURCE_CCNOTEOFF;
+
 }
 
 

@@ -17,7 +17,7 @@
 
 #include "ofMain.h"
 #include "ofxXmlSettings.h"
-#include "ofxCvComplexBlob.h"
+#include "ofxCvBlobFinder.h"
 #include "FluidNote.h"
 #include "MusicMapper.h"
 
@@ -31,7 +31,6 @@ struct InstrumentParameter{
     int value;      //optional -- Used for CC noteOns/noteOffs
     int upperNoteRange;    //optional -- used for upper note for instrument note mappings
     int lowerNoteRange;    //optional -- used for lower note for instrument note mappings
-
 };
 
 enum instrumentSourceTypes{
@@ -63,14 +62,17 @@ public:
 
     void setID(int instrumentId){ m_instrumentId = instrumentId; };
     
-    void createCC(int ccName, int ccValue, ofPoint coords, float area);
-    void createNote(string note, ofPoint coords, float area);
-    void createNoteFromBlob(ofxCvComplexBlob blob);
+    vector<FluidNote> createNotesFromBlobParameters(BlobParam blobParameter);
     
     void addNote(FluidNote note);
     void removeNote(FluidNote note);
+    
+    int lerpNote(float value, int upper, int lower){ return lower + value*(upper - value);};
+    int mapCCVal(float value){  return lerpNote(value, 0, 127); };
+    
     void addparam(InstrumentParameter param){ params.push_back(param); };
     
+    float blobParamValueFromSource(BlobParam blobParam, int source);
     int getParamSourceFromString(string source);
     InstrumentParameter getParamFromSource(int source);
     

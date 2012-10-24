@@ -82,9 +82,9 @@ void FluidMotionApp::update(){
     blobFinder.findBlobs(inputImageGrey, false);
     
     //Generate notes from fluid blob output
-    fluidPlayer.updateNotes(blobFinder.blobz);
+    blobFinder.matchExistingBlobs();
+    fluidPlayer.blobsToNotes( blobFinder.getBlobParams() );
 
-    
     ofSetWindowTitle(ofToString(ofGetFrameRate()));
 }
 
