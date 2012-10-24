@@ -9,8 +9,8 @@
 #include "FluidPlayer.h"
 
 
-FluidPlayer::FluidPlayer(){
-    
+FluidPlayer::FluidPlayer()
+{
     //MIDI params
     midiOut.listPorts(); // via instance
     midiOut.openPort("passthrough_in");	// by name
@@ -27,7 +27,7 @@ FluidPlayer::FluidPlayer(){
     
     setRootNote(NOTE_C);
     setScale( getScaleByName("Minor"));
-    setInstrument( getInstrumentByName("TalkFilter") );
+    setInstrument( getInstrumentByName("Digital Bells") );
 }
 
 
@@ -122,6 +122,8 @@ void FluidPlayer::loadInstruments()
             param.channel = xmlInstrument.getValue("channel" , 0);
             param.source = instrument.getParamSourceFromString( xmlInstrument.getValue("source", "") );
             param.value = xmlInstrument.getValue("value" , 0);
+            param.lowerNoteRange = xmlInstrument.getValue("min", 0);
+            param.upperNoteRange = xmlInstrument.getValue("max", 0);
             instrument.addparam(param);
             xmlInstrument.popTag();
         }
@@ -274,8 +276,9 @@ void FluidPlayer::musicTick()
 }
 
 
-vector<FluidNote> FluidPlayer::blobsToNotes(vector<BlobParam> & blobParameters)
+vector<FluidNote> FluidPlayer::blobsToNotes(vector<BlobParam> blobParameters)
 {
+    
     vector<FluidNote> outputNotes;
     int i,j;
     
@@ -291,7 +294,6 @@ vector<FluidNote> FluidPlayer::blobsToNotes(vector<BlobParam> & blobParameters)
         } else {
             outputNotes = m_activeInstrument.createNotesFromBlobParameters( blobParameters[i] );
         }
-        
     }
     
     
@@ -318,6 +320,8 @@ vector<FluidNote> FluidPlayer::blobsToNotes(vector<BlobParam> & blobParameters)
         if(!noteExists)
             m_activeInstrument.activeNotes.push_back(outputNotes[i]);
     }
+    
+    return outputNotes;
 }
 
 
@@ -343,6 +347,8 @@ void FluidPlayer::updateNotes()
                 midiOut.sendNoteOn(m_activeInstrument.channel, currNote.getValue());
             else if(currNote.getType() == INSTRUMENT_PLAYS_CC)
                 midiOut.sendControlChange(m_activeInstrument.channel, currNote.getCCchan(), currNote.getValue());
+            
+            ofLog(OF_LOG_NOTICE, ofToString(currNote.getValue()));
             
             currNote.setStatus(HOLD);        //KAOSSILATOR override - Only play the first note.
         }

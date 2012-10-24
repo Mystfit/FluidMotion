@@ -1,5 +1,6 @@
 #include "FluidMotionApp.h"
 
+
 //--------------------------------------------------------------
 void FluidMotionApp::setup(){
     
@@ -83,7 +84,7 @@ void FluidMotionApp::update(){
     
     //Generate notes from fluid blob output
     blobFinder.matchExistingBlobs();
-    fluidPlayer.blobsToNotes( blobFinder.getBlobParams() );
+    fluidPlayer.blobsToNotes(blobFinder.blobParams);
 
     ofSetWindowTitle(ofToString(ofGetFrameRate()));
 }

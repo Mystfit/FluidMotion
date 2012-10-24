@@ -51,7 +51,8 @@ public:
     bool isBeatDirty(){return beatDirty; };               //Check if beat is dirty
     void setBeatClean(){beatDirty = false; };      //Mark beat as fresh (phat beats yo)
     
-    vector<FluidNote> blobsToNotes(vector<BlobParam> & blobParameters);
+    
+    vector<FluidNote> blobsToNotes(vector<BlobParam> blobParameters);
     
 private:
     FluidInstrument m_activeInstrument;
@@ -60,7 +61,7 @@ private:
     
     int m_rootNote;
     ScaleDef m_activeScale;
-    
+        
     //MIDI
     ofxMidiIn midiIn;
     ofxMidiOut midiOut;

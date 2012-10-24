@@ -15,6 +15,7 @@ using namespace std;
 class FluidMotionApp : public ofBaseApp{
 public:
     
+    
     //Openframeworks default functions
     void setup();
     void update();
@@ -50,8 +51,6 @@ public:
     
     //Music control
     FluidPlayer fluidPlayer;
-    
-    
     
     //Kinect control
     FluidKinect fluidKinect;

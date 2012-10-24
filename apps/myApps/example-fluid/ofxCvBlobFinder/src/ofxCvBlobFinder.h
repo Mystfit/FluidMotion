@@ -39,7 +39,6 @@ class ofxCvBlobFinder : private ofBaseDraws {
     int getParamIndexFromBlob(ofxCvComplexBlob blob);
     int getParamIndexFromBlob(ofxCvComplexBlob blob, bool force);
 
-
     virtual void  draw() {
       draw(0, 0, _width, _height);
     };
@@ -54,14 +53,13 @@ class ofxCvBlobFinder : private ofBaseDraws {
     int getNumBlobs(){ return blobz.size(); };
     
     int getNewId(){return idCount++; };
-    void setBlobClean(int blobParamIndex){ blobParams[blobParamIndex].isDirty = false; }
+    void setBlobClean(int blobParamIndex){ blobParams[blobParamIndex].isDirty = false; };
 
-    vector<BlobParam> & getBlobParams(){return blobParams;};
+    vector <BlobParam> blobParams;
 
   private:
     
     vector <ofxCvComplexBlob> blobz;
-    vector <BlobParam> blobParams;
     
     int _width, _height, idCount;
     float approxFactor;

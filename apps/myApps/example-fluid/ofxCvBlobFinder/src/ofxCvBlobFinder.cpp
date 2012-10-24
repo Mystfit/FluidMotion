@@ -17,12 +17,16 @@ ofxCvBlobFinder::ofxCvBlobFinder()
     idCount = 0;
 }
 
+
 //----------------------------------------------------------------------------------
 void ofxCvBlobFinder::findBlobs(ofxCvGrayscaleImage image, bool find_holes) {
     
     CvMemStorage *stor = cvCreateMemStorage();
     IplImage *img = image.getCvImage();
     CvSeq *contours;
+    
+    _width = img->width;
+    _height = img->height;
     
     // CV_RETR_EXTERNAL to not find holes
     int mode = (find_holes)?CV_RETR_LIST:CV_RETR_EXTERNAL;
@@ -63,6 +67,9 @@ void ofxCvBlobFinder::matchExistingBlobs(){
                 BlobParam blobParam;
                 blobParam.id = getNewId();
                 blobParam.isDirty = true;
+                blobParam.area = 0;
+                blobParam.position = ofPoint(0,0);
+                blobParam.curvature = 0;
                 blobParams.push_back(blobParam);
             }
         }
@@ -227,7 +234,6 @@ ofEndShape(true); \
     }
     
     for (int k = 0; k < blobParams.size(); k++){
-        ofLog(OF_LOG_NOTICE, ofToString(k));
         ofDrawBitmapString("Blob:" + ofToString(blobParams[k].id), blobParams[k].position);
     }
     

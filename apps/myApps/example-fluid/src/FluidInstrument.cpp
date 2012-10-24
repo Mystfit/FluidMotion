@@ -37,6 +37,7 @@ vector<FluidNote> FluidInstrument::createNotesFromBlobParameters(BlobParam blobP
         FluidNote ccNoteOnMessage(blobParameter.id, name, INSTRUMENT_PLAYS_CC);
         ccNoteOnMessage.setValue(noteOnParam.value);
         ccNoteOnMessage.setCCchan(noteOnParam.channel);
+        ccNoteOnMessage.setSource(noteOnParam.source);
         noteList.push_back(ccNoteOnMessage);
     }
 
@@ -49,6 +50,8 @@ vector<FluidNote> FluidInstrument::createNotesFromBlobParameters(BlobParam blobP
         {
             //Map the note from the source
             noteValue = lerpNote(paramValue, params[i].lowerNoteRange, params[i].upperNoteRange);
+            ofLog(OF_LOG_NOTICE, ofToString(noteValue));
+
             
             FluidNote noteOnMessage(blobParameter.id, name, INSTRUMENT_PLAYS_NOTES);
             noteOnMessage.setValue(noteValue);
@@ -57,11 +60,12 @@ vector<FluidNote> FluidInstrument::createNotesFromBlobParameters(BlobParam blobP
         
         } else if(params[i].noteType == INSTRUMENT_PLAYS_CC)
         {
-            noteValue = mapCCVal(paramValue);
+            noteValue = lerpNote(paramValue, params[i].upperNoteRange, params[i].lowerNoteRange);
             
             FluidNote ccMessage(blobParameter.id, name, INSTRUMENT_PLAYS_CC);
             ccMessage.setCCchan(params[i].channel);
             ccMessage.setValue(noteValue);
+            ccMessage.setSource(params[i].source);
             noteList.push_back(ccMessage);
         }
             

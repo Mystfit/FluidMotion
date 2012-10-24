@@ -38,7 +38,7 @@ public:
     int getStatus(){ return m_noteStatus; };
     void setStatus(int noteStatus) { m_noteStatus = noteStatus; };
     
-    int getSource(return m_source);
+    int getSource(){return m_source;};
     void setSource(int source){m_source = source;};
       
     int getCCchan(){ return m_CCchan; };

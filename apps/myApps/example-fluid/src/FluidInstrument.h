@@ -67,8 +67,12 @@ public:
     void addNote(FluidNote note);
     void removeNote(FluidNote note);
     
-    int lerpNote(float value, int upper, int lower){ return lower + value*(upper - value);};
-    int mapCCVal(float value){  return lerpNote(value, 0, 127); };
+    int lerpNote(float value, int upper, int lower){
+        int result;
+        float calc = (float)lower + value*((float)upper - value);
+        result = calc;
+        return result;
+    };
     
     void addparam(InstrumentParameter param){ params.push_back(param); };
     
