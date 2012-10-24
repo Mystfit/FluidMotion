@@ -25,7 +25,6 @@ FluidInstrument::FluidInstrument(string _name, string _device, int _channel, int
 
 void FluidInstrument::createCC(int ccName, int ccValue, ofPoint coords, float area){
     FluidNote newNote(m_noteIdCounter, m_instrumentId, INSTRUMENT_PLAYS_CC);
-    newNote.setParams(area, coords);
     newNote.setCCName(ccName);
     newNote.setCCValue(ccValue);
     
@@ -34,7 +33,6 @@ void FluidInstrument::createCC(int ccName, int ccValue, ofPoint coords, float ar
 
 void FluidInstrument::createNote(string note, ofPoint coords, float area){
     FluidNote newNote(m_noteIdCounter, m_instrumentId, INSTRUMENT_PLAYS_NOTES);
-    newNote.setParams(area, coords);
     newNote.setNote(note);
 
     activeNotes.push_back(newNote);

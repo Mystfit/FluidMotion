@@ -18,11 +18,6 @@ enum status{ON =0, HOLD, OFF};
 #define CC_MAX_VALUE 127
 #define CC_MIN_VALUE 0
 
-struct NoteParameters{
-    float area;
-    ofPoint fluidPosition;
-};
-
 using namespace std;
 
 
@@ -47,13 +42,6 @@ public:
     int getCCValue(){ return m_ccValue; };
     void setCCValue(int ccValue);
     
-    NoteParameters getParams(){ return noteParams; };
-    void setParams(float area, ofPoint fluidPositon)
-    {
-        noteParams.area = area;
-        noteParams.fluidPosition = fluidPositon;
-    };
-    
     int getNoteType(){ return m_type;};
     int getNoteInstrument(){ return m_instrumentId;};
     int getNoteId(){ return m_noteId;};
@@ -68,9 +56,7 @@ protected:
     int m_noteId;
     int m_instrumentId;
     int m_noteStatus;
-    
-    NoteParameters noteParams;
-    
+        
     bool bNoteChanged;
 };
 

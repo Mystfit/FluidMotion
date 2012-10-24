@@ -288,41 +288,13 @@ void FluidPlayer::musicTick()
 void FluidPlayer::updateNotes(vector<ofxCvComplexBlob> blobs)
 {
     int i;
-    int noteIndex;
     
-    //Create and delete notes based on blob detection outcome
-
-    if(blobs.size() > m_activeInstrument.activeNotes.size() )  //Create new notes
-    {
-        for(i = 0; i < blobs.size(); i++)
-        {
-            noteIndex = getNoteIndexFromBlob(blobs[i]);
-            
-            if(noteIndex >= 0)
-                m_activeInstrument.activeNotes[noteIndex].setParams(blobs[i].getArea(), blobs[i].getBoundingBox().getCenter() );
-            else
-                m_activeInstrument.createCC(92, CC_MAX_VALUE, blobs[i].getBoundingBox().getCenter(), blobs[i].getArea() );
-            
-        }
-        
-    }
     
-    else if( blobs.size() < m_activeInstrument.activeNotes.size() )     //Flag expired notes
-    {
-        for(i = 0; i < m_activeInstrument.activeNotes.size(); i++){
-            int blobIndex = 0;
-            while( blobIndex < blobs.size() )
-            {
-                noteIndex = getNoteIndexFromBlob(blobs[blobIndex]);
-                
-                if(noteIndex < 0)
-                    m_activeInstrument.activeNotes[i].setStatus(OFF);
+    // ------- Create notes from persistent blob list in here --------- //
+    // -------                                                ----------//
 
-                blobIndex++;
-            }
-        }
-    }
         
+    
     
     //Send notes via midi
     for(int i = 0; i < m_activeInstrument.activeNotes.size(); i++)
@@ -346,11 +318,9 @@ void FluidPlayer::updateNotes(vector<ofxCvComplexBlob> blobs)
         }
         
         if(currNote.getStatus() == HOLD){
-            midiOut.sendControlChange(m_activeInstrument.channel, m_activeInstrument.getParamFromSource(INSTRUMENT_SOURCE_BLOBX).channel, int(currNote.getParams().fluidPosition.x/256 * 127) );
-            midiOut.sendControlChange(m_activeInstrument.channel, m_activeInstrument.getParamFromSource(INSTRUMENT_SOURCE_BLOBY).channel, int(currNote.getParams().fluidPosition.x/256 * 127) );
+//            midiOut.sendControlChange(m_activeInstrument.channel, m_activeInstrument.getParamFromSource(INSTRUMENT_SOURCE_BLOBX).channel, int(currNote.getParams().fluidPosition.x/256 * 127) );
+//            midiOut.sendControlChange(m_activeInstrument.channel, m_activeInstrument.getParamFromSource(INSTRUMENT_SOURCE_BLOBY).channel, int(currNote.getParams().fluidPosition.x/256 * 127) );
 
-            //midiOut.sendControlChange(m_activeInstrument.channel, 12, int(currNote.getParams().fluidPosition.x/256 * 127) );
-            //midiOut.sendControlChange(m_activeInstrument.channel, 13, int(currNote.getParams().fluidPosition.y/256 * 127) );
         }
         
         if(currNote.getStatus() == OFF){
@@ -369,35 +339,10 @@ void FluidPlayer::updateNotes(vector<ofxCvComplexBlob> blobs)
     }
 
     
-    
+
 }
 
 
-
-/*
- * Match active notes against current list of blobs
- */
-int FluidPlayer::getNoteIndexFromBlob(ofxCvComplexBlob blob)
-{
-    int i;
-    int noteIndex = -1;
-    float smallestDist = 0.0f;
-    float distThreshold = 5.0f;
-    
-    for(i = 0; i < m_activeInstrument.activeNotes.size(); i++)
-    {
-        float dist = blob.getBoundingBox().getCenter().distance( m_activeInstrument.activeNotes[i].getParams().fluidPosition );
-        
-        if(smallestDist == 0.0f) smallestDist = dist;
-        
-        if( dist < distThreshold && dist <= smallestDist){
-            noteIndex = i;
-            smallestDist = dist;
-        }
-    }
-    
-    return noteIndex;
-}
 
 
 

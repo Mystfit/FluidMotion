@@ -61,6 +61,8 @@ private:
     int m_rootNote;
     ScaleDef m_activeScale;
     
+    vector<ofxCvComplexBlob> m_activeBlobs;
+    
     //MIDI
     ofxMidiIn midiIn;
     ofxMidiOut midiOut;
