@@ -3,13 +3,11 @@
 
 
 //------------------------------------------------------------------------------------
-ofxCvComplexBlob::ofxCvComplexBlob(double id, CvSeq *point_list) {
+ofxCvComplexBlob::ofxCvComplexBlob(CvSeq *point_list) {
     points = point_list;
     bHullModified = true;
     bApproxModified = true;
-    
-    blobId = id;
-    
+
     approxFactor = 0.005;
 
     // set points;
@@ -17,7 +15,7 @@ ofxCvComplexBlob::ofxCvComplexBlob(double id, CvSeq *point_list) {
     cvStartReadSeq( points, &reader, 0 );
 
     CvPoint pt;
-        
+    
 
     // read hull shape points
     for (int j = 0; j < points->total; j++) {

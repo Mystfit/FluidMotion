@@ -80,10 +80,9 @@ void FluidMotionApp::update(){
     inputImageGrey.threshold(threshold);
     inputImageGrey.flagImageChanged();
     blobFinder.findBlobs(inputImageGrey, false);
-    blobFinder.updatePersistentBlobs();
     
     //Generate notes from fluid blob output
-    //fluidPlayer.updateNotes(blobFinder.blobz);
+    fluidPlayer.updateNotes(blobFinder.blobz);
 
     
     ofSetWindowTitle(ofToString(ofGetFrameRate()));
@@ -92,6 +91,17 @@ void FluidMotionApp::update(){
 //--------------------------------------------------------------
 void FluidMotionApp::draw(){
     ofBackground(0);
+    
+    //fluidKinect.getDepthTexture().draw(0.0f,0.0f);
+    
+    //fluidKinect.opFlow.velX.draw(0.0f, 0.0f);
+    //fluidKinect.opFlow.velY.draw(0.0f, 240.0f);
+    
+    //fluidKinect.opFlow.velTexX.draw(320,0,320,240);
+    //fluidKinect.opFlow.velTexY.draw(320,240,320,240);
+    
+
+    //texBlender.kinectBuffer.dst->draw(0, 0);
     
     if(fluidPlayer.isBeatDirty()){
         ofFloatColor(1.0f, 0.0f, 0.0f);

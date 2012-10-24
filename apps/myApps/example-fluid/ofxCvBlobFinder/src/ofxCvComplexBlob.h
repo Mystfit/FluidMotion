@@ -24,7 +24,7 @@ class ofxCvComplexBlob : public ofxCvBlob
   private:
     
     bool bApproxModified;
-    bool bHullModified;
+    bool bHullModified; 
  
   public:
     CvSeq *points; 
@@ -43,12 +43,8 @@ class ofxCvComplexBlob : public ofxCvBlob
     #define BLOB_AREA_HULL 3
     
    //------------------------------------------------------------------------------------
-    ofxCvComplexBlob(double id, CvSeq *point_list);
+    ofxCvComplexBlob(CvSeq *point_list);
     ofxCvComplexBlob(vector<ofPoint> of_points);
-    
-    void setId(double id){ blobId = id; };
-    double getId(){ return blobId; };
-
     vector<ofPoint> getPoints();
     vector<ofPoint> getHullPoints();
     void setApproxFactor(float approx);
