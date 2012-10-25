@@ -158,6 +158,9 @@ int ofxCvBlobFinder::getParamIndexFromBlob(ofxCvComplexBlob blob)
 
 
 
+
+
+
 //----------------------------------------------------------------------------------
 void ofxCvBlobFinder::draw(float x, float y, float w, float h) {
     

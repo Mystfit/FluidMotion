@@ -71,11 +71,11 @@
          ignoreCount = "0"
          continueAfterRunningActions = "No"
          filePath = "src/FluidNote.h"
-         timestampString = "372773766.54419"
+         timestampString = "372844680.813709"
          startingColumnNumber = "9223372036854775807"
          endingColumnNumber = "9223372036854775807"
-         startingLineNumber = "49"
-         endingLineNumber = "49"
+         startingLineNumber = "48"
+         endingLineNumber = "48"
          landmarkName = "class FluidNote"
          landmarkType = "3">
       </FileBreakpoint>
@@ -84,11 +84,11 @@
          ignoreCount = "0"
          continueAfterRunningActions = "No"
          filePath = "src/FluidPlayer.h"
-         timestampString = "372780847.834254"
+         timestampString = "372818147.331133"
          startingColumnNumber = "9223372036854775807"
          endingColumnNumber = "9223372036854775807"
-         startingLineNumber = "80"
-         endingLineNumber = "80"
+         startingLineNumber = "84"
+         endingLineNumber = "84"
          landmarkName = "class FluidPlayer"
          landmarkType = "3">
       </FileBreakpoint>
@@ -223,11 +223,11 @@
          ignoreCount = "0"
          continueAfterRunningActions = "No"
          filePath = "src/FluidPlayer.cpp"
-         timestampString = "372780847.834254"
+         timestampString = "372845444.048466"
          startingColumnNumber = "9223372036854775807"
          endingColumnNumber = "9223372036854775807"
-         startingLineNumber = "371"
-         endingLineNumber = "371">
+         startingLineNumber = "431"
+         endingLineNumber = "431">
       </FileBreakpoint>
       <FileBreakpoint
          shouldBeEnabled = "No"
@@ -427,11 +427,11 @@
          ignoreCount = "0"
          continueAfterRunningActions = "No"
          filePath = "ofxCvBlobFinder/src/ofxCvBlobFinder.cpp"
-         timestampString = "372778762.700359"
+         timestampString = "372818147.331133"
          startingColumnNumber = "9223372036854775807"
          endingColumnNumber = "9223372036854775807"
-         startingLineNumber = "236"
-         endingLineNumber = "236"
+         startingLineNumber = "239"
+         endingLineNumber = "239"
          landmarkName = "ofxCvBlobFinder::draw(float x, float y, float w, float h)"
          landmarkType = "5">
       </FileBreakpoint>
@@ -622,12 +622,12 @@
          ignoreCount = "0"
          continueAfterRunningActions = "No"
          filePath = "src/FluidPlayer.cpp"
-         timestampString = "372780847.834254"
+         timestampString = "372845155.760173"
          startingColumnNumber = "9223372036854775807"
          endingColumnNumber = "9223372036854775807"
-         startingLineNumber = "322"
-         endingLineNumber = "322"
-         landmarkName = "FluidPlayer::blobsToNotes()"
+         startingLineNumber = "332"
+         endingLineNumber = "332"
+         landmarkName = "FluidPlayer::blobsToNotes(vector&lt;BlobParam&gt; blobParameters)"
          landmarkType = "5">
       </FileBreakpoint>
       <FileBreakpoint
@@ -635,11 +635,11 @@
          ignoreCount = "0"
          continueAfterRunningActions = "No"
          filePath = "src/FluidPlayer.cpp"
-         timestampString = "372780847.834254"
+         timestampString = "372845444.048466"
          startingColumnNumber = "9223372036854775807"
          endingColumnNumber = "9223372036854775807"
-         startingLineNumber = "349"
-         endingLineNumber = "349"
+         startingLineNumber = "407"
+         endingLineNumber = "407"
          landmarkName = "FluidPlayer::updateNotes()"
          landmarkType = "5">
       </FileBreakpoint>
@@ -648,11 +648,11 @@
          ignoreCount = "0"
          continueAfterRunningActions = "No"
          filePath = "src/FluidInstrument.cpp"
-         timestampString = "372779239.494016"
+         timestampString = "372822458.555404"
          startingColumnNumber = "9223372036854775807"
          endingColumnNumber = "9223372036854775807"
-         startingLineNumber = "56"
-         endingLineNumber = "56"
+         startingLineNumber = "44"
+         endingLineNumber = "44"
          landmarkName = "FluidInstrument::createNotesFromBlobParameters(BlobParam blobParameter)"
          landmarkType = "5">
       </FileBreakpoint>
@@ -674,12 +674,12 @@
          ignoreCount = "0"
          continueAfterRunningActions = "No"
          filePath = "src/FluidPlayer.cpp"
-         timestampString = "372780847.834254"
+         timestampString = "372829681.864716"
          startingColumnNumber = "9223372036854775807"
          endingColumnNumber = "9223372036854775807"
-         startingLineNumber = "282"
-         endingLineNumber = "282"
-         landmarkName = "FluidPlayer::blobsToNotes()"
+         startingLineNumber = "283"
+         endingLineNumber = "283"
+         landmarkName = "FluidPlayer::blobsToNotes(vector&lt;BlobParam&gt; blobParameters)"
          landmarkType = "5">
       </FileBreakpoint>
       <FileBreakpoint
@@ -711,12 +711,12 @@
          ignoreCount = "0"
          continueAfterRunningActions = "No"
          filePath = "src/FluidPlayer.cpp"
-         timestampString = "372780847.834254"
+         timestampString = "372829681.864716"
          startingColumnNumber = "9223372036854775807"
          endingColumnNumber = "9223372036854775807"
-         startingLineNumber = "283"
-         endingLineNumber = "283"
-         landmarkName = "FluidPlayer::blobsToNotes()"
+         startingLineNumber = "284"
+         endingLineNumber = "284"
+         landmarkName = "FluidPlayer::blobsToNotes(vector&lt;BlobParam&gt; blobParameters)"
          landmarkType = "5">
       </FileBreakpoint>
       <FileBreakpoint
@@ -724,11 +724,11 @@
          ignoreCount = "0"
          continueAfterRunningActions = "No"
          filePath = "src/FluidInstrument.cpp"
-         timestampString = "372777759.990481"
+         timestampString = "372822458.555404"
          startingColumnNumber = "9223372036854775807"
          endingColumnNumber = "9223372036854775807"
-         startingLineNumber = "35"
-         endingLineNumber = "35"
+         startingLineNumber = "37"
+         endingLineNumber = "37"
          landmarkName = "FluidInstrument::createNotesFromBlobParameters(BlobParam blobParameter)"
          landmarkType = "5">
       </FileBreakpoint>
@@ -737,11 +737,11 @@
          ignoreCount = "0"
          continueAfterRunningActions = "No"
          filePath = "src/FluidInstrument.cpp"
-         timestampString = "372777856.93055"
+         timestampString = "372822458.555404"
          startingColumnNumber = "9223372036854775807"
          endingColumnNumber = "9223372036854775807"
-         startingLineNumber = "41"
-         endingLineNumber = "41"
+         startingLineNumber = "34"
+         endingLineNumber = "34"
          landmarkName = "FluidInstrument::createNotesFromBlobParameters(BlobParam blobParameter)"
          landmarkType = "5">
       </FileBreakpoint>
@@ -750,11 +750,11 @@
          ignoreCount = "0"
          continueAfterRunningActions = "No"
          filePath = "src/FluidInstrument.cpp"
-         timestampString = "372777848.805364"
+         timestampString = "372837665.620735"
          startingColumnNumber = "9223372036854775807"
          endingColumnNumber = "9223372036854775807"
-         startingLineNumber = "49"
-         endingLineNumber = "49"
+         startingLineNumber = "73"
+         endingLineNumber = "73"
          landmarkName = "FluidInstrument::createNotesFromBlobParameters(BlobParam blobParameter)"
          landmarkType = "5">
       </FileBreakpoint>
@@ -763,11 +763,11 @@
          ignoreCount = "0"
          continueAfterRunningActions = "No"
          filePath = "src/FluidInstrument.cpp"
-         timestampString = "372777887.240624"
+         timestampString = "372837665.620735"
          startingColumnNumber = "9223372036854775807"
          endingColumnNumber = "9223372036854775807"
-         startingLineNumber = "46"
-         endingLineNumber = "46"
+         startingLineNumber = "81"
+         endingLineNumber = "81"
          landmarkName = "FluidInstrument::createNotesFromBlobParameters(BlobParam blobParameter)"
          landmarkType = "5">
       </FileBreakpoint>
@@ -776,37 +776,11 @@
          ignoreCount = "0"
          continueAfterRunningActions = "No"
          filePath = "src/FluidInstrument.cpp"
-         timestampString = "372779239.494016"
+         timestampString = "372837665.620735"
          startingColumnNumber = "9223372036854775807"
          endingColumnNumber = "9223372036854775807"
-         startingLineNumber = "63"
-         endingLineNumber = "63"
-         landmarkName = "FluidInstrument::createNotesFromBlobParameters(BlobParam blobParameter)"
-         landmarkType = "5">
-      </FileBreakpoint>
-      <FileBreakpoint
-         shouldBeEnabled = "No"
-         ignoreCount = "0"
-         continueAfterRunningActions = "No"
-         filePath = "src/FluidInstrument.cpp"
-         timestampString = "372779644.062685"
-         startingColumnNumber = "9223372036854775807"
-         endingColumnNumber = "9223372036854775807"
-         startingLineNumber = "69"
-         endingLineNumber = "69"
-         landmarkName = "FluidInstrument::createNotesFromBlobParameters(BlobParam blobParameter)"
-         landmarkType = "5">
-      </FileBreakpoint>
-      <FileBreakpoint
-         shouldBeEnabled = "No"
-         ignoreCount = "0"
-         continueAfterRunningActions = "No"
-         filePath = "src/FluidInstrument.cpp"
-         timestampString = "372779644.062685"
-         startingColumnNumber = "9223372036854775807"
-         endingColumnNumber = "9223372036854775807"
-         startingLineNumber = "79"
-         endingLineNumber = "79"
+         startingLineNumber = "93"
+         endingLineNumber = "93"
          landmarkName = "FluidInstrument::blobParamValueFromSource(BlobParam blobParam, int source)"
          landmarkType = "5">
       </FileBreakpoint>
@@ -828,11 +802,11 @@
          ignoreCount = "0"
          continueAfterRunningActions = "No"
          filePath = "src/FluidInstrument.h"
-         timestampString = "372779644.062685"
+         timestampString = "372818949.832923"
          startingColumnNumber = "9223372036854775807"
          endingColumnNumber = "9223372036854775807"
-         startingLineNumber = "72"
-         endingLineNumber = "72"
+         startingLineNumber = "71"
+         endingLineNumber = "71"
          landmarkName = "lerpNote(float value, int upper, int lower)"
          landmarkType = "5">
       </FileBreakpoint>
@@ -840,25 +814,12 @@
          shouldBeEnabled = "No"
          ignoreCount = "0"
          continueAfterRunningActions = "No"
-         filePath = "src/FluidInstrument.cpp"
-         timestampString = "372779548.326625"
-         startingColumnNumber = "9223372036854775807"
-         endingColumnNumber = "9223372036854775807"
-         startingLineNumber = "65"
-         endingLineNumber = "65"
-         landmarkName = "FluidInstrument::createNotesFromBlobParameters(BlobParam blobParameter)"
-         landmarkType = "5">
-      </FileBreakpoint>
-      <FileBreakpoint
-         shouldBeEnabled = "Yes"
-         ignoreCount = "0"
-         continueAfterRunningActions = "No"
          filePath = "src/FluidInstrument.h"
-         timestampString = "372779637.489903"
+         timestampString = "372818949.832923"
          startingColumnNumber = "9223372036854775807"
          endingColumnNumber = "9223372036854775807"
-         startingLineNumber = "73"
-         endingLineNumber = "73"
+         startingLineNumber = "72"
+         endingLineNumber = "72"
          landmarkName = "lerpNote(float value, int upper, int lower)"
          landmarkType = "5">
       </FileBreakpoint>
@@ -880,24 +841,11 @@
          ignoreCount = "0"
          continueAfterRunningActions = "No"
          filePath = "src/FluidPlayer.cpp"
-         timestampString = "372780847.834254"
+         timestampString = "372845155.760173"
          startingColumnNumber = "9223372036854775807"
          endingColumnNumber = "9223372036854775807"
-         startingLineNumber = "290"
-         endingLineNumber = "290"
-         landmarkName = "FluidPlayer::blobsToNotes()"
-         landmarkType = "5">
-      </FileBreakpoint>
-      <FileBreakpoint
-         shouldBeEnabled = "No"
-         ignoreCount = "0"
-         continueAfterRunningActions = "No"
-         filePath = "src/FluidPlayer.cpp"
-         timestampString = "372780847.834254"
-         startingColumnNumber = "9223372036854775807"
-         endingColumnNumber = "9223372036854775807"
-         startingLineNumber = "339"
-         endingLineNumber = "339"
+         startingLineNumber = "369"
+         endingLineNumber = "369"
          landmarkName = "FluidPlayer::updateNotes()"
          landmarkType = "5">
       </FileBreakpoint>
@@ -906,11 +854,11 @@
          ignoreCount = "0"
          continueAfterRunningActions = "No"
          filePath = "src/FluidPlayer.cpp"
-         timestampString = "372780847.834254"
+         timestampString = "372845155.760173"
          startingColumnNumber = "9223372036854775807"
          endingColumnNumber = "9223372036854775807"
-         startingLineNumber = "341"
-         endingLineNumber = "341"
+         startingLineNumber = "368"
+         endingLineNumber = "368"
          landmarkName = "FluidPlayer::updateNotes()"
          landmarkType = "5">
       </FileBreakpoint>
@@ -919,11 +867,76 @@
          ignoreCount = "0"
          continueAfterRunningActions = "No"
          filePath = "src/FluidPlayer.cpp"
-         timestampString = "372780847.834254"
+         timestampString = "372845155.760173"
          startingColumnNumber = "9223372036854775807"
          endingColumnNumber = "9223372036854775807"
-         startingLineNumber = "338"
-         endingLineNumber = "338"
+         startingLineNumber = "347"
+         endingLineNumber = "347"
+         landmarkName = "FluidPlayer::getBlobIndexFromNoteId(int blobId)"
+         landmarkType = "5">
+      </FileBreakpoint>
+      <FileBreakpoint
+         shouldBeEnabled = "No"
+         ignoreCount = "0"
+         continueAfterRunningActions = "No"
+         filePath = "src/FluidPlayer.cpp"
+         timestampString = "372845444.048466"
+         startingColumnNumber = "9223372036854775807"
+         endingColumnNumber = "9223372036854775807"
+         startingLineNumber = "422"
+         endingLineNumber = "422"
+         landmarkName = "FluidPlayer::updateNotes()"
+         landmarkType = "5">
+      </FileBreakpoint>
+      <FileBreakpoint
+         shouldBeEnabled = "No"
+         ignoreCount = "0"
+         continueAfterRunningActions = "No"
+         filePath = "src/FluidPlayer.cpp"
+         timestampString = "372844266.180069"
+         startingColumnNumber = "9223372036854775807"
+         endingColumnNumber = "9223372036854775807"
+         startingLineNumber = "291"
+         endingLineNumber = "291"
+         landmarkName = "FluidPlayer::blobsToNotes(vector&lt;BlobParam&gt; blobParameters)"
+         landmarkType = "5">
+      </FileBreakpoint>
+      <FileBreakpoint
+         shouldBeEnabled = "No"
+         ignoreCount = "0"
+         continueAfterRunningActions = "No"
+         filePath = "src/FluidInstrument.cpp"
+         timestampString = "372837665.620735"
+         startingColumnNumber = "9223372036854775807"
+         endingColumnNumber = "9223372036854775807"
+         startingLineNumber = "74"
+         endingLineNumber = "74"
+         landmarkName = "FluidInstrument::createNotesFromBlobParameters(BlobParam blobParameter)"
+         landmarkType = "5">
+      </FileBreakpoint>
+      <FileBreakpoint
+         shouldBeEnabled = "No"
+         ignoreCount = "0"
+         continueAfterRunningActions = "No"
+         filePath = "src/FluidPlayer.cpp"
+         timestampString = "372845155.760173"
+         startingColumnNumber = "9223372036854775807"
+         endingColumnNumber = "9223372036854775807"
+         startingLineNumber = "313"
+         endingLineNumber = "313"
+         landmarkName = "FluidPlayer::blobsToNotes(vector&lt;BlobParam&gt; blobParameters)"
+         landmarkType = "5">
+      </FileBreakpoint>
+      <FileBreakpoint
+         shouldBeEnabled = "No"
+         ignoreCount = "0"
+         continueAfterRunningActions = "No"
+         filePath = "src/FluidPlayer.cpp"
+         timestampString = "372846041.854878"
+         startingColumnNumber = "9223372036854775807"
+         endingColumnNumber = "9223372036854775807"
+         startingLineNumber = "423"
+         endingLineNumber = "423"
          landmarkName = "FluidPlayer::updateNotes()"
          landmarkType = "5">
       </FileBreakpoint>

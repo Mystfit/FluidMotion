@@ -1,0 +1,19 @@
+<?xml version="1.0"?>
+<instrument>
+	<properties>
+		<name>Reason Pad</name>
+		<device>passthrough_out</device>
+		<channel>5</channel>
+		<program>0</program>
+		<timbre>poly</timbre>
+		<noteMappings>note</noteMappings>
+		<usesCCNoteTriggers>false</usesCCNoteTriggers>
+	</properties>
+	<parameters>
+		<note>
+			<min>50</min>
+			<max>80</max>
+			<source>blobX</source>
+		</note>
+	</parameters>
+</instrument>

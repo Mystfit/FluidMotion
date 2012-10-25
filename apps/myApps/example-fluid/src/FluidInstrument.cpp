@@ -29,44 +29,58 @@ vector<FluidNote> FluidInstrument::createNotesFromBlobParameters(BlobParam blobP
     
     vector<FluidNote> noteList;
     
-    //Create CC noteOn first to start instrument playing
-    if(usesCCNoteTriggers && blobParameter.isDirty)
-    {
-        InstrumentParameter noteOnParam = getParamFromSource(INSTRUMENT_SOURCE_CCNOTEON);
-        
-        FluidNote ccNoteOnMessage(blobParameter.id, name, INSTRUMENT_PLAYS_CC);
-        ccNoteOnMessage.setValue(noteOnParam.value);
-        ccNoteOnMessage.setCCchan(noteOnParam.channel);
-        ccNoteOnMessage.setSource(noteOnParam.source);
-        noteList.push_back(ccNoteOnMessage);
-    }
-
     for(i = 0; i < params.size(); i++)
     {
         int noteValue;
-        float paramValue = blobParamValueFromSource(blobParameter, params[i].source );
+        float paramValue;
 
         if(params[i].noteType == INSTRUMENT_PLAYS_NOTES)
         {
             //Map the note from the source
+            paramValue = blobParamValueFromSource(blobParameter, params[i].source );
             noteValue = lerpNote(paramValue, params[i].lowerNoteRange, params[i].upperNoteRange);
             ofLog(OF_LOG_NOTICE, ofToString(noteValue));
-
             
             FluidNote noteOnMessage(blobParameter.id, name, INSTRUMENT_PLAYS_NOTES);
             noteOnMessage.setValue(noteValue);
+            noteOnMessage.setDirty();
+
             noteList.push_back(noteOnMessage);
-        
         
         } else if(params[i].noteType == INSTRUMENT_PLAYS_CC)
         {
-            noteValue = lerpNote(paramValue, params[i].upperNoteRange, params[i].lowerNoteRange);
             
-            FluidNote ccMessage(blobParameter.id, name, INSTRUMENT_PLAYS_CC);
-            ccMessage.setCCchan(params[i].channel);
-            ccMessage.setValue(noteValue);
-            ccMessage.setSource(params[i].source);
-            noteList.push_back(ccMessage);
+            if(usesCCNoteTriggers)
+            {
+                if(!isPlayingNote){
+                    InstrumentParameter noteOnParam = getParamFromSource(INSTRUMENT_SOURCE_CCNOTEON);
+                    
+                    FluidNote ccNoteOnMessage(blobParameter.id, name, INSTRUMENT_PLAYS_CC);
+                    ccNoteOnMessage.setValue(noteOnParam.value);
+                    ccNoteOnMessage.setCCchan(noteOnParam.channel);
+                    ccNoteOnMessage.setSource(noteOnParam.source);
+                    ccNoteOnMessage.setDirty();
+                    noteList.push_back(ccNoteOnMessage);
+                    isPlayingNote = true;
+                }
+            }
+            
+            
+            //Send cc messages, ignore ccNoteOns and ccNoteOffs
+            if(params[i].source != INSTRUMENT_SOURCE_CCNOTEON && params[i].source != INSTRUMENT_SOURCE_CCNOTEOFF)
+            {
+                paramValue = blobParamValueFromSource(blobParameter, params[i].source );
+                noteValue = lerpNote(paramValue, params[i].upperNoteRange, params[i].lowerNoteRange);
+                
+                FluidNote ccMessage(blobParameter.id, name, INSTRUMENT_PLAYS_CC);
+                ccMessage.setCCchan(params[i].channel);
+                ccMessage.setValue(noteValue);
+                            
+                ccMessage.setSource(params[i].source);
+                ccMessage.setDirty();
+                noteList.push_back(ccMessage);
+            }
+            
         }
             
     }

@@ -59,20 +59,20 @@ public:
     int noteType;                       // Polyphonic / monophonic instrument definition
     int noteMapping;                    // Notes or CC mappings
     bool usesCCNoteTriggers;              // Instrument requires noteOn/noteOff messages to be sent
+    bool isPlayingNote;
 
     void setID(int instrumentId){ m_instrumentId = instrumentId; };
     
     vector<FluidNote> createNotesFromBlobParameters(BlobParam blobParameter);
-    
-    void addNote(FluidNote note);
     void removeNote(FluidNote note);
-    
+
     int lerpNote(float value, int upper, int lower){
         int result;
         float calc = (float)lower + value*((float)upper - value);
         result = calc;
         return result;
     };
+
     
     void addparam(InstrumentParameter param){ params.push_back(param); };
     
@@ -89,8 +89,7 @@ public:
  
 private:
     int m_instrumentId;
-    int m_noteIdCounter;
-    
+    int m_noteIdCounter;    
 };
 
 #endif /* defined(__FluidMotion__FluidInstrument__) */
