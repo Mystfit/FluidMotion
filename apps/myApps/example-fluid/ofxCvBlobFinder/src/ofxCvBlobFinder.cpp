@@ -101,14 +101,25 @@ void ofxCvBlobFinder::matchExistingBlobs(){
         {
             paramIndex = getParamIndexFromBlob(blobz[i], true);
             
-            float area = blobz[i].getArea() / _width*_height;
+            float area = blobz[i].getArea() / MAX_BLOB_AREA;
             ofPoint position(blobz[i].getBoundingBox().getCenter().x / _width, blobz[i].getBoundingBox().getCenter().y / _height);
             
-            if(area != blobParams[paramIndex].area || blobParams[paramIndex].position != position)
-                blobParams[paramIndex].isDirty = true;
+            vector<ofxCvConvexityDefect> cd = blobz[i].getConvexityDefects();
+            float curvature = 0.0f;
+            float largestDefect;
+            float smallestDefect;
+            for(int j=0; j < cd.size(); j++){
+                curvature += cd[j].length;
+            }
             
-            blobParams[paramIndex].area = area;
-            blobParams[paramIndex].position = position;
+            curvature = CLAMP(1.0f - ((MAX_CURVATURE - (curvature / cd.size() + 1)) / MAX_CURVATURE), 0.0f, 1.0f);
+            
+            if(area != blobParams[paramIndex].area || blobParams[paramIndex].position != position || blobParams[paramIndex].position != curvature){
+                blobParams[paramIndex].isDirty = true;
+                blobParams[paramIndex].position = position;
+                blobParams[paramIndex].area = area;
+                blobParams[paramIndex].curvature = curvature;                
+            }
         }
     }
 }
@@ -219,7 +230,7 @@ ofEndShape(true); \
         ostringstream s;
         s << j << "Area = " << blobz[j].getArea();
         
-        //ofDrawBitmapString(s.str(), c.x, c.y);
+        ofDrawBitmapString(s.str(), c.x, c.y + 50);
         ofRect(c.x, c.y, c.width, c.height);
         
         // get convexity defects

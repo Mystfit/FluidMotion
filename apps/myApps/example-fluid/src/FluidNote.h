@@ -25,8 +25,6 @@ struct NoteParameters{
 
 using namespace std;
 
-
-
 class FluidNote {
 public:
     FluidNote(int noteId, string instrumentName, int type);
@@ -67,6 +65,18 @@ protected:
     NoteParameters noteParams;
     
     bool bNoteChanged;
+};
+
+
+class FluidNoteGroup {
+public:
+    FluidNoteGroup();
+    ~FluidNoteGroup();
+    FluidNoteGroup(vector<FluidNote> noteArray);
+    void addNote(FluidNote note);
+    
+private:
+    vector<FluidNote> m_notes;
 };
 
 #endif /* defined(__FluidMotion__FluidNote__) */

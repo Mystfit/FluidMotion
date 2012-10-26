@@ -59,6 +59,18 @@ public:
     //Shaders
     ChannelBlender texBlender;
     
+    //Saving frames
+    ofFloatPixels velocityBufferPixels;
+    ofFloatPixels smokeBufferPixels;
+    vector<ofFloatPixels> velocityFilebuffer;
+    vector<ofFloatPixels> smokeFilebuffer;
+    bool areFilesSaved;
+    void writeFramesToDisk();
+
+    int savedFrameCount;
+    bool isRecordingFrames;
+    bool isWritingFrames;
+    
     ofImage testImage;
     ofPixels testPixels;
    

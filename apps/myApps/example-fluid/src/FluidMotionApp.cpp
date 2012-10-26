@@ -16,8 +16,13 @@ void FluidMotionApp::setup(){
     inputImageGrey.allocate(256, 256);
     tempPixels.allocate(256,256,3);
     texBlender.allocate(320, 240);
+    
+    //Buffer for saving images
+    velocityBufferPixels.allocate(256, 256, 3);
+    smokeBufferPixels.allocate(256, 256, 3);
+    savedFrameCount = 0;
         
-    threshold = 50;
+    threshold = 30;
     dyeColour.set(1.0f,1.0f,1.0f);
     dyeRadius = 10.f;
     dyeDensity = 0.1f;
@@ -25,12 +30,14 @@ void FluidMotionApp::setup(){
     
     // Seting the gravity set up & injecting the background image
     //fluid.setGravity(ofVec2f(0.0,-0.098));
-    fluid.setDissipation(0.96);
-    fluid.setVelocityDissipation(0.93);
+    fluid.setDissipation(0.97);
+    fluid.setVelocityDissipation(0.97);
     
     bDrawKinect = true;
     bDrawFluid = true;
     bDrawBlobs = false;
+    
+    fluidPlayer.startPerformance();
     
     //fluid.addConstantForce(ofPoint(256*0.5f,256*0.5f), ofPoint(0,0), ofFloatColor(1.0f,1.0f,1.0f), 20.0f);
     
@@ -72,15 +79,29 @@ void FluidMotionApp::update(){
     fluid.setExternalVelocity(  texBlender.blendBuffer.dst->getTextureReference() );
     fluid.update();
     
+    //Capture frames to disk
+    if(isRecordingFrames){
+        fluid.getVelocityBuffer().src->readToPixels(velocityBufferPixels);
+        fluid.getPingPong().src->readToPixels(smokeBufferPixels);
+        
+        velocityFilebuffer.push_back(velocityBufferPixels);
+        smokeFilebuffer.push_back(smokeBufferPixels);
+        savedFrameCount++;
+    }
+    
     //Do blob detection on fluid simulation output
     fluid.getPingPong().src->readToPixels(tempPixels);
     inputImage.setFromPixels(tempPixels.getPixels(),256, 256);
     inputImage.flagImageChanged();
     inputImageGrey = inputImage;
-    inputImageGrey.blurHeavily();
-    inputImageGrey.threshold(threshold);
+    //inputImageGrey.blurHeavily();
+    inputImageGrey.blurGaussian(10);
+    inputImageGrey.threshold(40);
     inputImageGrey.flagImageChanged();
     blobFinder.findBlobs(inputImageGrey, false);
+    
+    
+    
     
     //Generate notes from fluid blob output
     blobFinder.matchExistingBlobs();
@@ -121,10 +142,14 @@ void FluidMotionApp::draw(){
     if(bDrawBlobs) blobFinder.draw(0,0,512,512);
     
     ofSetHexColor(0xFFFFFF);
+    
     if(!fluidPlayer.isPlaying)
-        ofDrawBitmapString("Waiting for external play message...",10.0f,10.0f);
-    else
+        ofDrawBitmapString("Waiting for play message from Live",10.0f,10.0f);
+    else if(isWritingFrames)
+        ofDrawBitmapString("Writing frames to disk...",10.0f,10.0f);
+    else if(fluidPlayer.getBpm() > 0)
         ofDrawBitmapString(ofToString(fluidPlayer.getBpm()) + "bpm", 10.0f,10.0f);
+
     
     glDisable(GL_BLEND);
     
@@ -152,12 +177,33 @@ void FluidMotionApp::keyPressed(int key){
         fluid.bDrawVelocity != fluid.bDrawVelocity;
     if( key == 'c')
         fluid.bDrawPressure != fluid.bDrawPressure;
+    if( key =='r'){
+        if(!isRecordingFrames) {
+            isRecordingFrames = true;
+        } else if(isRecordingFrames && !areFilesSaved){
+            isRecordingFrames = false;
+            isWritingFrames = true;
 
-
+            writeFramesToDisk();
+        }
+    }
     
     //Forward keypress to kinect
     fluidKinect.keyPressed(key);
 }
+
+
+void FluidMotionApp::writeFramesToDisk()
+{
+    for(int i = 0; i < savedFrameCount; i++)
+    {
+        ofSaveImage(velocityFilebuffer[i], "frames/velocity_" + ofGetTimestampString() + "_" + ofToString(i) + ".exr" );
+        ofSaveImage(smokeFilebuffer[i], "frames/smoke_" + ofGetTimestampString() + "_" + ofToString(i) + ".exr" );
+    }
+    savedFrameCount = 0;
+    isWritingFrames = false;
+}
+
 
 //--------------------------------------------------------------
 void FluidMotionApp::keyReleased(int key){

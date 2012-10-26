@@ -13,6 +13,9 @@
 #include "ofxOpenCv.h"
 #include "ofxCvComplexBlob.h"
 
+#define MAX_BLOB_AREA 60000
+#define MAX_CURVATURE 20.0f
+
 struct BlobParam
 {
     int id;

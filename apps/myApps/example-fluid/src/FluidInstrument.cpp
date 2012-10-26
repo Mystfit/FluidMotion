@@ -12,24 +12,22 @@ FluidInstrument::FluidInstrument(){
     FluidInstrument("Instrument", "passthrough_out", 0, 0, INSTRUMENT_TYPE_MONOPHONIC, INSTRUMENT_PLAYS_CC);
 }
 
-FluidInstrument::FluidInstrument(string _name, string _device, int _channel, int _program, int _noteType, int _noteMapping)
+FluidInstrument::FluidInstrument(string _name, string _device, int _channel, int _program, int _timbreType, int _noteMapping)
 {    
     name = _name;
     device = _device;
     channel = _channel;
     program = _program;
-    noteType = _noteType;
+    _timbreType = _timbreType;
     noteMapping = _noteMapping;
 }
 
 
 vector<FluidNote> FluidInstrument::createNotesFromBlobParameters(BlobParam blobParameter)
-{
-    int i;
-    
+{    
     vector<FluidNote> noteList;
     
-    for(i = 0; i < params.size(); i++)
+    for(int i = 0; i < params.size(); i++)
     {
         int noteValue;
         float paramValue;
@@ -39,10 +37,10 @@ vector<FluidNote> FluidInstrument::createNotesFromBlobParameters(BlobParam blobP
             //Map the note from the source
             paramValue = blobParamValueFromSource(blobParameter, params[i].source );
             noteValue = lerpNote(paramValue, params[i].lowerNoteRange, params[i].upperNoteRange);
-            ofLog(OF_LOG_NOTICE, ofToString(noteValue));
             
             FluidNote noteOnMessage(blobParameter.id, name, INSTRUMENT_PLAYS_NOTES);
             noteOnMessage.setValue(noteValue);
+            noteOnMessage.setSource(params[i].source);
             noteOnMessage.setDirty();
 
             noteList.push_back(noteOnMessage);
@@ -87,6 +85,18 @@ vector<FluidNote> FluidInstrument::createNotesFromBlobParameters(BlobParam blobP
 
     return noteList;
 }
+
+vector<InstrumentParameter> FluidInstrument::getParametersByTagType(int paramType)
+{
+    vector<InstrumentParameter> paramList;
+    for(int i = 0; i < params.size(); i++)
+    {
+        if(params[i].noteType == paramType) paramList.push_back(params[i]);
+    }
+    
+    return paramList;
+}
+
 
 float FluidInstrument::blobParamValueFromSource(BlobParam blobParam, int source)
 {

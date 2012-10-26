@@ -4,7 +4,7 @@
 		<name>Digital Bells</name>
 		<device>KAOSSILATOR PRO SOUND</device>
 		<channel>2</channel>
-		<program>0</program>
+		<program>127</program>
 		<timbre>mono</timbre>
 		<noteMappings>cc</noteMappings>
 		<usesCCNoteTriggers>true</usesCCNoteTriggers>
@@ -34,6 +34,18 @@
 			<channel>13</channel>
 			<source>blobY</source>
 			<min>0</min>
+			<max>127</max>
+		</cc>
+		<cc>
+			<channel>93</channel>
+			<source>curvature</source>
+			<min>127</min>
+			<max>64</max>
+		</cc>
+		<cc>
+			<channel>94</channel>
+			<source>area</source>
+			<min>64</min>
 			<max>127</max>
 		</cc>
 	</parameters>

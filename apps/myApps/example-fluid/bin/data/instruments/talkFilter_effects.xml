@@ -14,19 +14,27 @@
 			<channel>92</channel>
 			<source>noteOn</source>
 			<value>127</value>
+			<min>0</min>
+			<max>127</max>
 		</cc>
 		<cc>
 			<channel>92</channel>
 			<source>noteOff</source>
 			<value>0</value>
+			<min>0</min>
+			<max>127</max>
 		</cc>
 		<cc>
 			<channel>12</channel>
 			<source>blobX</source>
+			<min>0</min>
+			<max>127</max>
 		</cc>
 		<cc>
 			<channel>13</channel>
 			<source>blobY</source>
+			<min>0</min>
+			<max>127</max>
 		</cc>
 	</parameters>
 </instrument>

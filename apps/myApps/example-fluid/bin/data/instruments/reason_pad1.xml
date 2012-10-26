@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <instrument>
 	<properties>
-		<name>Reason Pad</name>
+		<name>reason_pad</name>
 		<device>passthrough_out</device>
 		<channel>5</channel>
 		<program>0</program>
@@ -11,8 +11,8 @@
 	</properties>
 	<parameters>
 		<note>
-			<min>50</min>
-			<max>80</max>
+			<min>24</min>
+			<max>72</max>
 			<source>blobX</source>
 		</note>
 	</parameters>

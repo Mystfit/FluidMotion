@@ -19,3 +19,21 @@ void FluidNote::setValue(int value){
     m_value = value;
     bNoteChanged = true;
 }
+
+FluidNoteGroup::FluidNoteGroup()
+{
+}
+
+FluidNoteGroup::~FluidNoteGroup()
+{
+}
+
+FluidNoteGroup::FluidNoteGroup(vector<FluidNote> noteArray)
+{
+}
+
+void FluidNoteGroup::addNote(FluidNote note)
+{
+    note.setDirty();
+    m_notes.push_back(note);
+}

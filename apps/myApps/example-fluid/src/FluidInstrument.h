@@ -42,7 +42,7 @@ enum instrumentSourceTypes{
     INSTRUMENT_SOURCE_CCNOTEON,
     INSTRUMENT_SOURCE_CCNOTEOFF
 };
-enum instrumentNoteTypes{ INSTRUMENT_TYPE_POLYPHONIC = 0, INSTRUMENT_TYPE_MONOPHONIC };
+enum instrumentTimbreTypes{ INSTRUMENT_TYPE_POLYPHONIC = 0, INSTRUMENT_TYPE_MONOPHONIC };
 enum instrumentNoteMappings{ INSTRUMENT_PLAYS_NOTES = 0, INSTRUMENT_PLAYS_CC };
 
 
@@ -56,7 +56,7 @@ public:
     string device;                      // Midi port instrument is located on
     int channel;                        // Midi channel to play on
     int program;                        // Midi program for instrument voice
-    int noteType;                       // Polyphonic / monophonic instrument definition
+    int timbreType;                       // Polyphonic / monophonic instrument definition
     int noteMapping;                    // Notes or CC mappings
     bool usesCCNoteTriggers;              // Instrument requires noteOn/noteOff messages to be sent
     bool isPlayingNote;
@@ -66,7 +66,7 @@ public:
     vector<FluidNote> createNotesFromBlobParameters(BlobParam blobParameter);
     void removeNote(FluidNote note);
 
-    int lerpNote(float value, int upper, int lower){
+    static int lerpNote(float value, int upper, int lower){
         int result;
         float calc = (float)lower + value*((float)upper - value);
         result = calc;
@@ -75,6 +75,7 @@ public:
 
     
     void addparam(InstrumentParameter param){ params.push_back(param); };
+    vector<InstrumentParameter> getParametersByTagType(int paramType);
     
     float blobParamValueFromSource(BlobParam blobParam, int source);
     int getParamSourceFromString(string source);
