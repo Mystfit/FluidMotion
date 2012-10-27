@@ -45,11 +45,11 @@
          ignoreCount = "0"
          continueAfterRunningActions = "No"
          filePath = "src/FluidMotionApp.cpp"
-         timestampString = "372955585.515303"
+         timestampString = "372999119.299672"
          startingColumnNumber = "9223372036854775807"
          endingColumnNumber = "9223372036854775807"
-         startingLineNumber = "164"
-         endingLineNumber = "164"
+         startingLineNumber = "157"
+         endingLineNumber = "157"
          landmarkName = "FluidMotionApp::keyPressed(int key)"
          landmarkType = "5">
       </FileBreakpoint>
@@ -108,11 +108,11 @@
          ignoreCount = "0"
          continueAfterRunningActions = "No"
          filePath = "../../../addons/ofxOpticalFlowLK/src/ofxOpticalFlowLK.cpp"
-         timestampString = "372171133.496015"
+         timestampString = "372996739.125828"
          startingColumnNumber = "9223372036854775807"
          endingColumnNumber = "9223372036854775807"
-         startingLineNumber = "247"
-         endingLineNumber = "247"
+         startingLineNumber = "241"
+         endingLineNumber = "241"
          landmarkName = "ofxOpticalFlowLK::update(IplImage * previousImage, IplImage * currentImage, int opticalFlowSize, int opticalFlowBlur)"
          landmarkType = "5">
       </FileBreakpoint>
@@ -147,12 +147,12 @@
          ignoreCount = "0"
          continueAfterRunningActions = "No"
          filePath = "../../../addons/ofxOpticalFlowLK/src/ChannelBlender.cpp"
-         timestampString = "372185842.538703"
+         timestampString = "372996739.125828"
          startingColumnNumber = "9223372036854775807"
          endingColumnNumber = "9223372036854775807"
-         startingLineNumber = "72"
-         endingLineNumber = "72"
-         landmarkName = "ChannelBlender::updateBlender(ofTexture &amp; redChan, ofTexture &amp; greenChan, ofTexture &amp; blueChan, ofTexture &amp; mask, float maxDist, float minDist, int w, int h)"
+         startingLineNumber = "89"
+         endingLineNumber = "89"
+         landmarkName = "ChannelBlender::updateBlender(ofTexture &amp; redChan, ofTexture &amp; greenChan, ofTexture &amp; blueChan, ofTexture &amp; mask, float maxDist, float minDist)"
          landmarkType = "5">
       </FileBreakpoint>
       <FileBreakpoint
@@ -160,12 +160,12 @@
          ignoreCount = "0"
          continueAfterRunningActions = "No"
          filePath = "../../../addons/ofxOpticalFlowLK/src/ChannelBlender.cpp"
-         timestampString = "372185842.538703"
+         timestampString = "372994321.27343"
          startingColumnNumber = "9223372036854775807"
          endingColumnNumber = "9223372036854775807"
-         startingLineNumber = "64"
-         endingLineNumber = "64"
-         landmarkName = "ChannelBlender::allocate(int w, int h)"
+         startingLineNumber = "73"
+         endingLineNumber = "73"
+         landmarkName = "ChannelBlender::allocate(int w, int h, int outWidth, int outHeight)"
          landmarkType = "5">
       </FileBreakpoint>
       <FileBreakpoint
@@ -173,22 +173,22 @@
          ignoreCount = "0"
          continueAfterRunningActions = "No"
          filePath = "../../../addons/ofxOpticalFlowLK/src/ofxOpticalFlowLK.cpp"
-         timestampString = "372171133.496015"
+         timestampString = "372996739.125828"
          startingColumnNumber = "9223372036854775807"
          endingColumnNumber = "9223372036854775807"
-         startingLineNumber = "88"
-         endingLineNumber = "88">
+         startingLineNumber = "82"
+         endingLineNumber = "82">
       </FileBreakpoint>
       <FileBreakpoint
          shouldBeEnabled = "No"
          ignoreCount = "0"
          continueAfterRunningActions = "No"
          filePath = "src/FluidKinect.h"
-         timestampString = "372179363.866707"
+         timestampString = "372996316.484946"
          startingColumnNumber = "9223372036854775807"
          endingColumnNumber = "9223372036854775807"
-         startingLineNumber = "69"
-         endingLineNumber = "69"
+         startingLineNumber = "70"
+         endingLineNumber = "70"
          landmarkName = "class FluidKinect"
          landmarkType = "3">
       </FileBreakpoint>
@@ -197,11 +197,11 @@
          ignoreCount = "0"
          continueAfterRunningActions = "No"
          filePath = "src/FluidMotionApp.cpp"
-         timestampString = "372955585.515303"
+         timestampString = "372997455.210613"
          startingColumnNumber = "9223372036854775807"
          endingColumnNumber = "9223372036854775807"
-         startingLineNumber = "71"
-         endingLineNumber = "71"
+         startingLineNumber = "72"
+         endingLineNumber = "72"
          landmarkName = "FluidMotionApp::update()"
          landmarkType = "5">
       </FileBreakpoint>
@@ -210,11 +210,11 @@
          ignoreCount = "0"
          continueAfterRunningActions = "No"
          filePath = "src/FluidKinect.cpp"
-         timestampString = "372180013.264716"
+         timestampString = "372996316.484946"
          startingColumnNumber = "9223372036854775807"
          endingColumnNumber = "9223372036854775807"
-         startingLineNumber = "111"
-         endingLineNumber = "111"
+         startingLineNumber = "113"
+         endingLineNumber = "113"
          landmarkName = "FluidKinect::updateOpticalFlow(ofTexture &amp; maskedKinect)"
          landmarkType = "5">
       </FileBreakpoint>
@@ -247,11 +247,11 @@
          ignoreCount = "0"
          continueAfterRunningActions = "No"
          filePath = "src/FluidMotionApp.cpp"
-         timestampString = "372955585.515303"
+         timestampString = "372999119.299672"
          startingColumnNumber = "9223372036854775807"
          endingColumnNumber = "9223372036854775807"
-         startingLineNumber = "130"
-         endingLineNumber = "130"
+         startingLineNumber = "119"
+         endingLineNumber = "119"
          landmarkName = "FluidMotionApp::draw()"
          landmarkType = "5">
       </FileBreakpoint>
@@ -958,11 +958,11 @@
          ignoreCount = "0"
          continueAfterRunningActions = "No"
          filePath = "src/FluidMotionApp.cpp"
-         timestampString = "372955585.515303"
+         timestampString = "372999119.299672"
          startingColumnNumber = "9223372036854775807"
          endingColumnNumber = "9223372036854775807"
-         startingLineNumber = "191"
-         endingLineNumber = "191"
+         startingLineNumber = "186"
+         endingLineNumber = "186"
          landmarkName = "FluidMotionApp::keyPressed(int key)"
          landmarkType = "5">
       </FileBreakpoint>

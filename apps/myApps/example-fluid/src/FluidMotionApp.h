@@ -48,6 +48,7 @@ public:
     ofPixels tempPixels;
     int threshold;
     bool bDrawBlobs;
+    bool bCalculateBlobs;
     
     //Music control
     FluidPlayer fluidPlayer;

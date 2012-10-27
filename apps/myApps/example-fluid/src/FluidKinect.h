@@ -38,6 +38,7 @@ private:
     
 	bool				isLive, isTracking, isMasking, isFiltering;
 	int					nearThreshold, farThreshold;
+    float               opFlowWidth, opFlowHeight;
 	float				filterFactor;
     ofImage				allUserMasks, user1Mask, user2Mask, depthRangeMask;
     

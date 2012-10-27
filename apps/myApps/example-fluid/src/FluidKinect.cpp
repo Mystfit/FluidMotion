@@ -56,14 +56,16 @@ void FluidKinect::init()
     cameraDepthImage.allocate(640, 480);
 
     blurImage.allocate(640, 480, GL_RGBA);
-    maskImage.allocate(320, 240);
+    maskImage.allocate(640, 480);
     
-    depthPixels.allocate(320, 240, OF_PIXELS_RGB);
+    depthPixels.allocate(640, 480, OF_PIXELS_RGB);
     maskTexture.allocate(640, 480 , GL_LUMINANCE);
     maskPixels.allocate(640,480, OF_PIXELS_RGBA);
     
     //Setup optical flow
-    opFlow.setup(ofRectangle(0,0, 320, 240 ));
+    opFlowWidth = 320.0f;
+    opFlowHeight = 240.0f;
+    opFlow.setup(ofRectangle(0,0, opFlowWidth, opFlowHeight ));
     opFlow.setOpticalFlowBlur(15);
     opFlow.setOpticalFlowSize(5);
     
@@ -82,7 +84,7 @@ void FluidKinect::update()
         // update tracking/recording nodes
 		if (isTracking){
             recordUser.update();
-            hardware.setLedOption(LED_GREEN);
+            hardware.setLedOption(LED_BLINK_RED_YELLOW);
         }
         
 		if (isTracking && isMasking) {
@@ -110,6 +112,7 @@ void FluidKinect::updateOpticalFlow(ofTexture & maskedKinect)
 {
     maskedKinect.readToPixels(maskPixels);    
     blurImage.setFromPixels(maskPixels);
+    blurImage.resize(opFlow.sizeSml.width, opFlow.sizeSml.height);
     blurImage.flagImageChanged();
     opFlow.update(blurImage);
 }

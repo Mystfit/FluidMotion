@@ -15,5 +15,11 @@
 			<max>72</max>
 			<source>blobX</source>
 		</note>
+		<cc>
+			<channel>100</channel>
+			<source>area</source>
+			<min>0</min>
+			<max>40</max>
+		</cc>
 	</parameters>
 </instrument>

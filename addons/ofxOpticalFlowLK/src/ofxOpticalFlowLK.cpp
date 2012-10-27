@@ -68,17 +68,11 @@ void ofxOpticalFlowLK::setup(int width, int height) {
     
     floatPixX.allocate(sizeSml.width, sizeSml.height, OF_PIXELS_MONO);
     floatPixY.allocate(sizeSml.width, sizeSml.height, OF_PIXELS_MONO);
-
-    
            
     xPix.allocate(sizeSml.width, sizeSml.height, 1);
     yPix.allocate(sizeSml.width, sizeSml.height, 1);
     zPix.allocate(sizeSml.width, sizeSml.height, 1);
     tempPixels.allocate(sizeSml.width, sizeSml.height, 3);
-
-    //velTexY.allocate(sizeSml.width, sizeSml.height, OF_IMAGE_GRAYSCALE);
-    //velPixels.allocate(sizeSml.width, sizeSml.height, OF_PIXELS_RGB);
-    //velImg.allocate(sizeSml.width, sizeSml.height);
 	
 	reset();
 	

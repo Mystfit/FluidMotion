@@ -57,7 +57,7 @@ typedef struct  {
     float   den;
 } punctualForce;
 
-class ofxFluid : public ofxFXObject {
+class ofxFluid : public ofxFXObject, public ofThread {
 public:
     ofxFluid();
     
