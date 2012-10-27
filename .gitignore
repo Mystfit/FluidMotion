@@ -12,3 +12,7 @@ apps/myApps/KinectMapping
 addons/ofxMidi
 
 addons/ofxOpenNI
+
+apps/myApps/example-fluid/.DS_Store
+
+apps/myApps/example-fluid/bin/.DS_Store
