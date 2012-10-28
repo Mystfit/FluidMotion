@@ -73,7 +73,7 @@ void FluidMotionApp::update(){
     fluidKinect.updateOpticalFlow(texBlender.kinectBuffer.dst->getTextureReference());
     
     //Blend optical flow velocites and depth camera
-    texBlender.updateBlender( fluidKinect.opFlow.velTexX.getTextureReference(), fluidKinect.opFlow.velTexY.getTextureReference(), fluidKinect.getDepthTexture(), fluidKinect.getMaskTexture(), 0.05f, 0.12f, 256, 256);
+    texBlender.updateBlender( fluidKinect.opFlow.velTexX.getTextureReference(), fluidKinect.opFlow.velTexY.getTextureReference(), fluidKinect.getDepthTexture(), fluidKinect.getMaskTexture(), 0.05f, 0.15f, 256, 256);
     
     //Send camera velocities to fluid simulation
     fluid.setExternalVelocity(  texBlender.blendBuffer.dst->getTextureReference() );
