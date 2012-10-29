@@ -28,6 +28,8 @@ public:
     void musicTick();
     void update();
     void updateNotes();
+    void sendNotes();
+    void sendCC();
     
     void newMidiMessage(ofxMidiMessage& eventArgs);
     

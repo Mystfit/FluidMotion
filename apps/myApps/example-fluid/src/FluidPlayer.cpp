@@ -268,12 +268,14 @@ void FluidPlayer::musicTick()
         beatCount++;
         
     } else if(clockTick % DEMISEMIQUAVER == 0){
-        updateNotes();
+        sendNotes();
         
     } else if(clockTick % baseNoteMessageLength) {
         ofLog(OF_LOG_VERBOSE, "Smallest note");
         isBeat = false;
         isBar = false;
+        updateNotes();
+        sendCC();
     }
     
     clockPastTime = ofGetElapsedTimeMillis(); //int
@@ -291,9 +293,8 @@ vector<FluidNote> FluidPlayer::blobsToNotes(vector<BlobParam> blobParameters)
     {
         vector<FluidNote> blobNotes = m_activeInstrument.createNotesFromBlobParameters( _blobParams[i] );
         for(int j = 0; j < blobNotes.size(); j++)
-        {
             outputNotes.push_back(blobNotes[j]);
-        }
+        
         _blobParams[i].isDirty = false;
     }
     
@@ -309,21 +310,31 @@ vector<FluidNote> FluidPlayer::blobsToNotes(vector<BlobParam> blobParameters)
         
         while( activeNotesIndex < m_activeInstrument.activeNotes.size() )
         {
-            
             if(m_activeInstrument.activeNotes[activeNotesIndex].getNoteId() == outputNotes[i].getNoteId() && m_activeInstrument.activeNotes[activeNotesIndex].getSource() == outputNotes[i].getSource() )
             {
                 if(m_activeInstrument.activeNotes[activeNotesIndex].getValue() == outputNotes[i].getValue())
                 {
                     m_activeInstrument.activeNotes[activeNotesIndex].setClean();
                 } else {
-                    //Turn off existing note
+                    int outVal = outputNotes[i].getValue();
                     
-                    //m_activeInstrument.removeNote(m_activeInstrument.activeNotes[activeNotesIndex]);
-                    
+                    if(m_activeInstrument.activeNotes[activeNotesIndex].getType() == INSTRUMENT_PLAYS_CC)
+                        outVal = m_activeInstrument.activeNotes[activeNotesIndex].getValue() + (m_activeInstrument.activeNotes[activeNotesIndex].getValue() - outVal) * 0.1f;
+                    else if(m_activeInstrument.activeNotes[activeNotesIndex].getType() == INSTRUMENT_PLAYS_NOTES)
+                    {
+                        FluidNote noteChange(outputNotes[i].getNoteId(), m_activeInstrument.name, INSTRUMENT_PLAYS_NOTES);
+                        noteChange.setStatus(ON);
+                        noteChange.setDirty();
+                        noteChange.setValue(outputNotes[i].getValue());
+                        noteChange.setSource(outputNotes[i].getSource());
+                        m_activeInstrument.activeNotes[activeNotesIndex].setStatus(OFF);
+                        m_activeInstrument.activeNotes.push_back( m_activeInstrument.activeNotes[activeNotesIndex]);
+                        m_activeInstrument.activeNotes[activeNotesIndex] = noteChange;
+                    }
+
                     //Replace with new noteOn message
-                     m_activeInstrument.activeNotes[activeNotesIndex].setValue( outputNotes[i].getValue() );
+                     m_activeInstrument.activeNotes[activeNotesIndex].setValue( outVal );
                      m_activeInstrument.activeNotes[activeNotesIndex].setDirty();
-                    //m_activeInstrument.activeNotes.push_back( m_activeInstrument.activeNotes[activeNotesIndex]);
                 }
                 
                 noteExists = true;
@@ -358,7 +369,8 @@ int FluidPlayer::getBlobIndexFromNoteId(int blobId)
         blobIndex++;
     }
     
-    ofLog(OF_LOG_NOTICE, "Matching blob to note:" + ofToString(blobIndex));
+    if(blobIndex == -1);
+        ofLog(OF_LOG_NOTICE, "Blob id:" + ofToString(blobId) + " is expired");
     
     return index;
 }
@@ -373,7 +385,7 @@ void FluidPlayer::updateNotes()
 {
     if(m_activeInstrument.activeNotes.size() == 0 && m_activeInstrument.isPlayingNote){
         m_activeInstrument.isPlayingNote = false;
-        midiOut.sendControlChange(m_activeInstrument.channel, 123, 0);
+        //midiOut.sendControlChange(m_activeInstrument.channel, 123, 0);
         for(int index; index < m_activeInstrument.activeNotes.size(); index++)
             m_activeInstrument.activeNotes[index].setStatus(OFF);
     }
@@ -411,21 +423,34 @@ void FluidPlayer::updateNotes()
                 //m_activeInstrument.isPlayingNote = false;
             }
         }
+    }
+}
+
+
+
+/*
+ *Send notes to devices and clean up
+ */
+
+void FluidPlayer::sendNotes()
+{
+    for(int i = 0; i < m_activeInstrument.activeNotes.size(); i++)
+    {
+        FluidNote currNote = m_activeInstrument.activeNotes[i];
         
+        
+
         //Turn notes off and remove if flagged to remove
         if(currNote.getStatus() == OFF)
         {
-           
-            if(currNote.getType() == INSTRUMENT_PLAYS_NOTES){
+            
+            if(currNote.getType() == INSTRUMENT_PLAYS_NOTES)
                 midiOut.sendNoteOff(m_activeInstrument.channel, currNote.getValue(), 64);
-            }else if(currNote.getType() == INSTRUMENT_PLAYS_CC && currNote.getSource() == INSTRUMENT_SOURCE_CCNOTEOFF){
-                midiOut.sendControlChange(m_activeInstrument.channel, currNote.getCCchan(), currNote.getValue());
-            }
+            
             currNote.setClean();
             
-            m_activeInstrument.removeNote(currNote);
+            m_activeInstrument.activeNotes.erase(m_activeInstrument.activeNotes.begin() + i);
         }
-        
         
         //Play the note if it has changed
         if(currNote.getStatus() == ON)
@@ -440,12 +465,44 @@ void FluidPlayer::updateNotes()
                 currNote.setClean();
             }
         }
-        
-        
     }
+}
 
-    
-    
+
+
+/*
+ *Send CC to devices and clean up
+ */
+
+void FluidPlayer::sendCC()
+{
+    for(int i = 0; i < m_activeInstrument.activeNotes.size(); i++)
+    {
+        FluidNote currNote = m_activeInstrument.activeNotes[i];
+        
+        //Play the note if it has changed
+        if(currNote.getStatus() == ON)
+        {
+            if(currNote.isDirty()){
+                if(currNote.getType() == INSTRUMENT_PLAYS_CC){
+                    midiOut.sendControlChange(m_activeInstrument.channel, currNote.getCCchan(), currNote.getValue());
+                    currNote.setStatus(OFF);
+                }
+                currNote.setClean();
+            }
+        }
+        
+        //Turn notes off and remove if flagged to remove
+        if(currNote.getStatus() == OFF)
+        {
+            if(currNote.getType() == INSTRUMENT_PLAYS_CC && currNote.getSource() == INSTRUMENT_SOURCE_CCNOTEOFF){
+                midiOut.sendControlChange(m_activeInstrument.channel, currNote.getCCchan(), currNote.getValue());
+            }
+            currNote.setClean();
+            
+            m_activeInstrument.activeNotes.erase(m_activeInstrument.activeNotes.begin() + i);
+        }
+    }
 }
 
 
