@@ -28,10 +28,15 @@ void FluidMotionApp::setup(){
     dyeDensity = 0.1f;
     dyeVelocityMult = 1.0f;
     
+    //Kinect properties
+    depthActivationEnd = 0.1f;
+    depthActivationStart = 0.06f;
+    
     // Seting the gravity set up & injecting the background image
     //fluid.setGravity(ofVec2f(0.0,-0.098));
     fluid.setDissipation(0.97);
     fluid.setVelocityDissipation(0.97);
+    fluid.setDyeColour(ofVec3f(0.2f, 0.2f, 1.0f));
     
     bDrawKinect = true;
     bDrawFluid = true;
@@ -74,7 +79,7 @@ void FluidMotionApp::update(){
     fluidKinect.updateOpticalFlow(texBlender.kinectBuffer.dst->getTextureReference());
     
     //Blend optical flow velocites and depth camera
-    texBlender.updateBlender( fluidKinect.opFlow.velTexX.getTextureReference(), fluidKinect.opFlow.velTexY.getTextureReference(), fluidKinect.getDepthTexture(), fluidKinect.getMaskTexture(), 0.03f, 0.07f);
+    texBlender.updateBlender( fluidKinect.opFlow.velTexX.getTextureReference(), fluidKinect.opFlow.velTexY.getTextureReference(), fluidKinect.getDepthTexture(), fluidKinect.getMaskTexture(), depthActivationStart, depthActivationEnd);
     
     //Send camera velocities to fluid simulation
     fluid.setExternalVelocity(  texBlender.blendBuffer.dst->getTextureReference() );
@@ -123,16 +128,9 @@ void FluidMotionApp::draw(){
     
     glEnable(GL_BLEND);
 	glBlendFunc(GL_ONE, GL_ONE);
-    
-    texBlender.blendBuffer.dst->draw(0.0f, 0.0f);
-    //texBlender.kinectBuffer.dst->draw(0.0f, 0.0f);
-    
-    
-    //fluidKinect.blurImage.draw(0, 0, 512, 512);
 
-    //if(bDrawKinect) fluidKinect.draw();
-    if(bDrawFluid) fluid.draw(0,0,512,512);
-    if(bDrawBlobs) blobFinder.draw(0,0,512,512);
+    if(bDrawFluid) fluid.draw(0,0,ofGetScreenHeight(),ofGetScreenHeight());
+    if(bDrawBlobs) blobFinder.draw(0,0,ofGetScreenWidth(),ofGetScreenHeight());
     
     ofSetHexColor(0xFFFFFF);
     

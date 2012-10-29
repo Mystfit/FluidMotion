@@ -76,6 +76,8 @@ public:
     
     ofxSwapBuffer getVelocityBuffer(){ return velocityBuffer; };
     
+    void setDyeColour(ofVec3f colour){dyeColour = colour; };
+    
     void    addTemporalForce(ofPoint _pos, ofPoint _dir, ofFloatColor _col, float _rad = 1.0f, float _temp = 10.f, float _den = 1.f );
     void    addConstantForce(ofPoint _pos, ofPoint _dir, ofFloatColor _col, float _rad = 1.0f, float _temp = 10.f, float _den = 1.f );
     
@@ -98,7 +100,7 @@ private:
     
     void    applyImpulse(ofxSwapBuffer& _buffer, ofPoint _force, ofPoint _value, float _radio = 3.f);
     void    applyExternalVelocity(ofxSwapBuffer& _buffer, ofTexture velocityTex);
-    void    applyExternalDye(ofxSwapBuffer& _buffer, ofTexture depthTex, float multiplier);
+    void    applyExternalDye(ofxSwapBuffer& _buffer, ofTexture depthTex,  ofVec3f colourMult);
 
     void    applyBuoyancy();
     
@@ -128,6 +130,8 @@ private:
     float   smokeWeight;
     float   gradientScale;
     float   ambientTemperature;
+    
+    ofVec3f dyeColour;
     
     float   gridWidth,gridHeight;
     float   timeStep;

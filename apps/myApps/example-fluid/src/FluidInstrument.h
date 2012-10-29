@@ -83,14 +83,15 @@ public:
     
     void startInstrument();
     void stopInstrument();
-    
+            
     vector<FluidNote> activeNotes;
     vector<InstrumentParameter> params;
     
  
 private:
     int m_instrumentId;
-    int m_noteIdCounter;    
+    int m_noteIdCounter;
+
 };
 
 #endif /* defined(__FluidMotion__FluidInstrument__) */

@@ -289,7 +289,11 @@ vector<FluidNote> FluidPlayer::blobsToNotes(vector<BlobParam> blobParameters)
     
     for(i = 0; i < _blobParams.size(); i++)
     {
-        outputNotes = m_activeInstrument.createNotesFromBlobParameters( _blobParams[i] );
+        vector<FluidNote> blobNotes = m_activeInstrument.createNotesFromBlobParameters( _blobParams[i] );
+        for(int j = 0; j < blobNotes.size(); j++)
+        {
+            outputNotes.push_back(blobNotes[j]);
+        }
         _blobParams[i].isDirty = false;
     }
     
@@ -313,13 +317,13 @@ vector<FluidNote> FluidPlayer::blobsToNotes(vector<BlobParam> blobParameters)
                     m_activeInstrument.activeNotes[activeNotesIndex].setClean();
                 } else {
                     //Turn off existing note
-                    m_activeInstrument.activeNotes[activeNotesIndex].setStatus(OFF);
+                    
+                    //m_activeInstrument.removeNote(m_activeInstrument.activeNotes[activeNotesIndex]);
                     
                     //Replace with new noteOn message
-                    FluidNote newNoteOn(  m_activeInstrument.activeNotes[activeNotesIndex].getNoteId(), m_activeInstrument.name, INSTRUMENT_PLAYS_NOTES);
-                    newNoteOn.setValue( outputNotes[i].getValue() );
-                    newNoteOn.setDirty();
-                    m_activeInstrument.activeNotes.push_back(newNoteOn);
+                     m_activeInstrument.activeNotes[activeNotesIndex].setValue( outputNotes[i].getValue() );
+                     m_activeInstrument.activeNotes[activeNotesIndex].setDirty();
+                    //m_activeInstrument.activeNotes.push_back( m_activeInstrument.activeNotes[activeNotesIndex]);
                 }
                 
                 noteExists = true;
@@ -329,8 +333,10 @@ vector<FluidNote> FluidPlayer::blobsToNotes(vector<BlobParam> blobParameters)
             activeNotesIndex++;
         }
         
-        if(!noteExists)
+        if(!noteExists){
             m_activeInstrument.activeNotes.push_back(outputNotes[i]);
+            m_activeInstrument.isPlayingNote = true;
+        }
     }
     
     return outputNotes;
@@ -368,8 +374,8 @@ void FluidPlayer::updateNotes()
     if(m_activeInstrument.activeNotes.size() == 0 && m_activeInstrument.isPlayingNote){
         m_activeInstrument.isPlayingNote = false;
         midiOut.sendControlChange(m_activeInstrument.channel, 123, 0);
-    } else {
-        m_activeInstrument.isPlayingNote = true;
+        for(int index; index < m_activeInstrument.activeNotes.size(); index++)
+            m_activeInstrument.activeNotes[index].setStatus(OFF);
     }
     
     int blobIndex;
@@ -393,12 +399,16 @@ void FluidPlayer::updateNotes()
                 ccNoteOffMessage.setSource(noteOffParam.source);
                 ccNoteOffMessage.setDirty();
                 m_activeInstrument.activeNotes.push_back(ccNoteOffMessage);
-                //currNote.setStatus(OFF);
-                m_activeInstrument.isPlayingNote = false;
+                currNote.setStatus(OFF);
+                //m_activeInstrument.isPlayingNote = false;
             } else if(m_activeInstrument.noteMapping == INSTRUMENT_PLAYS_NOTES) {
                 m_activeInstrument.activeNotes[i].setDirty();
                 m_activeInstrument.activeNotes[i].setStatus(OFF);
-                m_activeInstrument.isPlayingNote = false;
+                //m_activeInstrument.isPlayingNote = false;
+            } else if(m_activeInstrument.noteMapping == INSTRUMENT_PLAYS_CC) {
+                m_activeInstrument.activeNotes[i].setDirty();
+                m_activeInstrument.activeNotes[i].setStatus(OFF);
+                //m_activeInstrument.isPlayingNote = false;
             }
         }
         

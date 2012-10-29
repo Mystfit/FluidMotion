@@ -1,8 +1,6 @@
 
 .DS_Store
 
-*.exr
-
 apps/myApps/FluidMotion/ofxMidi
 
 apps/myApps/FluidMotion/ofxOpenNI

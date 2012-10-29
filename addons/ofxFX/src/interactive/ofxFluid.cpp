@@ -266,12 +266,12 @@ ofxFluid::ofxFluid(){
     string fragmentApplyDepth = STRINGIFY(
                                                 uniform sampler2DRect    buffer;
                                                 uniform sampler2DRect    ExternalDepth;
-                                                uniform float            multiplier;
+                                                uniform vec3            multiplier;
                                                 
                                                 void main(){
                                                     vec2 st = gl_TexCoord[0].st;
                                                     
-                                                    vec4 depthColour = vec4(texture2DRect(ExternalDepth, st).b * multiplier, texture2DRect(ExternalDepth, st).b * multiplier, texture2DRect(ExternalDepth, st).b * multiplier, 0.1);
+                                                    vec4 depthColour = vec4(texture2DRect(ExternalDepth, st).b * multiplier.r, texture2DRect(ExternalDepth, st).b * multiplier.g, texture2DRect(ExternalDepth, st).b * multiplier.b, 0.1);
                                                     
                                                     gl_FragColor = depthColour;
                                                 }
@@ -416,8 +416,8 @@ void ofxFluid::update(){
     applyExternalVelocity(velocityBuffer, externalVelocityBuffer.src->getTextureReference());
     velocityBuffer.swap();
     
-    applyExternalDye(temperatureBuffer, externalVelocityBuffer.src->getTextureReference(), 20.0f);
-    applyExternalDye(pingPong, externalVelocityBuffer.src->getTextureReference(), 1.0f);
+    applyExternalDye(temperatureBuffer, externalVelocityBuffer.src->getTextureReference(), ofVec3f(20.0f, 20.0f, 20.0f));
+    applyExternalDye(pingPong, externalVelocityBuffer.src->getTextureReference(), dyeColour);
     //-----------------------------------
     
     
@@ -594,13 +594,13 @@ void ofxFluid::applyExternalVelocity(ofxSwapBuffer& _buffer, ofTexture velocityT
 }
 
 
-void ofxFluid::applyExternalDye(ofxSwapBuffer& _buffer, ofTexture depthTex, float multiplier){
+void ofxFluid::applyExternalDye(ofxSwapBuffer& _buffer, ofTexture depthTex, ofVec3f colourMult){
     glEnable(GL_BLEND);
     _buffer.src->begin();
     applyExternalDyeShader.begin();
     applyExternalDyeShader.setUniformTexture("buffer", _buffer.src->getTextureReference(), 0);
     applyExternalDyeShader.setUniformTexture("ExternalDepth", depthTex, 0);
-    applyExternalDyeShader.setUniform1f("multiplier", multiplier);
+    applyExternalDyeShader.setUniform3f("multiplier", colourMult.x, colourMult.y, colourMult.z);
     
     renderFrame(gridWidth,gridHeight);
     applyExternalDyeShader.end();

@@ -7,19 +7,28 @@
 		<program>0</program>
 		<timbre>poly</timbre>
 		<noteMappings>note</noteMappings>
+		<colourR>1.0</colourR>
+		<colourG>1.0</colourG>
+		<colourB>1.0</colourB>
 		<usesCCNoteTriggers>false</usesCCNoteTriggers>
 	</properties>
 	<parameters>
 		<note>
 			<min>24</min>
 			<max>72</max>
-			<source>blobX</source>
+			<source>blobY</source>
 		</note>
 		<cc>
-			<channel>100</channel>
+			<channel>71</channel>
 			<source>area</source>
+			<min>20</min>
+			<max>110</max>
+		</cc>
+		<cc>
+			<channel>72</channel>
+			<source>curvature</source>
 			<min>0</min>
-			<max>40</max>
+			<max>80</max>
 		</cc>
 	</parameters>
 </instrument>

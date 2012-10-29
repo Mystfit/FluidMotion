@@ -56,6 +56,7 @@ public:
     //Kinect control
     FluidKinect fluidKinect;
     bool bDrawKinect;
+    float depthActivationStart, depthActivationEnd;
     
     //Shaders
     ChannelBlender texBlender;
