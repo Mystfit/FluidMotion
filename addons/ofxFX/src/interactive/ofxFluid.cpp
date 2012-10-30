@@ -333,7 +333,7 @@ ofxFluid::ofxFluid(){
     //gForce.set(0,-0.98);
 }
 
-void ofxFluid::allocate(int _width, int _height, float _scale){
+void ofxFluid::allocate(int _width, int _height, float _scale, float velocityScale){
     width = _width;
     height = _height;
     scale = _scale;
@@ -343,7 +343,7 @@ void ofxFluid::allocate(int _width, int _height, float _scale){
     
     pingPong.allocate(gridWidth,gridHeight,GL_RGB32F,0.999f); // Density buffer
     velocityBuffer.allocate(gridWidth,gridHeight,GL_RGB32F,0.9f);
-    externalVelocityBuffer.allocate(gridWidth,gridHeight,GL_RGB32F,0.9f);
+    externalVelocityBuffer.allocate(gridWidth*velocityScale,gridHeight*velocityScale,GL_RGB32F,0.9f);
     temperatureBuffer.allocate(gridWidth,gridHeight,GL_RGB32F,0.99f);
     pressureBuffer.allocate(gridWidth,gridHeight,GL_RGB32F,0.9f);
     

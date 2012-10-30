@@ -129,7 +129,7 @@ void FluidPlayer::loadInstruments()
             param.lowerNoteRange = xmlInstrument.getValue("min", 0);
             param.upperNoteRange = xmlInstrument.getValue("max", 0);
             instrument.addparam(param);
-            instrument.addNoteParam(param);
+            instrument.addNoteParam(param, true);
             xmlInstrument.popTag();
         }
         
@@ -145,7 +145,7 @@ void FluidPlayer::loadInstruments()
             param.lowerNoteRange = xmlInstrument.getValue("min", 0);
             param.upperNoteRange = xmlInstrument.getValue("max", 0);
             instrument.addparam(param);
-            instrument.addNoteParam(param);
+            instrument.addNoteParam(param, false);
 
             xmlInstrument.popTag();
         }
@@ -278,7 +278,7 @@ void FluidPlayer::musicTick()
         isBeat = false;
         isBar = false;
         m_activeInstrument.tickNoteParams();
-        //sendCC();
+        sendCC();
     }
     
     clockPastTime = ofGetElapsedTimeMillis(); //int
@@ -286,27 +286,40 @@ void FluidPlayer::musicTick()
 }
 
 
-vector<FluidNote> FluidPlayer::blobsToNotes(vector<BlobParam> blobParameters)
+void FluidPlayer::blobsToNotes(vector<BlobParam> blobParameters)
 {
     _blobParams = blobParameters;
     vector<FluidNote> outputNotes;
     int i,j;
     
-    vector<int> newParamValues;
-    newParamValues.resize(m_activeInstrument.noteParams.size());
+    if(blobParameters.size() == 0)
+        return;
+    
+    vector<int> newParamValues(m_activeInstrument.params.size(), 0);
+    
     for(i = 0; i < _blobParams.size(); i++)
     {
         vector<int> blobValues = m_activeInstrument.createNotesFromBlobParameters( _blobParams[i] );
-        for(j=0; j < newParamValues.size(); j++){
-            if(j == 0) newParamValues[j] = 0;
-            newParamValues[j] += blobValues[j];
+       
+        for(j=0; j < blobValues.size(); j++){
+            if(m_activeInstrument.noteParams[i].getType() == INSTRUMENT_PLAYS_NOTES)
+                newParamValues[j] = newParamValues[j];
+            else if(m_activeInstrument.noteParams[i].getType() == INSTRUMENT_PLAYS_CC){
+                newParamValues[j] = newParamValues[j] + blobValues[j];
+            }
+
         }
         _blobParams[i].isDirty = false;
     }
     
-    for(i=0; i < newParamValues.size(); i++){
-        newParamValues[i] /= newParamValues.size();
-        m_activeInstrument.noteParams[i].setPreferredValue(newParamValues[i]);
+    if(_blobParams.size() < 1 && bClearAllNotes != true)
+        bClearAllNotes = true;
+    
+    for(i=0; i < m_activeInstrument.noteParams.size(); i++){
+        if(m_activeInstrument.noteParams[i].getType() == INSTRUMENT_PLAYS_NOTES)
+            m_activeInstrument.noteParams[i].setPreferredValue(newParamValues[i]);
+        else if(m_activeInstrument.noteParams[i].getType() == INSTRUMENT_PLAYS_CC)
+            m_activeInstrument.noteParams[i].setPreferredValue(newParamValues[i] / newParamValues.size());
         m_activeInstrument.noteParams[i].setDirty();
     }
 }
@@ -341,30 +354,54 @@ int FluidPlayer::getBlobIndexFromNoteId(int blobId)
 
 void FluidPlayer::sendNotes()
 {
+    
+    if(bClearAllNotes){
+        midiOut.sendControlChange(m_activeInstrument.channel, MIDI_ALL_NOTES_OFF, 0);
+    }
+    
+    
     for(int i = 0; i < m_activeInstrument.noteParams.size(); i++)
     {
-
+        
         //Turn notes off and remove if flagged to remove
         if(m_activeInstrument.noteParams[i].getStatus() == OFF)
         {
-            
-            if(m_activeInstrument.noteParams[i].getType() == INSTRUMENT_PLAYS_NOTES)
-                midiOut.sendNoteOff(m_activeInstrument.channel, m_activeInstrument.noteParams[i].getValue(), 64);
-            
-            m_activeInstrument.noteParams[i].setClean();            
+            if(m_activeInstrument.noteParams[i].getType() == INSTRUMENT_PLAYS_NOTES){
+                if(bClearAllNotes) m_activeInstrument.noteParams[i].setClean();
+
+                if(m_activeInstrument.noteParams[i].isDirty()){
+                    midiOut.sendNoteOff(m_activeInstrument.channel, m_activeInstrument.noteParams[i].getValue(), 64);
+                    m_activeInstrument.noteParams[i].setLastNote(m_activeInstrument.noteParams[i].getValue());
+                    m_activeInstrument.noteParams[i].setClean();
+                }
+                
+            }
         }
         
         //Play the note if it has changed
         if(m_activeInstrument.noteParams[i].getStatus() == ON)
         {
-            if(m_activeInstrument.noteParams[i].isDirty()){
-                if(m_activeInstrument.noteParams[i].getType() == INSTRUMENT_PLAYS_NOTES){
-                    midiOut.sendNoteOn(m_activeInstrument.channel, m_activeInstrument.noteParams[i].getValue(),100);
+            if(m_activeInstrument.noteParams[i].getType() == INSTRUMENT_PLAYS_NOTES){
+                if(m_activeInstrument.noteParams[i].isDirty()){
+            
+                    if(m_activeInstrument.noteParams[i].getValue() != m_activeInstrument.noteParams[i].getLastNote())
+                    {
+                        midiOut.sendNoteOn(m_activeInstrument.channel, m_activeInstrument.noteParams[i].getValue(),100);
+                        midiOut.sendNoteOff(m_activeInstrument.channel, m_activeInstrument.noteParams[i].getLastNote(), 64);
+                        m_activeInstrument.noteParams[i].setLastNote(m_activeInstrument.noteParams[i].getValue());
+                    } else {
+                        //m_activeInstrument.noteParams[i].setClean();
+                    }
                 }
-                m_activeInstrument.noteParams[i].setClean();
+                
+                if(bClearAllNotes) m_activeInstrument.noteParams[i].setStatus(OFF);
             }
         }
+    
     }
+    
+    if(bClearAllNotes) bClearAllNotes = false;
+
 }
 
 
@@ -381,11 +418,12 @@ void FluidPlayer::sendCC()
         //Play the note if it has changed
         if(m_activeInstrument.noteParams[i].getStatus() == ON)
         {
-            if(m_activeInstrument.noteParams[i].isDirty()){
-                if(m_activeInstrument.noteParams[i].getType() == INSTRUMENT_PLAYS_CC)
+            if(m_activeInstrument.noteParams[i].getType() == INSTRUMENT_PLAYS_CC){
+
+                if(m_activeInstrument.noteParams[i].isDirty()){
                     midiOut.sendControlChange(m_activeInstrument.channel, m_activeInstrument.noteParams[i].getCCchan(), m_activeInstrument.noteParams[i].getValue());
-                
-                m_activeInstrument.noteParams[i].setClean();
+                    m_activeInstrument.noteParams[i].setClean();
+                }
             }
         }
         
@@ -393,9 +431,10 @@ void FluidPlayer::sendCC()
         if(m_activeInstrument.noteParams[i].getStatus() == OFF)
         {
             if(m_activeInstrument.noteParams[i].getType() == INSTRUMENT_PLAYS_CC){
-               if(m_activeInstrument.noteParams[i].getSource() == INSTRUMENT_SOURCE_CCNOTEOFF || m_activeInstrument.noteParams[i].getSource() == INSTRUMENT_SOURCE_CCNOTEON)
+                if(m_activeInstrument.noteParams[i].getSource() == INSTRUMENT_SOURCE_CCNOTEOFF || m_activeInstrument.noteParams[i].getSource() == INSTRUMENT_SOURCE_CCNOTEON){
                     midiOut.sendControlChange(m_activeInstrument.channel, m_activeInstrument.noteParams[i].getCCchan(), m_activeInstrument.noteParams[i].getValue());
-               m_activeInstrument.noteParams[i].setClean();
+                    m_activeInstrument.noteParams[i].setClean();
+                }
             }
         }
     }

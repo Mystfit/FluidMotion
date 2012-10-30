@@ -16,6 +16,10 @@
 #include "ofxOpenCv.h"
 #include "ofxOpticalFlowLK.h"
 
+#define CAMERA_WIDTH 640
+#define CAMERA_HEIGHT 480
+#define OPFLOW_WIDTH 320.0f
+#define OPFLOW_HEIGHT 240.0f
 
 class FluidKinect {
     

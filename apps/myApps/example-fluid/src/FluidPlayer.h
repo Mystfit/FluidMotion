@@ -14,6 +14,8 @@
 #define QUAVER 12
 #define CROTCHET 24
 
+#define MIDI_ALL_NOTES_OFF 123
+
 #include <iostream>
 #include "ofxMidi.h"
 #include "ofUtils.h"
@@ -46,15 +48,16 @@ public:
 
     void startPerformance();
     void stopPerformance();
-    
+        
     float getBpm(){ return bpm; };
     bool isBeat, isBar, isPlaying;
     
     bool isBeatDirty(){return beatDirty; };               //Check if beat is dirty
     void setBeatClean(){beatDirty = false; };      //Mark beat as fresh (phat beats yo)
+    void clearAllNotes(){bClearAllNotes = true;};
     
     int getBlobIndexFromNoteId(int blobId);
-    vector<FluidNote> blobsToNotes(vector<BlobParam> blobParameters);
+    void blobsToNotes(vector<BlobParam> blobParameters);
     
 private:
     FluidInstrument m_activeInstrument;
@@ -72,6 +75,7 @@ private:
     ofxMidiIn midiIn;
     ofxMidiOut midiOut;
     bool bIsPlaying;
+    bool bClearAllNotes;
     
     //Clock parameters
     int clockPastTime, clockTick, clockPeriod, beatCount, firstBeatMs, clockPeriodValue, BITPERMIN;

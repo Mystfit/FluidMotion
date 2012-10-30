@@ -10,12 +10,16 @@
 
 FluidNote::FluidNote()
 {
+    FluidNote(-1, "default", -1);
 }
 
 FluidNote::FluidNote(int noteId, string instrumentName, int type){
     m_type = type;
     m_noteId = noteId;
     m_noteStatus = ON;
+    m_value = 0;
+    m_preferredValue = 0;
+    m_source = 0;
     m_instrument = instrumentName;
 };
 

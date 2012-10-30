@@ -27,7 +27,7 @@ public:
     ofxSwapBuffer blendBuffer;
     ofxSwapBuffer kinectBuffer;
     
-    int blenderWidth, blenderHeight;
+    int blenderWidth, blenderHeight, recordWidth, recordHeight;
 };
 
 #endif /* defined(__FluidMotion__ChannelBlender__) */

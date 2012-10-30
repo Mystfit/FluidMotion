@@ -61,7 +61,7 @@ class ofxFluid : public ofxFXObject, public ofThread {
 public:
     ofxFluid();
     
-    void allocate(int _width, int _height, float _scale = 0.5);
+    void allocate(int _width, int _height, float _scale = 0.5, float velocityScale = 1.0f);
     
     //ofxFluid&   setDensity(ofTexture & _tex){setTextureToBuffer(_tex, densityBuffer); return * this; };
     ofxFluid&   setTexture(ofTexture & _tex){setTextureToBuffer(_tex, pingPong); return * this; };

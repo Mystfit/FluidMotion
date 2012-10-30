@@ -20,6 +20,7 @@ FluidKinect::FluidKinect()
 	nearThreshold = 500;
 	farThreshold  = 1000;
     
+    
 	filterFactor = 0.1f;
     
     opticalBlur = 17;
@@ -52,19 +53,19 @@ void FluidKinect::init()
     recordContext.toggleRegisterViewport();
 	recordContext.toggleMirror();
     
-    cameraImage.allocate(640, 480);
-    cameraDepthImage.allocate(640, 480);
+    cameraImage.allocate(CAMERA_WIDTH, CAMERA_HEIGHT);
+    cameraDepthImage.allocate(CAMERA_WIDTH, CAMERA_HEIGHT);
 
-    blurImage.allocate(640, 480, GL_RGBA);
-    maskImage.allocate(640, 480);
+    blurImage.allocate(CAMERA_WIDTH, CAMERA_HEIGHT, GL_RGBA);
+    maskImage.allocate(CAMERA_WIDTH, CAMERA_HEIGHT);
     
-    depthPixels.allocate(640, 480, OF_PIXELS_RGB);
-    maskTexture.allocate(640, 480 , GL_LUMINANCE);
-    maskPixels.allocate(640,480, OF_PIXELS_RGBA);
+    depthPixels.allocate(CAMERA_WIDTH, CAMERA_HEIGHT, OF_PIXELS_RGB);
+    maskTexture.allocate(CAMERA_WIDTH, CAMERA_HEIGHT , GL_LUMINANCE);
+    maskPixels.allocate(CAMERA_WIDTH, CAMERA_HEIGHT, OF_PIXELS_RGBA);
     
     //Setup optical flow
-    opFlowWidth = 320.0f;
-    opFlowHeight = 240.0f;
+    opFlowWidth = OPFLOW_WIDTH;
+    opFlowHeight = OPFLOW_HEIGHT;
     opFlow.setup(ofRectangle(0,0, opFlowWidth, opFlowHeight ));
     opFlow.setOpticalFlowBlur(15);
     opFlow.setOpticalFlowSize(5);
@@ -126,16 +127,9 @@ void FluidKinect::draw()
     glEnable(GL_BLEND);
 	glBlendFunc(GL_ONE, GL_DST_COLOR);
     blurImage.draw(0,0);
-    opFlow.draw(320,240);
+    opFlow.draw(OPFLOW_WIDTH, OPFLOW_HEIGHT);
     glDisable(GL_BLEND);
     
-    //cameraImage.draw(320, 0, 320, 240);
-
-
-    
-    //depthRangeMask.draw(0, 240, 320, 240);	// can use this with openCV to make masks, find contours etc when not dealing with openNI 'User' like objects
-    
-
     if (isTracking){
         recordUser.draw();
     }
@@ -143,7 +137,7 @@ void FluidKinect::draw()
     glPushMatrix();
 	glEnable(GL_BLEND);
 	glBlendFunc(GL_ONE_MINUS_DST_COLOR, GL_ZERO);
-	allUserMasks.draw(640, 0, 640, 480);
+	allUserMasks.draw(CAMERA_WIDTH, 0, CAMERA_WIDTH, CAMERA_HEIGHT);
 	glDisable(GL_BLEND);
     glPopMatrix();
 }

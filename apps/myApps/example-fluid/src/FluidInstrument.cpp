@@ -23,12 +23,13 @@ FluidInstrument::FluidInstrument(string _name, string _device, int _channel, int
 }
 
 
-void FluidInstrument::addNoteParam(InstrumentParameter param)
+void FluidInstrument::addNoteParam(InstrumentParameter param, bool dampable = true)
 {
     FluidNote newNote(0, name, param.noteType);
     newNote.setStatus(ON);
     newNote.setSource(param.source);
     newNote.setDirty();
+    newNote.isDampable = dampable;
     (param.noteType == INSTRUMENT_PLAYS_CC) ? newNote.setCCchan(param.channel) : newNote.setCCchan(0);
     
     noteParams.push_back(newNote);
@@ -36,18 +37,21 @@ void FluidInstrument::addNoteParam(InstrumentParameter param)
 
 void FluidInstrument::tickNoteParams()
 {
-    int dampening = 0.05f;
+    float  dampening = 0.1f;
     for(int i = 0; i < noteParams.size(); i++)
     {
-        noteParams[i].setValue( (noteParams[i].getValue() + (noteParams[i].getValue() - noteParams[i].getpreferredValue()) * dampening ));
-        
-        if(noteParams[i].getValue() != noteParams[i].getpreferredValue()){
-            noteParams[i].setStatus(ON);
-            noteParams[i].setDirty();
-
+        if(noteParams[i].isDampable){
+            noteParams[i].setValue( ((float)noteParams[i].getValue() + ((float)(noteParams[i].getPreferredValue() - (float)noteParams[i].getValue()) * dampening )));
+            ofLog(OF_LOG_NOTICE, "Note Preferred:" + ofToString(noteParams[i].getPreferredValue()) + " Note Actual:" + ofToString(noteParams[i].getValue()  ));
+            
+            if(noteParams[i].getValue() != noteParams[i].getPreferredValue()){
+                noteParams[i].setDirty();
+                noteParams[i].setStatus(ON);
+            }
         } else {
-            noteParams[i].setStatus(OFF);
+            noteParams[i].setValue(noteParams[i].getPreferredValue());
             noteParams[i].setDirty();
+            noteParams[i].setStatus(ON);
         }
     }
 }
@@ -60,12 +64,16 @@ vector<int> FluidInstrument::createNotesFromBlobParameters(BlobParam blobParamet
     {        
         //Map the note from the source
         float paramValue = blobParamValueFromSource(blobParameter, params[i].source );
-        int noteValue = lerpNote(paramValue, params[i].lowerNoteRange, params[i].upperNoteRange);
+        int noteValue = lerpNote(paramValue, params[i].upperNoteRange, params[i].lowerNoteRange);
+        ofLog(OF_LOG_NOTICE, "Upper:" + ofToString(params[i].upperNoteRange) + " Lower:" + ofToString(params[i].lowerNoteRange) + " Note:" + ofToString(noteValue) + " Original: " + ofToString(paramValue));
         
-        if(params[i].source == INSTRUMENT_SOURCE_CCNOTEON || params[i].source == INSTRUMENT_SOURCE_CCNOTEOFF) noteValue = paramValue;
         
+        if(params[i].source == INSTRUMENT_SOURCE_CCNOTEON) noteValue = 127;
+        if(params[i].source == INSTRUMENT_SOURCE_CCNOTEON) noteValue = 0;        
         resultValues.push_back(noteValue);
     }
+    
+    return resultValues;
 }
 
 vector<InstrumentParameter> FluidInstrument::getParametersByTagType(int paramType)

@@ -10,6 +10,9 @@
 #include "FluidKinect.h"
 #include "ChannelBlender.h"
 
+#define LOWREZ_FLUID_SIZE 256
+#define HIREZ_FLUID_SIZE 1024
+
 using namespace std;
 
 class FluidMotionApp : public ofBaseApp{
@@ -33,6 +36,8 @@ public:
 		
     //Fluid
     ofxFluid fluid;
+    ofxFluid fluidPlayback;
+
     ofVec2f oldM;
     bool    bPaint, bObstacle, bBounding, bClear;
     ofFloatColor dyeColour;
@@ -66,15 +71,20 @@ public:
     ofFloatPixels smokeBufferPixels;
     vector<ofFloatPixels> velocityFilebuffer;
     vector<ofFloatPixels> smokeFilebuffer;
+    vector<ofFloatPixels> fluidInputTextures;
+    ChannelBlender kinectSavedOpflowBlender;
+    ofFloatPixels playbackPixels;
+
+
     bool areFilesSaved;
     void writeFramesToDisk();
+    void recordHirezSim();
 
-    int savedFrameCount;
+    int playbackFrame;
     bool isRecordingFrames;
+    bool isPlayingBackFrames;
     bool isWritingFrames;
     
     ofImage testImage;
     ofPixels testPixels;
-   
-
 };

@@ -14,21 +14,15 @@
 	</properties>
 	<parameters>
 		<note>
-			<min>24</min>
-			<max>72</max>
+			<min>35</min>
+			<max>80</max>
 			<source>blobY</source>
 		</note>
 		<cc>
 			<channel>71</channel>
 			<source>area</source>
-			<min>20</min>
-			<max>110</max>
-		</cc>
-		<cc>
-			<channel>72</channel>
-			<source>curvature</source>
 			<min>0</min>
-			<max>80</max>
+			<max>256</max>
 		</cc>
 	</parameters>
 </instrument>

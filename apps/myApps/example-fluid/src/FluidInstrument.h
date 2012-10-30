@@ -75,7 +75,7 @@ public:
 
     
     void addparam(InstrumentParameter param){ params.push_back(param); };
-    void addNoteParam(InstrumentParameter param);
+    void addNoteParam(InstrumentParameter param, bool dampable);
     void tickNoteParams();
 
 

@@ -45,18 +45,22 @@ public:
     int getValue(){ return m_value; };
     void setValue(int value);
     
-    void setPreferredValue(int value){ m_preferredValue; };
-    int getpreferredValue(){ return m_preferredValue; };
+    void setPreferredValue(int value){ m_preferredValue = value; };
+    int getPreferredValue(){ return m_preferredValue; };
     
     string getNoteInstrument(){ return m_instrument;};
     
     int getNoteId(){ return m_noteId;};
     void setNoteId(int value){ m_noteId = value;};
+    
+    void setLastNote(int value){m_lastNote = value;};
+    int getLastNote(){return m_lastNote;};
 
     
     void setDirty(){ bNoteChanged = true; };
     void setClean(){ bNoteChanged = false; };
     bool isDirty(){ return bNoteChanged;};
+    bool isDampable;
     
 protected:
     int m_type;
@@ -68,6 +72,7 @@ protected:
     int m_noteId;
     string m_instrument;
     int m_noteStatus;
+    int m_lastNote;
     
     NoteParameters noteParams;
     
