@@ -109,7 +109,8 @@ void FluidMotionApp::update(){
         
         //Generate notes from fluid blob output
         blobFinder.matchExistingBlobs();
-        fluidPlayer.blobsToNotes(blobFinder.blobParams);
+        
+        if(blobFinder.blobParams.size() > 0) fluidPlayer.blobsToNotes(blobFinder.blobParams);
     }
 
     ofSetWindowTitle(ofToString(ofGetFrameRate()));

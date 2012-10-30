@@ -82,8 +82,6 @@ ofFbo * ChannelBlender::updateBlender(ofTexture & redChan, ofTexture & greenChan
     float maskScaleX = width / blenderWidth;
     float maskScaleY = height / blenderHeight;
     
-    ofLog(OF_LOG_NOTICE, ofToString(redChan.getWidth()) + " -- " + ofToString(redChan.getHeight()));
-
     blendBuffer.dst->begin();
     blendShader.begin();
     blendShader.setUniformTexture("blendR", redChan, 0);

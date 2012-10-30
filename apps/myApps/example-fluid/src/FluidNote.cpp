@@ -8,6 +8,10 @@
 
 #include "FluidNote.h"
 
+FluidNote::FluidNote()
+{
+}
+
 FluidNote::FluidNote(int noteId, string instrumentName, int type){
     m_type = type;
     m_noteId = noteId;

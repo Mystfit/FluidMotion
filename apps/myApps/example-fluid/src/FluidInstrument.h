@@ -62,8 +62,8 @@ public:
     bool isPlayingNote;
 
     void setID(int instrumentId){ m_instrumentId = instrumentId; };
-    
-    vector<FluidNote> createNotesFromBlobParameters(BlobParam blobParameter);
+
+    vector<int> createNotesFromBlobParameters(BlobParam blobParameter);
     void removeNote(FluidNote note);
 
     static int lerpNote(float value, int upper, int lower){
@@ -75,17 +75,23 @@ public:
 
     
     void addparam(InstrumentParameter param){ params.push_back(param); };
+    void addNoteParam(InstrumentParameter param);
+    void tickNoteParams();
+
+
     vector<InstrumentParameter> getParametersByTagType(int paramType);
     
     float blobParamValueFromSource(BlobParam blobParam, int source);
     int getParamSourceFromString(string source);
     InstrumentParameter getParamFromSource(int source);
+    int getNoteParamIndexFromSource(int source);
+
     
     void startInstrument();
     void stopInstrument();
             
-    vector<FluidNote> activeNotes;
     vector<InstrumentParameter> params;
+    vector<FluidNote> noteParams;
     
  
 private:

@@ -27,6 +27,7 @@ using namespace std;
 
 class FluidNote {
 public:
+    FluidNote();
     FluidNote(int noteId, string instrumentName, int type);
     
     void setType(int noteType){m_type = noteType;};
@@ -44,9 +45,14 @@ public:
     int getValue(){ return m_value; };
     void setValue(int value);
     
+    void setPreferredValue(int value){ m_preferredValue; };
+    int getpreferredValue(){ return m_preferredValue; };
+    
     string getNoteInstrument(){ return m_instrument;};
     
     int getNoteId(){ return m_noteId;};
+    void setNoteId(int value){ m_noteId = value;};
+
     
     void setDirty(){ bNoteChanged = true; };
     void setClean(){ bNoteChanged = false; };
@@ -58,6 +64,7 @@ protected:
     int m_source;
     int m_CCchan;
     int m_value;
+    int m_preferredValue;
     int m_noteId;
     string m_instrument;
     int m_noteStatus;

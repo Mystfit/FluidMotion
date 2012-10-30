@@ -23,67 +23,49 @@ FluidInstrument::FluidInstrument(string _name, string _device, int _channel, int
 }
 
 
-vector<FluidNote> FluidInstrument::createNotesFromBlobParameters(BlobParam blobParameter)
-{    
-    vector<FluidNote> noteList;
+void FluidInstrument::addNoteParam(InstrumentParameter param)
+{
+    FluidNote newNote(0, name, param.noteType);
+    newNote.setStatus(ON);
+    newNote.setSource(param.source);
+    newNote.setDirty();
+    (param.noteType == INSTRUMENT_PLAYS_CC) ? newNote.setCCchan(param.channel) : newNote.setCCchan(0);
     
-    for(int i = 0; i < params.size(); i++)
+    noteParams.push_back(newNote);
+}
+
+void FluidInstrument::tickNoteParams()
+{
+    int dampening = 0.05f;
+    for(int i = 0; i < noteParams.size(); i++)
     {
-        int noteValue;
-        float paramValue;
-
-        if(params[i].noteType == INSTRUMENT_PLAYS_NOTES)
-        {
-            //Map the note from the source
-            paramValue = blobParamValueFromSource(blobParameter, params[i].source );
-            noteValue = lerpNote(paramValue, params[i].lowerNoteRange, params[i].upperNoteRange);
-            
-            FluidNote noteOnMessage(blobParameter.id, name, INSTRUMENT_PLAYS_NOTES);
-            noteOnMessage.setValue(noteValue);
-            noteOnMessage.setSource(params[i].source);
-            noteOnMessage.setDirty();
-
-            noteList.push_back(noteOnMessage);
+        noteParams[i].setValue( (noteParams[i].getValue() + (noteParams[i].getValue() - noteParams[i].getpreferredValue()) * dampening ));
         
-        } else if(params[i].noteType == INSTRUMENT_PLAYS_CC)
-        {
-            
-            if(usesCCNoteTriggers)
-            {
-                if(!isPlayingNote){
-                    InstrumentParameter noteOnParam = getParamFromSource(INSTRUMENT_SOURCE_CCNOTEON);
-                    
-                    FluidNote ccNoteOnMessage(blobParameter.id, name, INSTRUMENT_PLAYS_CC);
-                    ccNoteOnMessage.setValue(noteOnParam.value);
-                    ccNoteOnMessage.setCCchan(noteOnParam.channel);
-                    ccNoteOnMessage.setSource(noteOnParam.source);
-                    ccNoteOnMessage.setDirty();
-                    noteList.push_back(ccNoteOnMessage);
-                    isPlayingNote = true;
-                }
-            }
-            
-            
-            //Send cc messages, ignore ccNoteOns and ccNoteOffs
-            if(params[i].source != INSTRUMENT_SOURCE_CCNOTEON && params[i].source != INSTRUMENT_SOURCE_CCNOTEOFF)
-            {
-                paramValue = blobParamValueFromSource(blobParameter, params[i].source );
-                noteValue = lerpNote(paramValue, params[i].upperNoteRange, params[i].lowerNoteRange);
-                
-                FluidNote ccMessage(blobParameter.id, name, INSTRUMENT_PLAYS_CC);
-                ccMessage.setCCchan(params[i].channel);
-                ccMessage.setValue(noteValue);
-                            
-                ccMessage.setSource(params[i].source);
-                ccMessage.setDirty();
-                noteList.push_back(ccMessage);
-            }
-            
-        }
-            
-    }
+        if(noteParams[i].getValue() != noteParams[i].getpreferredValue()){
+            noteParams[i].setStatus(ON);
+            noteParams[i].setDirty();
 
-    return noteList;
+        } else {
+            noteParams[i].setStatus(OFF);
+            noteParams[i].setDirty();
+        }
+    }
+}
+
+
+vector<int> FluidInstrument::createNotesFromBlobParameters(BlobParam blobParameter)
+{
+    vector<int> resultValues;
+    for(int i = 0; i < params.size(); i++)
+    {        
+        //Map the note from the source
+        float paramValue = blobParamValueFromSource(blobParameter, params[i].source );
+        int noteValue = lerpNote(paramValue, params[i].lowerNoteRange, params[i].upperNoteRange);
+        
+        if(params[i].source == INSTRUMENT_SOURCE_CCNOTEON || params[i].source == INSTRUMENT_SOURCE_CCNOTEOFF) noteValue = paramValue;
+        
+        resultValues.push_back(noteValue);
+    }
 }
 
 vector<InstrumentParameter> FluidInstrument::getParametersByTagType(int paramType)
@@ -111,22 +93,28 @@ float FluidInstrument::blobParamValueFromSource(BlobParam blobParam, int source)
 }
 
 
-void FluidInstrument::removeNote(FluidNote note){
-    for(int i = 0; i < activeNotes.size(); i++)
-    {
-        if(activeNotes[i].getNoteId() == note.getNoteId()){
-            activeNotes.erase(activeNotes.begin() + i);
-            return;
-        }
-    }
-}
-
 
 InstrumentParameter FluidInstrument::getParamFromSource(int source)
 {
     for(int i = 0; i < params.size(); i++)
         if(params[i].source == source )
             return params[i]; 
+}
+
+int FluidInstrument::getNoteParamIndexFromSource(int source)
+{
+    int index = -1;
+    int i = 0;
+    while(i < noteParams.size())
+    {
+        if(noteParams[i].getSource() == source ){
+            index = i;
+            break;
+        }
+        i++;
+    }
+    
+    return index;
 }
 
 
