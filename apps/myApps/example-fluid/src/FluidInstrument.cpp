@@ -65,11 +65,9 @@ vector<int> FluidInstrument::createNotesFromBlobParameters(BlobParam blobParamet
         //Map the note from the source
         float paramValue = blobParamValueFromSource(blobParameter, params[i].source );
         int noteValue = lerpNote(paramValue, params[i].upperNoteRange, params[i].lowerNoteRange);
-        ofLog(OF_LOG_NOTICE, "Upper:" + ofToString(params[i].upperNoteRange) + " Lower:" + ofToString(params[i].lowerNoteRange) + " Note:" + ofToString(noteValue) + " Original: " + ofToString(paramValue));
-        
         
         if(params[i].source == INSTRUMENT_SOURCE_CCNOTEON) noteValue = 127;
-        if(params[i].source == INSTRUMENT_SOURCE_CCNOTEON) noteValue = 0;        
+        if(params[i].source == INSTRUMENT_SOURCE_CCNOTEOFF) noteValue = 0;
         resultValues.push_back(noteValue);
     }
     

@@ -62,6 +62,12 @@ public:
     FluidKinect fluidKinect;
     bool bDrawKinect;
     float depthActivationStart, depthActivationEnd;
+    void increaseFarDepth();
+    void decreaseFarDepth();
+    void increaseNearDepth();
+    void decreaseNearDepth();
+    void increaseThreshold();
+    void decreaseThreshold();
     
     //Shaders
     ChannelBlender texBlender;
@@ -74,7 +80,7 @@ public:
     vector<ofFloatPixels> fluidInputTextures;
     ChannelBlender kinectSavedOpflowBlender;
     ofFloatPixels playbackPixels;
-
+    vector<ofVec3f> fluidRecordedColour;
 
     bool areFilesSaved;
     void writeFramesToDisk();

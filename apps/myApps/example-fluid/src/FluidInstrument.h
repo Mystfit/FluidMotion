@@ -55,10 +55,12 @@ public:
     string name;                        // Instrument name
     string device;                      // Midi port instrument is located on
     int channel;                        // Midi channel to play on
+    int recordableChannel;              //CC channel to trigger Live to switch recording priorities to
     int program;                        // Midi program for instrument voice
     int timbreType;                       // Polyphonic / monophonic instrument definition
     int noteMapping;                    // Notes or CC mappings
     bool usesCCNoteTriggers;              // Instrument requires noteOn/noteOff messages to be sent
+    ofVec3f dyeColour;
     bool isPlayingNote;
 
     void setID(int instrumentId){ m_instrumentId = instrumentId; };

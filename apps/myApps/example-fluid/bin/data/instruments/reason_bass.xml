@@ -1,0 +1,29 @@
+<?xml version="1.0"?>
+<instrument>
+	<properties>
+		<name>reason_bass</name>
+		<device>passthrough_out</device>
+		<channel>8</channel>
+		<recordableChannel>96</recordableChannel>
+		<program>0</program>
+		<timbre>poly</timbre>
+		<noteMappings>note</noteMappings>
+		<colourR>1.0</colourR>
+		<colourG>1.0</colourG>
+		<colourB>1.0</colourB>
+		<usesCCNoteTriggers>false</usesCCNoteTriggers>
+	</properties>
+	<parameters>
+		<note>
+			<min>20</min>
+			<max>40</max>
+			<source>blobY</source>
+		</note>
+		<cc>
+			<channel>71</channel>
+			<source>area</source>
+			<min>0</min>
+			<max>127</max>
+		</cc>
+	</parameters>
+</instrument>

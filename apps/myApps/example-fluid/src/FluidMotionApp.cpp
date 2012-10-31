@@ -18,15 +18,15 @@ void FluidMotionApp::setup(){
     tempPixels.allocate(LOWREZ_FLUID_SIZE,LOWREZ_FLUID_SIZE,3);
     
     texBlender.allocate(CAMERA_WIDTH, CAMERA_HEIGHT, LOWREZ_FLUID_SIZE, LOWREZ_FLUID_SIZE);
-    kinectSavedOpflowBlender.allocate(CAMERA_WIDTH, CAMERA_HEIGHT, HIREZ_FLUID_SIZE, HIREZ_FLUID_SIZE);
+    kinectSavedOpflowBlender.allocate(CAMERA_WIDTH, CAMERA_HEIGHT, LOWREZ_FLUID_SIZE, LOWREZ_FLUID_SIZE);
     
     //Buffer for saving images
     velocityBufferPixels.allocate(HIREZ_FLUID_SIZE, HIREZ_FLUID_SIZE, 3);
     smokeBufferPixels.allocate(HIREZ_FLUID_SIZE, HIREZ_FLUID_SIZE, 3);
-    playbackPixels.allocate(HIREZ_FLUID_SIZE, HIREZ_FLUID_SIZE, 3);
+    playbackPixels.allocate(LOWREZ_FLUID_SIZE, LOWREZ_FLUID_SIZE, 3);
     playbackFrame = 0;
         
-    threshold = 30;
+    threshold = 105;
     dyeColour.set(1.0f,1.0f,1.0f);
     dyeRadius = 10.f;
     dyeDensity = 0.1f;
@@ -51,10 +51,51 @@ void FluidMotionApp::setup(){
     bCalculateBlobs = true;
     
     fluidPlayer.startPerformance();
+
+    
     
     //fluid.addConstantForce(ofPoint(256*0.5f,256*0.5f), ofPoint(0,0), ofFloatColor(1.0f,1.0f,1.0f), 20.0f);
     
 }
+
+void FluidMotionApp::increaseFarDepth()
+{
+    depthActivationStart += 0.01;
+    CLAMP(depthActivationStart, 0.0f, 1.0f);
+}
+
+void FluidMotionApp::decreaseFarDepth()
+{
+    depthActivationStart -= 0.01;
+    CLAMP(depthActivationStart, 0.0f, 1.0f);
+}
+
+void FluidMotionApp::increaseNearDepth()
+{
+    depthActivationEnd += 0.01;
+    CLAMP(depthActivationEnd, 0.0f, 1.0f);
+}
+
+void FluidMotionApp::decreaseNearDepth()
+{
+    depthActivationEnd -= 0.01;
+    CLAMP(depthActivationEnd, 0.0f, 1.0f);
+}
+
+
+void FluidMotionApp::increaseThreshold()
+{
+    threshold += 1;
+    CLAMP(threshold, 0, 60);
+}
+
+void FluidMotionApp::decreaseThreshold()
+{
+    threshold -= 1;
+    CLAMP(threshold, 0, 60);
+
+}
+
 
 
 //--------------------------------------------------------------
@@ -76,8 +117,11 @@ void FluidMotionApp::update(){
     //  Update
     //--------
     
+      
     if(!isPlayingBackFrames)
     {
+        
+        //if(fluidPlayer.isPlaying) isRecordingFrames = true;
         
         //Update kinect cameras
         fluidKinect.update();
@@ -92,15 +136,16 @@ void FluidMotionApp::update(){
         texBlender.updateBlender( fluidKinect.opFlow.velTexX.getTextureReference(), fluidKinect.opFlow.velTexY.getTextureReference(), fluidKinect.getDepthTexture(), fluidKinect.getMaskTexture(), depthActivationStart, depthActivationEnd);
         
         if(isRecordingFrames){
+            kinectSavedOpflowBlender.updateBlender( fluidKinect.opFlow.velTexX.getTextureReference(), fluidKinect.opFlow.velTexY.getTextureReference(), fluidKinect.getDepthTexture(), fluidKinect.getMaskTexture(), depthActivationStart, depthActivationEnd)->readToPixels(playbackPixels);
             //texBlender.blendBuffer.dst->readToPixels(playbackPixels);
-          kinectSavedOpflowBlender.updateBlender( fluidKinect.opFlow.velTexX.getTextureReference(), fluidKinect.opFlow.velTexY.getTextureReference(), fluidKinect.getDepthTexture(), fluidKinect.getMaskTexture(), depthActivationStart, depthActivationEnd)->readToPixels(playbackPixels);
-            
             fluidInputTextures.push_back( playbackPixels );
-            ofLog(OF_LOG_NOTICE, ofToString(fluidInputTextures.size()));
+            fluidRecordedColour.push_back(fluidPlayer.getActiveInstrument().dyeColour);
         }
         
         //Send camera velocities to fluid simulation
         fluid.setExternalVelocity(  texBlender.blendBuffer.dst->getTextureReference() );
+        
+        fluid.setDyeColour(fluidPlayer.getActiveInstrument().dyeColour);
         fluid.update();    
     
         //Do blob detection on fluid simulation output
@@ -111,7 +156,7 @@ void FluidMotionApp::update(){
             inputImageGrey = inputImage;
             inputImageGrey.blurHeavily();
             //inputImageGrey.blurGaussian(7);
-            inputImageGrey.threshold(40);
+            inputImageGrey.threshold(threshold);
             inputImageGrey.flagImageChanged();
             blobFinder.findBlobs(inputImageGrey, false);
             
@@ -128,20 +173,26 @@ void FluidMotionApp::update(){
     //Replay fluid from saved optical flow source
     else
     {
-        //Send camera velocities to fluid simulation
-        fluidPlayback.setExternalVelocity( ofImage(fluidInputTextures[playbackFrame]).getTextureReference() );
-        fluidPlayback.update();
-       
-        fluidPlayback.getVelocityBuffer().src->readToPixels(velocityBufferPixels);
-        fluidPlayback.getPingPong().src->readToPixels(smokeBufferPixels);
-            
-        ofSaveImage(velocityBufferPixels, "frames/velocity_" + ofGetTimestampString() + "_" + ofToString(playbackFrame) + ".exr" );
-        ofSaveImage(smokeBufferPixels, "frames/smoke_" + ofGetTimestampString() + "_" + ofToString(playbackFrame) + ".exr" );
-
-        if(playbackFrame == fluidInputTextures.size() - 1)
+        if(playbackFrame >= fluidInputTextures.size()){
             isPlayingBackFrames = false;
+            isRecordingFrames = false;
+            fluidInputTextures.clear();
+        } else {
+            //Send camera velocities to fluid simulation
+            ofImage velocity = ofImage(fluidInputTextures[playbackFrame]);
+            velocity.resize(HIREZ_FLUID_SIZE, HIREZ_FLUID_SIZE);
+            fluidPlayback.setExternalVelocity( velocity.getTextureReference() );
+            fluidPlayback.setDyeColour(fluidRecordedColour[playbackFrame]);
+            fluidPlayback.update();
+           
+            fluidPlayback.getVelocityBuffer().src->readToPixels(velocityBufferPixels);
+            fluidPlayback.getPingPong().src->readToPixels(smokeBufferPixels);
+                
+            ofSaveImage(velocityBufferPixels, "frames/velocity_" + ofGetTimestampString() + "_" + ofToString(playbackFrame) + ".exr" );
+            ofSaveImage(smokeBufferPixels, "frames/smoke_" + ofGetTimestampString() + "_" + ofToString(playbackFrame) + ".exr" );
 
-        playbackFrame++;
+            playbackFrame++;
+        }
     }
 
     ofSetWindowTitle(ofToString(ofGetFrameRate()));
@@ -162,18 +213,21 @@ void FluidMotionApp::draw(){
 	glBlendFunc(GL_ONE, GL_ONE);
     
     if(bDrawFluid)
-        (!isPlayingBackFrames) ? fluid.draw(0,0,ofGetScreenHeight(),ofGetScreenHeight()) : fluidPlayback.draw(0,0,ofGetScreenHeight(),ofGetScreenHeight());;
-    if(bDrawBlobs) blobFinder.draw(0,0,ofGetScreenHeight(),ofGetScreenHeight());
+        (!isPlayingBackFrames) ? fluid.draw((ofGetScreenWidth() - ofGetScreenHeight()) * 0.5f,0,ofGetScreenHeight(),ofGetScreenHeight()) : fluidPlayback.draw((ofGetScreenWidth() - ofGetScreenHeight()) * 0.5f,0,ofGetScreenHeight(),ofGetScreenHeight());;
+    if(bDrawBlobs) blobFinder.draw((ofGetScreenWidth() - ofGetScreenHeight()) * 0.5f,0,ofGetScreenHeight(),ofGetScreenHeight());
     
     ofSetHexColor(0xFFFFFF);
     
+    string instrumentStr = "Instrument: " + fluidPlayer.getActiveInstrument().name + ". ";
+    
+    ofDrawBitmapString(instrumentStr, 10.0f, 10.0f);
+    
     if(!fluidPlayer.isPlaying)
-        ofDrawBitmapString("Waiting for play message from Live",10.0f,10.0f);
-    else if(isWritingFrames)
-        ofDrawBitmapString("Writing frames to disk...",10.0f,10.0f);
-    else if(fluidPlayer.getBpm() > 0)
-        ofDrawBitmapString(ofToString(fluidPlayer.getBpm()) + "bpm", 10.0f,10.0f);
-
+        ofDrawBitmapString(instrumentStr + "Waiting for play message from Live",10.0f,10.0f);
+    else if(isRecordingFrames)
+        ofDrawBitmapString(instrumentStr + "Recording performance",10.0f,10.0f);
+    else if(isPlayingBackFrames)
+        ofDrawBitmapString(instrumentStr + "Saving hiRez simulation...", 10.0f,10.0f);
     
     glDisable(GL_BLEND);
 }
@@ -202,11 +256,28 @@ void FluidMotionApp::keyPressed(int key){
         } else if(isRecordingFrames && !isPlayingBackFrames){
             isRecordingFrames = false;
             isPlayingBackFrames = true;
+            fluidPlayer.stopPerformance();
         }
     }
+    if( key == OF_KEY_LEFT)
+        fluidPlayer.nextInstrument();
+    if( key == OF_KEY_RIGHT)
+        fluidPlayer.prevInstrument();
+    if( key == OF_KEY_UP)
+        increaseNearDepth();
+    if( key == OF_KEY_DOWN)
+        decreaseNearDepth();
+    if( key == OF_KEY_PAGE_UP)
+        increaseNearDepth();
+    if( key == OF_KEY_PAGE_DOWN)
+        decreaseNearDepth();
+    if( key == OF_KEY_HOME)
+        decreaseThreshold();
+    if( key == OF_KEY_END)
+        increaseThreshold();
     
     //Forward keypress to kinect
-    fluidKinect.keyPressed(key);
+    //fluidKinect.keyPressed(key);
 }
 
 

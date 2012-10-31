@@ -38,6 +38,10 @@ public:
     void loadInstruments();
     void setInstrument(FluidInstrument instrument);
     FluidInstrument getInstrumentByName(string name);
+    int getInstrumentIndex(FluidInstrument instrument);
+    FluidInstrument getActiveInstrument(){return m_activeInstrument;};
+    void nextInstrument();
+    void prevInstrument();
     
     void loadScales();
     ScaleDef getScaleByName(string name);
@@ -63,6 +67,7 @@ private:
     FluidInstrument m_activeInstrument;
     vector<FluidInstrument> instrumentList;
     vector<ScaleDef> scaleList;
+    int currentInstrumentIndex;
     
     int m_rootNote;
     ScaleDef m_activeScale;

@@ -383,6 +383,7 @@ void ofxFluid::addConstantForce(ofPoint _pos, ofPoint _vel, ofFloatColor _col, f
     constantForces.push_back(f);
 }
 
+
 void ofxFluid::update(){
     //Obstacles need it´s the half othe the side
     ofPushStyle();

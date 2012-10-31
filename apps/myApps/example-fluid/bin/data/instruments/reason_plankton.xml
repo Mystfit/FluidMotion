@@ -1,0 +1,29 @@
+<?xml version="1.0"?>
+<instrument>
+	<properties>
+		<name>reason_plankton</name>
+		<device>passthrough_out</device>
+		<channel>5</channel>
+		<program>0</program>
+		<recordableChannel>96</recordableChannel>
+		<timbre>poly</timbre>
+		<noteMappings>note</noteMappings>
+		<colourR>1.0</colourR>
+		<colourG>0.7</colourG>
+		<colourB>0.2</colourB>
+		<usesCCNoteTriggers>false</usesCCNoteTriggers>
+	</properties>
+	<parameters>
+		<note>
+			<min>35</min>
+			<max>80</max>
+			<source>blobY</source>
+		</note>
+		<cc>
+			<channel>71</channel>
+			<source>area</source>
+			<min>40</min>
+			<max>140</max>
+		</cc>
+	</parameters>
+</instrument>

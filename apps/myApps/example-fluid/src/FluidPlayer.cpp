@@ -21,15 +21,15 @@ FluidPlayer::FluidPlayer()
     baseNoteMessageLength = DEMISEMIQUAVER;
     upperTimesig = 4;
     lowerTimesig = 4;
+    currentInstrumentIndex = 0;
     
     loadInstruments();
     loadScales();
     
     setRootNote(NOTE_C);
     setScale( getScaleByName("Minor"));
-    setInstrument( getInstrumentByName("reason_pad") );
     
-    
+    setInstrument( instrumentList[0] );
 }
 
 
@@ -52,16 +52,44 @@ void FluidPlayer::startPerformance(){
     beatCount = 0;
     isBeat = 0;
     midiOut.sendControlChange(2, 80, 127);
-
 }
 
 
 void FluidPlayer::setInstrument(FluidInstrument instrument)
 {
-    m_activeInstrument = instrument;
-    midiOut.sendProgramChange(m_activeInstrument.channel, m_activeInstrument.program);
-};
+    midiOut.sendControlChange(m_activeInstrument.channel, MIDI_ALL_NOTES_OFF, 0);
 
+    m_activeInstrument = instrument;
+    //midiOut.sendProgramChange(m_activeInstrument.channel, m_activeInstrument.program);
+}
+
+void FluidPlayer::nextInstrument()
+{
+    int instrumentIndex = getInstrumentIndex(m_activeInstrument);
+    if(instrumentIndex == -1)
+        return;
+    
+    if( instrumentIndex+1 >= instrumentList.size())
+        instrumentIndex = 0;
+    else
+        instrumentIndex++;
+    setInstrument(instrumentList[instrumentIndex]);
+}
+
+
+void FluidPlayer::prevInstrument()
+{
+    int instrumentIndex = getInstrumentIndex(m_activeInstrument);
+    if(instrumentIndex == -1)
+        return;
+
+    if( instrumentIndex-1 < 0 )
+        instrumentIndex = instrumentList.size() - 1;
+    else
+        instrumentIndex--;
+
+    setInstrument(instrumentList[instrumentIndex]);
+}
 
 
 /*
@@ -71,6 +99,19 @@ FluidInstrument FluidPlayer::getInstrumentByName(string name){
     for (int i = 0; i < instrumentList.size(); i++){
         if (instrumentList[i].name == name) return instrumentList[i];
     }
+}
+
+/*
+ * Get instruments by name rather than id
+ */
+int FluidPlayer::getInstrumentIndex(FluidInstrument instrument){
+    int index = -1;
+    for (int i = 0; i < instrumentList.size(); i++){
+        if (instrumentList[i].name == instrument.name){
+            index = i;
+        }
+    }
+    return index;
 }
 
 
@@ -97,8 +138,9 @@ void FluidPlayer::loadInstruments()
         instrument.device = xmlInstrument.getValue("device", "");
         instrument.channel = xmlInstrument.getValue("channel", 0);
         instrument.program = xmlInstrument.getValue("program", 0);
-        instrument.usesCCNoteTriggers = ofToBool(xmlInstrument.getValue("usesCCNoteTriggers", ""));
         
+        instrument.dyeColour = ofVec3f(xmlInstrument.getValue("colourR",1.0f), xmlInstrument.getValue("colourG",1.0f), xmlInstrument.getValue("colourB",1.0f));
+        instrument.usesCCNoteTriggers = ofToBool(xmlInstrument.getValue("usesCCNoteTriggers", ""));
         
         int timbreType, noteMapping;
         
@@ -152,8 +194,9 @@ void FluidPlayer::loadInstruments()
         
         instrumentList.push_back(instrument);
     }
-     
 }
+
+
 
 
 

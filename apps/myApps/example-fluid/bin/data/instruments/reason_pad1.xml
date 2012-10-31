@@ -3,26 +3,27 @@
 	<properties>
 		<name>reason_pad</name>
 		<device>passthrough_out</device>
-		<channel>5</channel>
+		<channel>7</channel>
+		<recordableChannel>96</recordableChannel>
 		<program>0</program>
 		<timbre>poly</timbre>
 		<noteMappings>note</noteMappings>
-		<colourR>1.0</colourR>
-		<colourG>1.0</colourG>
+		<colourR>0.2</colourR>
+		<colourG>0.2</colourG>
 		<colourB>1.0</colourB>
 		<usesCCNoteTriggers>false</usesCCNoteTriggers>
 	</properties>
 	<parameters>
 		<note>
-			<min>35</min>
-			<max>80</max>
+			<min>0</min>
+			<max>127</max>
 			<source>blobY</source>
 		</note>
 		<cc>
 			<channel>71</channel>
-			<source>area</source>
-			<min>0</min>
-			<max>256</max>
+			<source>blobX</source>
+			<min>90</min>
+			<max>20</max>
 		</cc>
 	</parameters>
 </instrument>
